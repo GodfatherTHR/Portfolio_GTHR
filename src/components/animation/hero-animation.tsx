@@ -10,7 +10,7 @@ export default function HeroAnimation() {
       pixelFilter={2000}
       color1="#6B46C1"
       color2="#333333"
-      color3="#D3D3D3"
+      color3="#162325"
     />
   );
 }
