@@ -8,6 +8,9 @@ export default function HeroAnimation() {
       isRotate={true}
       mouseInteraction={false}
       pixelFilter={2000}
+      color1="#A100A1"
+      color2="#333333"
+      color3="#D3D3D3"
     />
   );
 }
