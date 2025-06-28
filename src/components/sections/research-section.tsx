@@ -3,6 +3,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import { Star } from "lucide-react";
 
 export default async function ResearchSection() {
   const supabase = createClient();
@@ -24,15 +25,26 @@ export default async function ResearchSection() {
           {publications.map((pub: any) => (
             <Card key={pub.id} className="flex flex-col">
               <CardHeader>
-                <CardTitle>{pub.title}</CardTitle>
-                <CardDescription>{pub.venue}, {pub.year}</CardDescription>
+                <div className="flex justify-between items-start gap-4">
+                  <div className="flex-grow">
+                    <CardTitle>{pub.title}</CardTitle>
+                    <CardDescription className="mt-1">{pub.venue}, {pub.year}</CardDescription>
+                  </div>
+                  {pub.type && <Badge variant="outline" className="flex-shrink-0">{pub.type}</Badge>}
+                </div>
               </CardHeader>
-              <CardContent className="flex-grow">
+              <CardContent className="flex-grow space-y-4">
                  <div className="flex flex-wrap gap-2">
                   {pub.PublicationTags.map((pt: any) => (
                     <Badge key={pt.tag_id} variant="secondary">{pt.Tags.name}</Badge>
                   ))}
                 </div>
+                {pub.citation_count > 0 && (
+                    <div className="flex items-center text-sm text-muted-foreground pt-2">
+                        <Star className="w-4 h-4 mr-1.5 fill-yellow-400 text-yellow-500" />
+                        <span>Cited by {pub.citation_count}</span>
+                    </div>
+                )}
               </CardContent>
               <CardFooter>
                 {pub.link && (
