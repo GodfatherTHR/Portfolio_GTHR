@@ -3,12 +3,28 @@ import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Terminal } from "lucide-react";
 
 export default async function AboutSection() {
   const supabase = createClient();
-  const { data: aboutContent } = await supabase.from("AboutContent").select("*, AboutExpertise(*)").single();
+  const { data: aboutContent, error } = await supabase.from("AboutContent").select("*, AboutExpertise(*)").single();
 
-  if (!aboutContent) return null;
+  if (error || !aboutContent) {
+    return (
+       <section id="about" className="py-16 md:py-24">
+        <div className="container">
+           <Alert variant="destructive">
+            <Terminal className="h-4 w-4" />
+            <AlertTitle>About Content Not Found</AlertTitle>
+            <AlertDescription>
+              Could not fetch content for the 'About' section. Please ensure your 'AboutContent' table has data and that Row Level Security (RLS) is configured to allow public read access.
+            </AlertDescription>
+          </Alert>
+        </div>
+      </section>
+    )
+  }
 
   return (
     <section id="about" className="py-16 md:py-24">

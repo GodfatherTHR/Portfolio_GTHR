@@ -1,16 +1,31 @@
 import { createClient } from "@/lib/supabase/server";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Briefcase, GraduationCap, Download } from 'lucide-react';
+import { Briefcase, GraduationCap, Download, Terminal } from 'lucide-react';
 import { Button } from "../ui/button";
 import Link from "next/link";
 import { Badge } from "../ui/badge";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 export default async function ResumeSection() {
     const supabase = createClient();
 
-    const { data: resume } = await supabase.from('Resume').select('*, ProfessionalExperience(*, ExperienceResponsibilities(*)), Education(*), Skills(*)').single();
+    const { data: resume, error } = await supabase.from('Resume').select('*, ProfessionalExperience(*, ExperienceResponsibilities(*)), Education(*), Skills(*)').single();
 
-    if (!resume) return null;
+    if (error || !resume) {
+        return (
+            <section id="resume" className="py-16 md:py-24 bg-secondary">
+                <div className="container">
+                   <Alert variant="destructive">
+                    <Terminal className="h-4 w-4" />
+                    <AlertTitle>Resume Content Not Found</AlertTitle>
+                    <AlertDescription>
+                      Could not fetch content for the 'Resume' section. Please ensure your 'Resume' table has data and that Row Level Security (RLS) is configured to allow public read access.
+                    </AlertDescription>
+                  </Alert>
+                </div>
+            </section>
+        )
+    }
 
     const experiences = resume.ProfessionalExperience || [];
     const educations = resume.Education || [];

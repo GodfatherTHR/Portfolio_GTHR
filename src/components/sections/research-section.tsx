@@ -3,16 +3,31 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { Star } from "lucide-react";
+import { Star, Terminal } from "lucide-react";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 export default async function ResearchSection() {
   const supabase = createClient();
-  const { data: publications } = await supabase
+  const { data: publications, error } = await supabase
     .from("Publications")
     .select("*, PublicationTags(*, Tags(*))")
     .order("year", { ascending: false });
 
-  if (!publications || publications.length === 0) return null;
+  if (error || !publications || publications.length === 0) {
+    return (
+       <section id="research" className="py-16 md:py-24 bg-secondary">
+        <div className="container">
+           <Alert variant="destructive">
+            <Terminal className="h-4 w-4" />
+            <AlertTitle>Research Content Not Found</AlertTitle>
+            <AlertDescription>
+               Could not fetch content for the 'Research' section. Please ensure your 'Publications' table has data and that Row Level Security (RLS) is configured to allow public read access.
+            </AlertDescription>
+          </Alert>
+        </div>
+      </section>
+    )
+  }
 
   return (
     <section id="research" className="py-16 md:py-24 bg-secondary">
