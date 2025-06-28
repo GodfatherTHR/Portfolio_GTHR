@@ -20,12 +20,8 @@ export default async function ContactSection() {
   const { data } = await supabase.from("profile").select("contact_email, social_links").single();
 
   const profile: Profile = data || {
-    contact_email: "contact@shariful.com",
-    social_links: {
-      github: "https://github.com/sharifulhaque",
-      linkedin: "https://linkedin.com/in/sharifulhaque",
-      twitter: "https://twitter.com/sharifulhaque",
-    },
+    contact_email: "",
+    social_links: {},
   };
 
   return (
@@ -43,12 +39,14 @@ export default async function ContactSection() {
                 <CardDescription>Find me on these platforms or send me an email.</CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
-                <div className="flex items-center gap-4">
-                  <Send className="w-6 h-6 text-primary" />
-                  <a href={`mailto:${profile.contact_email}`} className="hover:text-primary transition-colors">
-                    {profile.contact_email}
-                  </a>
-                </div>
+                {profile.contact_email && (
+                  <div className="flex items-center gap-4">
+                    <Send className="w-6 h-6 text-primary" />
+                    <a href={`mailto:${profile.contact_email}`} className="hover:text-primary transition-colors">
+                      {profile.contact_email}
+                    </a>
+                  </div>
+                )}
                 <div className="flex gap-4 pt-4">
                   {profile.social_links?.github && <Button variant="outline" size="icon" asChild><Link href={profile.social_links.github} target="_blank"><Github /></Link></Button>}
                   {profile.social_links?.linkedin && <Button variant="outline" size="icon" asChild><Link href={profile.social_links.linkedin} target="_blank"><Linkedin /></Link></Button>}

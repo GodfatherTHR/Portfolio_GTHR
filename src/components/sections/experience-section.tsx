@@ -17,32 +17,7 @@ export default async function ExperienceSection() {
     .select("id, role, company, start_date, end_date, description")
     .order("start_date", { ascending: false });
 
-  const finalExperience: Experience[] = experience && experience.length > 0 ? experience : [
-    {
-      id: "1",
-      role: "Senior Frontend Developer",
-      company: "Tech Solutions Inc.",
-      start_date: "2020-01-15",
-      end_date: null,
-      description: "Led the development of a new client-facing dashboard using React and TypeScript. Improved application performance by 30% through code optimization and bundle splitting. Mentored junior developers.",
-    },
-    {
-      id: "2",
-      role: "Mid-Level Software Engineer",
-      company: "Innovate Co.",
-      start_date: "2018-06-01",
-      end_date: "2019-12-30",
-      description: "Developed and maintained features for a large-scale web application using Angular. Collaborated with backend teams to design and implement new APIs. Wrote unit and integration tests to ensure code quality.",
-    },
-    {
-      id: "3",
-      role: "Junior Web Developer",
-      company: "Web Wizards",
-      start_date: "2017-05-20",
-      end_date: "2018-05-30",
-      description: "Assisted in building responsive websites for various clients using HTML, CSS, and JavaScript. Gained experience with version control systems like Git and project management tools.",
-    },
-  ];
+  const finalExperience: Experience[] = experience || [];
 
   return (
     <section id="experience" className="py-16 md:py-24">

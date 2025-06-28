@@ -15,14 +15,7 @@ export default async function SkillsSection() {
     .select("id, name, proficiency")
     .order("proficiency", { ascending: false });
 
-  const finalSkills: Skill[] = skills && skills.length > 0 ? skills : [
-    { id: "1", name: "TypeScript", proficiency: 95 },
-    { id: "2", name: "React & Next.js", proficiency: 90 },
-    { id: "3", name: "Node.js", proficiency: 85 },
-    { id: "4", name: "SQL & Databases", proficiency: 80 },
-    { id: "5", name: "Tailwind CSS", proficiency: 95 },
-    { id: "6", name: "Cloud & DevOps", proficiency: 75 },
-  ];
+  const finalSkills: Skill[] = skills || [];
 
   return (
     <section id="skills" className="py-16 md:py-24 bg-secondary">

@@ -10,15 +10,14 @@ type Profile = {
 
 export default async function HeroSection() {
   const supabase = createClient();
-  // Assuming you have a 'profile' table with a single row for your portfolio data
   const { data, error } = await supabase
     .from("profile")
     .select("full_name, headline")
     .single();
 
   const profile: Profile = data || {
-    full_name: "Shariful Haque",
-    headline: "Full-Stack Developer | Building innovative solutions with modern technology",
+    full_name: "Your Name",
+    headline: "Your Professional Headline",
   };
 
   return (
