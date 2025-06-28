@@ -29,12 +29,12 @@ export default async function AdminPage() {
     return redirect("/login");
   }
 
-  const { data: owner } = await supabase.from("PortfolioOwner").select().single();
-  const { data: projects } = await supabase.from("Projects").select();
-  const { data: experiences } = await supabase.from("ProfessionalExperience").select();
-  const { data: skills } = await supabase.from("Skills").select();
-  const { data: publications } = await supabase.from("Publications").select();
-  const { data: awards } = await supabase.from("Awards").select();
+  const { data: owner } = await supabase.from("portfolioowner").select().single();
+  const { data: projects } = await supabase.from("projects").select();
+  const { data: experiences } = await supabase.from("professionalexperience").select();
+  const { data: skills } = await supabase.from("skills").select();
+  const { data: publications } = await supabase.from("publications").select();
+  const { data: awards } = await supabase.from("awards").select();
 
 
   return (

@@ -6,9 +6,9 @@ import { ArrowRightCircle } from "lucide-react";
 export default async function HeroSection() {
   const supabase = createClient();
 
-  const { data: heroContent } = await supabase.from("HeroContent").select().single();
-  const { data: subtitles } = await supabase.from("HeroSubtitles").select();
-  const { data: ctas } = await supabase.from("HeroCTAs").select();
+  const { data: heroContent } = await supabase.from("herocontent").select().single();
+  const { data: subtitles } = await supabase.from("herosubtitles").select();
+  const { data: ctas } = await supabase.from("heroctas").select();
 
   return (
     <section id="hero" className="relative w-full h-[80vh] min-h-[600px] flex items-center justify-center text-center text-white overflow-hidden bg-primary">

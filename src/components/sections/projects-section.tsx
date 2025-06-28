@@ -18,8 +18,8 @@ const iconMap: { [key: string]: React.ReactNode } = {
 export default async function ProjectsSection() {
   const supabase = createClient();
   const { data: projects } = await supabase
-    .from("Projects")
-    .select("*, ProjectTags(*, Tags(*))")
+    .from("projects")
+    .select("*, projecttags(*, tags(*))")
     .order("id");
 
   if (!projects || projects.length === 0) return null;
@@ -32,39 +32,45 @@ export default async function ProjectsSection() {
           <p className="text-lg text-muted-foreground mt-2">A selection of my work. See what I've been building.</p>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {projects.map((project: any) => (
-            <Card key={project.id} className="flex flex-col overflow-hidden shadow-lg hover:shadow-2xl transition-shadow duration-300">
-              <CardHeader className="p-0 relative">
-                <Image
-                  src={project.image_src || "https://placehold.co/600x400.png"}
-                  alt={project.alt_text || project.title}
-                  width={600}
-                  height={400}
-                  className="w-full h-48 object-cover"
-                  data-ai-hint="software project"
-                />
-                 <div className="absolute top-4 right-4 bg-background/80 p-2 rounded-full backdrop-blur-sm">
-                   {iconMap[project.icon] || iconMap.default}
-                 </div>
-              </CardHeader>
-              <CardContent className="flex-grow p-6">
-                <CardTitle className="text-xl font-bold mb-2">{project.title}</CardTitle>
-                <CardDescription>{project.description}</CardDescription>
-                <div className="mt-4 flex flex-wrap gap-2">
-                  {project.ProjectTags?.map((pt: any) => <Badge key={pt.tag_id} variant="outline">{pt.Tags.name}</Badge>)}
-                </div>
-              </CardContent>
-              <CardFooter className="p-6 bg-muted/50">
-                {project.button_link && (
-                  <Button variant="default" asChild className="w-full">
-                    <Link href={project.button_link} target="_blank" rel="noopener noreferrer">
-                      {project.button_text}
-                    </Link>
-                  </Button>
-                )}
-              </CardFooter>
-            </Card>
-          ))}
+          {projects.map((project: any) => {
+            const imageSrc = project.image_src && (project.image_src.startsWith('http') || project.image_src.startsWith('/'))
+              ? project.image_src
+              : "https://placehold.co/600x400.png";
+
+            return (
+              <Card key={project.id} className="flex flex-col overflow-hidden shadow-lg hover:shadow-2xl transition-shadow duration-300">
+                <CardHeader className="p-0 relative">
+                  <Image
+                    src={imageSrc}
+                    alt={project.alt_text || project.title}
+                    width={600}
+                    height={400}
+                    className="w-full h-48 object-cover"
+                    data-ai-hint="software project"
+                  />
+                  <div className="absolute top-4 right-4 bg-background/80 p-2 rounded-full backdrop-blur-sm">
+                    {iconMap[project.icon] || iconMap.default}
+                  </div>
+                </CardHeader>
+                <CardContent className="flex-grow p-6">
+                  <CardTitle className="text-xl font-bold mb-2">{project.title}</CardTitle>
+                  <CardDescription>{project.description}</CardDescription>
+                  <div className="mt-4 flex flex-wrap gap-2">
+                    {project.projecttags?.map((pt: any) => <Badge key={pt.tag_id} variant="outline">{pt.tags.name}</Badge>)}
+                  </div>
+                </CardContent>
+                <CardFooter className="p-6 bg-muted/50">
+                  {project.button_link && (
+                    <Button variant="default" asChild className="w-full">
+                      <Link href={project.button_link} target="_blank" rel="noopener noreferrer">
+                        {project.button_text}
+                      </Link>
+                    </Button>
+                  )}
+                </CardFooter>
+              </Card>
+            )
+          })}
         </div>
       </div>
     </section>

@@ -6,7 +6,7 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 export default async function AwardsSection() {
   const supabase = createClient();
   const { data: awards, error } = await supabase
-    .from("Awards")
+    .from("awards")
     .select("*")
     .order("year", { ascending: false });
 
@@ -18,7 +18,7 @@ export default async function AwardsSection() {
             <Terminal className="h-4 w-4" />
             <AlertTitle>Awards Content Not Found</AlertTitle>
             <AlertDescription>
-               Could not fetch content for the 'Awards' section. Please ensure your 'Awards' table has data and that Row Level Security (RLS) is configured to allow public read access.
+               Could not fetch content for the 'Awards' section. Please ensure your 'awards' table has data and that Row Level Security (RLS) is configured to allow public read access.
             </AlertDescription>
           </Alert>
         </div>

@@ -8,8 +8,8 @@ import { createClient } from "@/lib/supabase/server";
 
 export default async function ContactSection() {
   const supabase = createClient();
-  const { data: contactInfo } = await supabase.from("ContactInfo").select().single();
-  const { data: owner } = await supabase.from("PortfolioOwner").select().single();
+  const { data: contactInfo } = await supabase.from("contactinfo").select().single();
+  const { data: owner } = await supabase.from("portfolioowner").select().single();
 
   return (
     <section id="contact" className="py-16 md:py-24">

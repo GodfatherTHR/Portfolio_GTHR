@@ -9,7 +9,7 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 export default async function ResumeSection() {
     const supabase = createClient();
 
-    const { data: resume, error } = await supabase.from('Resume').select('*, ProfessionalExperience(*, ExperienceResponsibilities(*)), Education(*), Skills(*)').single();
+    const { data: resume, error } = await supabase.from('resume').select('*, professionalexperience(*, experienceresponsibilities(*)), education(*), skills(*)').single();
 
     if (error || !resume) {
         return (
@@ -19,7 +19,7 @@ export default async function ResumeSection() {
                     <Terminal className="h-4 w-4" />
                     <AlertTitle>Resume Content Not Found</AlertTitle>
                     <AlertDescription>
-                      Could not fetch content for the 'Resume' section. Please ensure your 'Resume' table has data and that Row Level Security (RLS) is configured to allow public read access.
+                      Could not fetch content for the 'Resume' section. Please ensure your 'resume' table has data and that Row Level Security (RLS) is configured to allow public read access.
                     </AlertDescription>
                   </Alert>
                 </div>
@@ -27,9 +27,9 @@ export default async function ResumeSection() {
         )
     }
 
-    const experiences = resume.ProfessionalExperience || [];
-    const educations = resume.Education || [];
-    const skills = resume.Skills || [];
+    const experiences = resume.professionalexperience || [];
+    const educations = resume.education || [];
+    const skills = resume.skills || [];
 
     const groupedSkills: { [key: string]: any[] } = skills.reduce((acc: any, skill: any) => {
         const key = skill.skill_type;
@@ -72,7 +72,7 @@ export default async function ResumeSection() {
                                     </CardHeader>
                                     <CardContent>
                                         <ul className="list-disc list-inside space-y-1 text-muted-foreground">
-                                            {exp.ExperienceResponsibilities.map((resp: any) => (
+                                            {exp.experienceresponsibilities.map((resp: any) => (
                                                 <li key={resp.id}>{resp.responsibility}</li>
                                             ))}
                                         </ul>

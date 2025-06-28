@@ -9,8 +9,8 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 export default async function ResearchSection() {
   const supabase = createClient();
   const { data: publications, error } = await supabase
-    .from("Publications")
-    .select("*, PublicationTags(*, Tags(*))")
+    .from("publications")
+    .select("*, publicationtags(*, tags(*))")
     .order("year", { ascending: false });
 
   if (error || !publications || publications.length === 0) {
@@ -21,7 +21,7 @@ export default async function ResearchSection() {
             <Terminal className="h-4 w-4" />
             <AlertTitle>Research Content Not Found</AlertTitle>
             <AlertDescription>
-               Could not fetch content for the 'Research' section. Please ensure your 'Publications' table has data and that Row Level Security (RLS) is configured to allow public read access.
+               Could not fetch content for the 'Research' section. Please ensure your 'publications' table has data and that Row Level Security (RLS) is configured to allow public read access.
             </AlertDescription>
           </Alert>
         </div>
@@ -50,8 +50,8 @@ export default async function ResearchSection() {
               </CardHeader>
               <CardContent className="flex-grow space-y-4">
                  <div className="flex flex-wrap gap-2">
-                  {pub.PublicationTags.map((pt: any) => (
-                    <Badge key={pt.tag_id} variant="secondary">{pt.Tags.name}</Badge>
+                  {pub.publicationtags.map((pt: any) => (
+                    <Badge key={pt.tag_id} variant="secondary">{pt.tags.name}</Badge>
                   ))}
                 </div>
                 {pub.citation_count > 0 && (

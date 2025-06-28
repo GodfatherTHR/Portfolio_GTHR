@@ -13,7 +13,7 @@ type NavLink = {
 export default async function Header() {
   const supabase = createClient();
   const { data: navigationItems } = await supabase
-    .from("NavigationItems")
+    .from("navigationitems")
     .select()
     .order("id");
 
