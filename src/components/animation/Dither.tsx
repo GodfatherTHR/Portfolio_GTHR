@@ -1,9 +1,9 @@
 /* eslint-disable react/no-unknown-property */
 "use client";
 
-import { useRef, useState, useEffect } from "react";
+import { useRef, useState, useEffect, useMemo } from "react";
 import { Canvas, useFrame, useThree, ThreeEvent } from "@react-three/fiber";
-import { EffectComposer, wrapEffect } from "@react-three/postprocessing";
+import { EffectComposer } from "@react-three/postprocessing";
 import { Effect } from "postprocessing";
 import * as THREE from "three";
 
@@ -147,7 +147,10 @@ class RetroEffectImpl extends Effect {
   }
 }
 
-const RetroEffect = wrapEffect(RetroEffectImpl);
+function RetroEffect({ colorNum, pixelSize }: { colorNum: number; pixelSize: number }) {
+  const effect = useMemo(() => new RetroEffectImpl({ colorNum, pixelSize }), [colorNum, pixelSize]);
+  return <primitive object={effect} dispose={null} />;
+}
 
 interface WaveUniforms {
   [key: string]: THREE.Uniform<any>;
