@@ -12,7 +12,7 @@ export type Experience = {
 
 export default async function ExperienceSection() {
   const supabase = createClient();
-  const { data: experience, error } = await supabase
+  const { data: experience } = await supabase
     .from("experience")
     .select("id, role, company, start_date, end_date, description")
     .order("start_date", { ascending: false });

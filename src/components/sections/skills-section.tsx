@@ -10,7 +10,7 @@ type Skill = {
 
 export default async function SkillsSection() {
   const supabase = createClient();
-  const { data: skills, error } = await supabase
+  const { data: skills } = await supabase
     .from("skills")
     .select("id, name, proficiency")
     .order("proficiency", { ascending: false });
@@ -18,7 +18,7 @@ export default async function SkillsSection() {
   const finalSkills: Skill[] = skills || [];
 
   return (
-    <section id="skills" className="py-16 md:py-24 bg-secondary">
+    <section id="skills" className="py-16 md:py-24">
       <div className="container">
         <div className="text-center mb-12">
           <h2 className="text-3xl md:text-4xl font-bold russo-one-regular">Technical Skills</h2>

@@ -18,7 +18,7 @@ type Project = {
 
 export default async function ProjectsSection() {
   const supabase = createClient();
-  const { data: projects, error } = await supabase
+  const { data: projects } = await supabase
     .from("projects")
     .select("id, title, description, image_url, project_url, repo_url, tags")
     .order("created_at", { ascending: false });
