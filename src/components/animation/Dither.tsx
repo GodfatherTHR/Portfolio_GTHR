@@ -1,7 +1,7 @@
 /* eslint-disable react/no-unknown-property */
 "use client";
 
-import { useRef, useState, useEffect, forwardRef } from "react";
+import { useRef, useState, useEffect } from "react";
 import { Canvas, useFrame, useThree, ThreeEvent } from "@react-three/fiber";
 import { EffectComposer, wrapEffect } from "@react-three/postprocessing";
 import { Effect } from "postprocessing";
@@ -147,13 +147,7 @@ class RetroEffectImpl extends Effect {
   }
 }
 
-const WrappedRetroEffect = wrapEffect(RetroEffectImpl);
-const RetroEffect = forwardRef<RetroEffectImpl, { colorNum: number; pixelSize: number }>(
-  (props, ref) => {
-    return <WrappedRetroEffect ref={ref} {...props} />;
-  }
-);
-RetroEffect.displayName = 'RetroEffect';
+const RetroEffect = wrapEffect(RetroEffectImpl);
 
 interface WaveUniforms {
   [key: string]: THREE.Uniform<any>;
