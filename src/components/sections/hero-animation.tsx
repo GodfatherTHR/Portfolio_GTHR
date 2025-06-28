@@ -4,6 +4,7 @@ import dynamic from "next/dynamic";
 
 const Dither = dynamic(() => import("@/components/animation/Dither"), {
   ssr: false,
+  loading: () => <div className="absolute inset-0 z-0 bg-gray-900" />,
 });
 
 export default function HeroAnimation() {
