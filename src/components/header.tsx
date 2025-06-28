@@ -1,18 +1,29 @@
-"use client";
-
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Menu, User } from "lucide-react";
+import { createClient } from "@/lib/supabase/server";
 
-const navLinks = [
-  { href: "#projects", label: "Projects" },
-  { href: "#experience", label: "Experience" },
-  { href: "#skills", label: "Skills" },
-  { href: "#contact", label: "Contact" },
-];
+type NavLink = {
+  href: string;
+  label: string;
+  is_button: boolean;
+};
 
-export default function Header() {
+export default async function Header() {
+  const supabase = createClient();
+  const { data: navigationItems } = await supabase
+    .from("NavigationItems")
+    .select()
+    .order("id");
+
+  const navLinks: NavLink[] =
+    navigationItems?.map((item) => ({
+      href: item.link,
+      label: item.text,
+      is_button: item.is_button,
+    })) || [];
+
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex h-14 max-w-screen-2xl items-center">
@@ -22,8 +33,8 @@ export default function Header() {
               Shariful Haque
             </span>
           </Link>
-          <nav className="flex items-center gap-6 text-sm">
-            {navLinks.map((link) => (
+          <nav className="flex items-center gap-4 text-sm">
+            {navLinks.filter(l => !l.is_button).map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
@@ -31,6 +42,11 @@ export default function Header() {
               >
                 {link.label}
               </Link>
+            ))}
+             {navLinks.filter(l => l.is_button).map((link) => (
+                <Button key={link.href} asChild size="sm">
+                    <Link href={link.href}>{link.label}</Link>
+                </Button>
             ))}
           </nav>
         </div>

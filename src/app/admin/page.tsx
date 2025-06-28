@@ -17,7 +17,6 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import { Progress } from "@/components/ui/progress";
 
 export default async function AdminPage() {
   const supabase = createClient();
@@ -30,16 +29,13 @@ export default async function AdminPage() {
     return redirect("/login");
   }
 
-  const { data: profile } = await supabase.from("profile").select().single();
-  const { data: projects } = await supabase.from("projects").select();
-  const { data: experiences } = await supabase
-    .from("experience")
-    .select()
-    .order("start_date", { ascending: false });
-  const { data: skills } = await supabase
-    .from("skills")
-    .select()
-    .order("proficiency", { ascending: false });
+  const { data: owner } = await supabase.from("PortfolioOwner").select().single();
+  const { data: projects } = await supabase.from("Projects").select();
+  const { data: experiences } = await supabase.from("ProfessionalExperience").select();
+  const { data: skills } = await supabase.from("Skills").select();
+  const { data: publications } = await supabase.from("Publications").select();
+  const { data: awards } = await supabase.from("Awards").select();
+
 
   return (
     <div className="container mx-auto py-10">
@@ -58,61 +54,21 @@ export default async function AdminPage() {
       <div className="grid gap-10">
         <Card>
           <CardHeader>
-            <CardTitle>Profile</CardTitle>
-            <CardDescription>
-              This is your public profile information that appears on the hero
-              and contact sections.
+            <CardTitle>Portfolio Owner</CardTitle>
+             <CardDescription>
+              This is the main contact and identity information for the portfolio.
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
-            {profile ? (
+            {owner ? (
               <div className="space-y-2">
-                <p>
-                  <strong>Full Name:</strong> {profile.full_name}
-                </p>
-                <p>
-                  <strong>Headline:</strong> {profile.headline}
-                </p>
-                <p>
-                  <strong>Contact Email:</strong> {profile.contact_email}
-                </p>
-                <div>
-                  <strong>Social Links:</strong>
-                  <ul className="list-disc list-inside ml-4 mt-2">
-                    <li>
-                      GitHub:{" "}
-                      <a
-                        href={profile.social_links?.github}
-                        className="text-primary hover:underline"
-                      >
-                        {profile.social_links?.github}
-                      </a>
-                    </li>
-                    <li>
-                      LinkedIn:{" "}
-                      <a
-                        href={profile.social_links?.linkedin}
-                        className="text-primary hover:underline"
-                      >
-                        {profile.social_links?.linkedin}
-                      </a>
-                    </li>
-                    <li>
-                      Twitter:{" "}
-                      <a
-                        href={profile.social_links?.twitter}
-                        className="text-primary hover:underline"
-                      >
-                        {profile.social_links?.twitter}
-                      </a>
-                    </li>
-                  </ul>
-                </div>
+                <p><strong>Name:</strong> {owner.name}</p>
+                <p><strong>Email:</strong> {owner.email}</p>
+                <p><strong>LinkedIn:</strong> <a href={owner.linkedin_url} className="text-primary hover:underline">{owner.linkedin_url}</a></p>
+                <p><strong>GitHub:</strong> <a href={owner.github_url} className="text-primary hover:underline">{owner.github_url}</a></p>
               </div>
-            ) : (
-              <p>No profile data found.</p>
-            )}
-            <Button className="mt-4">Edit Profile</Button>
+            ) : <p>No owner data found.</p> }
+             <Button className="mt-4">Edit</Button>
           </CardContent>
         </Card>
 
@@ -127,46 +83,58 @@ export default async function AdminPage() {
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead className="w-[20%]">Title</TableHead>
-                  <TableHead className="w-[45%]">Description</TableHead>
-                  <TableHead className="w-[25%]">Tags</TableHead>
-                  <TableHead className="w-[10%] text-right">Actions</TableHead>
+                  <TableHead>Title</TableHead>
+                  <TableHead>Category</TableHead>
+                  <TableHead>Description</TableHead>
+                  <TableHead className="text-right">Actions</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {projects && projects.length > 0 ? (
-                  projects.map((project) => (
+                {projects?.map((project) => (
                     <TableRow key={project.id}>
-                      <TableCell className="font-medium">
-                        {project.title}
-                      </TableCell>
+                      <TableCell className="font-medium">{project.title}</TableCell>
+                      <TableCell><Badge variant="secondary">{project.category}</Badge></TableCell>
                       <TableCell>{project.description}</TableCell>
-                      <TableCell>
-                        <div className="flex flex-wrap gap-1">
-                          {project.tags?.map((tag: string) => (
-                            <Badge key={tag} variant="secondary">
-                              {tag}
-                            </Badge>
-                          ))}
-                        </div>
-                      </TableCell>
                       <TableCell className="text-right">
-                        <Button variant="outline" size="sm">
-                          Edit
-                        </Button>
+                        <Button variant="outline" size="sm">Edit</Button>
                       </TableCell>
                     </TableRow>
-                  ))
-                ) : (
-                  <TableRow>
-                    <TableCell colSpan={4} className="text-center">
-                      No projects found.
-                    </TableCell>
-                  </TableRow>
-                )}
+                  ))}
               </TableBody>
             </Table>
             <Button className="mt-4">Add New Project</Button>
+          </CardContent>
+        </Card>
+        
+        <Card>
+          <CardHeader>
+            <CardTitle>Publications</CardTitle>
+            <CardDescription>Manage your published research.</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Title</TableHead>
+                  <TableHead>Venue</TableHead>
+                  <TableHead>Year</TableHead>
+                  <TableHead className="text-right">Actions</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {publications?.map((pub) => (
+                    <TableRow key={pub.id}>
+                      <TableCell className="font-medium">{pub.title}</TableCell>
+                      <TableCell>{pub.venue}</TableCell>
+                      <TableCell>{pub.year}</TableCell>
+                      <TableCell className="text-right">
+                        <Button variant="outline" size="sm">Edit</Button>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+              </TableBody>
+            </Table>
+            <Button className="mt-4">Add New Publication</Button>
           </CardContent>
         </Card>
 
@@ -186,38 +154,16 @@ export default async function AdminPage() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {experiences && experiences.length > 0 ? (
-                  experiences.map((exp) => (
+                {experiences?.map((exp) => (
                     <TableRow key={exp.id}>
-                      <TableCell className="font-medium">{exp.role}</TableCell>
+                      <TableCell className="font-medium">{exp.title}</TableCell>
                       <TableCell>{exp.company}</TableCell>
-                      <TableCell>
-                        {new Date(exp.start_date).toLocaleDateString("en-US", {
-                          month: "short",
-                          year: "numeric",
-                        })}{" "}
-                        -{" "}
-                        {exp.end_date
-                          ? new Date(exp.end_date).toLocaleDateString("en-US", {
-                              month: "short",
-                              year: "numeric",
-                            })
-                          : "Present"}
-                      </TableCell>
+                      <TableCell>{exp.dates}</TableCell>
                       <TableCell className="text-right">
-                        <Button variant="outline" size="sm">
-                          Edit
-                        </Button>
+                        <Button variant="outline" size="sm">Edit</Button>
                       </TableCell>
                     </TableRow>
-                  ))
-                ) : (
-                  <TableRow>
-                    <TableCell colSpan={4} className="text-center">
-                      No work experience found.
-                    </TableCell>
-                  </TableRow>
-                )}
+                  ))}
               </TableBody>
             </Table>
             <Button className="mt-4">Add New Experience</Button>
@@ -226,50 +172,62 @@ export default async function AdminPage() {
 
         <Card>
           <CardHeader>
+            <CardTitle>Awards</CardTitle>
+            <CardDescription>Manage your awards and recognitions.</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Title</TableHead>
+                  <TableHead>Organization</TableHead>
+                  <TableHead>Year</TableHead>
+                  <TableHead className="text-right">Actions</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {awards?.map((award) => (
+                    <TableRow key={award.id}>
+                      <TableCell className="font-medium">{award.title}</TableCell>
+                      <TableCell>{award.organization}</TableCell>
+                      <TableCell>{award.year}</TableCell>
+                      <TableCell className="text-right">
+                        <Button variant="outline" size="sm">Edit</Button>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+              </TableBody>
+            </Table>
+            <Button className="mt-4">Add New Award</Button>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
             <CardTitle>Skills</CardTitle>
             <CardDescription>
-              Manage your technical skills and proficiency levels.
+              Manage your technical skills.
             </CardDescription>
           </CardHeader>
           <CardContent>
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead className="w-[40%]">Skill</TableHead>
-                  <TableHead className="w-[50%]">Proficiency</TableHead>
-                  <TableHead className="w-[10%] text-right">Actions</TableHead>
+                  <TableHead>Skill Name</TableHead>
+                  <TableHead>Type</TableHead>
+                  <TableHead className="text-right">Actions</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {skills && skills.length > 0 ? (
-                  skills.map((skill) => (
+                {skills?.map((skill) => (
                     <TableRow key={skill.id}>
-                      <TableCell className="font-medium">{skill.name}</TableCell>
-                      <TableCell>
-                        <div className="flex items-center gap-2">
-                          <Progress
-                            value={skill.proficiency}
-                            className="h-2"
-                          />
-                          <span className="text-xs text-muted-foreground">
-                            {skill.proficiency}%
-                          </span>
-                        </div>
-                      </TableCell>
+                      <TableCell className="font-medium">{skill.skill_name}</TableCell>
+                      <TableCell><Badge variant="outline">{skill.skill_type}</Badge></TableCell>
                       <TableCell className="text-right">
-                        <Button variant="outline" size="sm">
-                          Edit
-                        </Button>
+                        <Button variant="outline" size="sm">Edit</Button>
                       </TableCell>
                     </TableRow>
-                  ))
-                ) : (
-                  <TableRow>
-                    <TableCell colSpan={3} className="text-center">
-                      No skills found.
-                    </TableCell>
-                  </TableRow>
-                )}
+                  ))}
               </TableBody>
             </Table>
             <Button className="mt-4">Add New Skill</Button>

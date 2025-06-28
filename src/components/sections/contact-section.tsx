@@ -2,55 +2,48 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
-import { Github, Linkedin, Twitter, Send } from "lucide-react";
+import { Github, Linkedin, Send, Phone } from "lucide-react";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 
-type Profile = {
-  contact_email: string;
-  social_links: {
-    github?: string;
-    linkedin?: string;
-    twitter?: string;
-  };
-};
-
 export default async function ContactSection() {
   const supabase = createClient();
-  const { data } = await supabase.from("profile").select("contact_email, social_links").single();
-
-  const profile: Profile = data || {
-    contact_email: "",
-    social_links: {},
-  };
+  const { data: contactInfo } = await supabase.from("ContactInfo").select().single();
+  const { data: owner } = await supabase.from("PortfolioOwner").select().single();
 
   return (
     <section id="contact" className="py-16 md:py-24">
       <div className="container">
         <div className="text-center mb-12">
-          <h2 className="text-3xl md:text-4xl font-bold russo-one-regular">Get In Touch</h2>
-          <p className="text-lg text-muted-foreground mt-2">Have a project in mind or just want to say hi? I'd love to hear from you.</p>
+          <h2 className="text-3xl md:text-4xl font-bold russo-one-regular">{contactInfo?.title || 'Get In Touch'}</h2>
+          <p className="text-lg text-muted-foreground mt-2 max-w-2xl mx-auto">{contactInfo?.description || "Have a project in mind or just want to say hi? I'd love to hear from you."}</p>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-start">
           <div className="flex flex-col gap-8">
             <Card>
               <CardHeader>
                 <CardTitle>Contact Information</CardTitle>
-                <CardDescription>Find me on these platforms or send me an email.</CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
-                {profile.contact_email && (
+                {contactInfo?.email && (
                   <div className="flex items-center gap-4">
                     <Send className="w-6 h-6 text-primary" />
-                    <a href={`mailto:${profile.contact_email}`} className="hover:text-primary transition-colors">
-                      {profile.contact_email}
+                    <a href={`mailto:${contactInfo.email}`} className="hover:text-primary transition-colors">
+                      {contactInfo.email}
+                    </a>
+                  </div>
+                )}
+                 {contactInfo?.phone && (
+                  <div className="flex items-center gap-4">
+                    <Phone className="w-6 h-6 text-primary" />
+                    <a href={`tel:${contactInfo.phone}`} className="hover:text-primary transition-colors">
+                      {contactInfo.phone}
                     </a>
                   </div>
                 )}
                 <div className="flex gap-4 pt-4">
-                  {profile.social_links?.github && <Button variant="outline" size="icon" asChild><Link href={profile.social_links.github} target="_blank"><Github /></Link></Button>}
-                  {profile.social_links?.linkedin && <Button variant="outline" size="icon" asChild><Link href={profile.social_links.linkedin} target="_blank"><Linkedin /></Link></Button>}
-                  {profile.social_links?.twitter && <Button variant="outline" size="icon" asChild><Link href={profile.social_links.twitter} target="_blank"><Twitter /></Link></Button>}
+                  {owner?.github_url && <Button variant="outline" size="icon" asChild><Link href={owner.github_url} target="_blank"><Github /></Link></Button>}
+                  {owner?.linkedin_url && <Button variant="outline" size="icon" asChild><Link href={owner.linkedin_url} target="_blank"><Linkedin /></Link></Button>}
                 </div>
               </CardContent>
             </Card>
