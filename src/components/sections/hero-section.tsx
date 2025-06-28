@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { createClient } from "@/lib/supabase/server";
 import { ArrowRightCircle } from "lucide-react";
+import HeroAnimation from "@/components/animation/hero-animation";
 
 export default async function HeroSection() {
   const supabase = createClient();
@@ -11,7 +12,8 @@ export default async function HeroSection() {
   const { data: ctas } = await supabase.from("heroctas").select();
 
   return (
-    <section id="hero" className="relative w-full h-[80vh] min-h-[600px] flex items-center justify-center text-center text-white overflow-hidden bg-primary">
+    <section id="hero" className="relative w-full h-[80vh] min-h-[600px] flex items-center justify-center text-center text-white overflow-hidden">
+      <HeroAnimation />
       <div className="absolute inset-0 bg-black/30"></div>
       <div className="relative z-10 p-4">
         <h1 className="text-4xl md:text-6xl font-extrabold russo-one-regular tracking-tight">
