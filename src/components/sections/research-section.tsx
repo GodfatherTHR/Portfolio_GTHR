@@ -1,10 +1,11 @@
 import { createClient } from "@/lib/supabase/server";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { Star, Terminal } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import GlareHover from "../animation/GlareHover";
 
 export default async function ResearchSection() {
   const supabase = createClient();
@@ -38,7 +39,16 @@ export default async function ResearchSection() {
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           {publications.map((pub: any) => (
-            <Card key={pub.id} className="flex flex-col">
+            <GlareHover
+              key={pub.id}
+              className="rounded-lg border bg-card text-card-foreground shadow-sm flex flex-col h-full"
+              glareColor="#6B46C1"
+              glareOpacity={0.3}
+              glareAngle={-30}
+              glareSize={300}
+              transitionDuration={800}
+              playOnce={false}
+            >
               <CardHeader>
                 <div className="flex justify-between items-start gap-4">
                   <div className="flex-grow">
@@ -68,7 +78,7 @@ export default async function ResearchSection() {
                   </Button>
                 )}
               </CardFooter>
-            </Card>
+            </GlareHover>
           ))}
         </div>
       </div>
