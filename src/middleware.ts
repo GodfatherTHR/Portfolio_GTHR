@@ -18,17 +18,20 @@ export async function middleware(request: NextRequest) {
           return request.cookies.get(name)?.value;
         },
         set(name: string, value: string, options: CookieOptions) {
-          // If the cookie is set, update the response's cookies.
+          // If the cookie is set, update the request and response cookies.
+          request.cookies.set({ name, value, ...options });
           response.cookies.set({ name, value, ...options });
         },
         remove(name: string, options: CookieOptions) {
-          // If the cookie is removed, update the response's cookies.
+          // If the cookie is removed, update the request and response cookies.
+          request.cookies.set({ name, value: "", ...options });
           response.cookies.set({ name, value: "", ...options });
         },
       },
     }
   );
 
+  // This call is what refreshes the session and handles cookie updates.
   const {
     data: { user },
   } = await supabase.auth.getUser();
@@ -43,6 +46,7 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL("/admin", request.url));
   }
 
+  // Return the response object, which may have new cookies set.
   return response;
 }
 
