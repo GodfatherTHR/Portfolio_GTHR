@@ -15,6 +15,10 @@ const iconMap: { [key: string]: React.ReactNode } = {
   "default": <Code className="h-8 w-8 text-primary" />
 };
 
+const projectImageMap: { [key: string]: string } = {
+  'proj1': 'https://images.unsplash.com/photo-1743336751210-5205213290ca?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxJbnRlbGxpZ2VudCUyMEJsb2NrY2hhaW4lMjBFUlAlMjBNb2R1bGV8ZW58MHx8fHwxNzUxMTc4ODQwfDA&ixlib=rb-4.1.0&q=80&w=1080',
+};
+
 export default async function ProjectsSection() {
   const supabase = createClient();
   const { data: projects } = await supabase
@@ -33,9 +37,10 @@ export default async function ProjectsSection() {
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {projects.map((project: any) => {
-            const imageSrc = project.image_src && (project.image_src.startsWith('http') || project.image_src.startsWith('/'))
+            const imageSrc = projectImageMap[project.json_id] ||
+              (project.image_src && (project.image_src.startsWith('http') || project.image_src.startsWith('/'))
               ? project.image_src
-              : "https://placehold.co/600x400.png";
+              : "https://placehold.co/600x400.png");
 
             return (
               <Card key={project.id} className="flex flex-col overflow-hidden shadow-lg hover:shadow-2xl transition-shadow duration-300">
