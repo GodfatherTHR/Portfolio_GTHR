@@ -28,7 +28,7 @@ export default async function AboutSection() {
 
   const imageSrc = (aboutContent.image_src && (aboutContent.image_src.startsWith('http') || aboutContent.image_src.startsWith('/')))
     ? aboutContent.image_src
-    : "https://i.freeimage.host/2024/07/28/F5bXi3G.png";
+    : "https://iili.io/F5bXi3G.jpg";
 
   return (
     <section id="about" className="py-16 md:py-24">
@@ -41,6 +41,7 @@ export default async function AboutSection() {
               width={600}
               height={700}
               className="rounded-lg shadow-lg object-cover"
+              data-ai-hint="portrait professional"
             />
           </div>
           <div className="space-y-6">
