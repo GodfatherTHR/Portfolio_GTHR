@@ -4,7 +4,9 @@ import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
-import { FileText, Lightbulb, BarChart2, Tv, Code, School } from "lucide-react";
+import { FileText, Lightbulb, BarChart2, Tv, Code, School, Terminal } from "lucide-react";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+
 
 const iconMap: { [key: string]: React.ReactNode } = {
   "patent-icon": <FileText className="h-8 w-8 text-primary" />,
@@ -23,12 +25,26 @@ const projectImageMap: { [key: string]: string } = {
 
 export default async function ProjectsSection() {
   const supabase = createClient();
-  const { data: projects } = await supabase
+  const { data: projects, error } = await supabase
     .from("projects")
     .select("*, projecttags(*, tags(*))")
     .order("id");
 
-  if (!projects || projects.length === 0) return null;
+  if (error || !projects || projects.length === 0) {
+    return (
+       <section id="projects" className="py-16 md:py-24">
+        <div className="container">
+           <Alert variant="destructive">
+            <Terminal className="h-4 w-4" />
+            <AlertTitle>Projects Content Not Found</AlertTitle>
+            <AlertDescription>
+               Could not fetch content for the 'Projects' section. Please ensure your 'projects' table has data and that Row Level Security (RLS) is configured to allow public read access.
+            </AlertDescription>
+          </Alert>
+        </div>
+      </section>
+    )
+  }
 
   return (
     <section id="projects" className="py-16 md:py-24">
