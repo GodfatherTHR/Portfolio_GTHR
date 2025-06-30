@@ -21,6 +21,12 @@ const nextConfig: NextConfig = {
         hostname: 'mmdqxosbtlgfvfyizfbh.supabase.co',
         port: '',
         pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'i.freeimage.host',
+        port: '',
+        pathname: '/**',
       }
     ],
   },
