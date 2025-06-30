@@ -22,7 +22,8 @@ const projectImageMap: { [key: string]: string } = {
   'proj2': 'https://images.unsplash.com/photo-1716436329836-208bea5a55e6?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxuOG4lMjBhdXRvbWF0aW9ufGVufDB8fHx8MTc1MTI4NDMyNXww&ixlib=rb-4.1.0&q=80&w=1080',
   'proj3': 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyMHx8RW50ZXJwcmlzZSUyMERhdGElMjBBbmFseXRpY3MlMjBEYXNoYm9hcmR8ZW58MHx8fHwxNzUxMjg0MzYzfDA&ixlib=rb-4.1.0&q=80&w=1080',
   'proj4': 'https://images.unsplash.com/photo-1647529734891-b1d1d2b93bd3?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxNXx8c3Rvcnl0ZWxsaW5nJTIwbWFzdGVyY2xhc3N8ZW58MHx8fHwxNzUxMzEwNTIyfDA&ixlib=rb-4.1.0&q=80&w=1080',
-  'proj5': 'https://images.unsplash.com/photo-1621930032188-2e4f2b8959c2?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxN3x8UmVzZWFyY2glMjBEYXRhJTIwTWFuYWdlbWVudCUyMFN5c3RlbXxlbnwwfHx8fDE3NTEzMTAzMjJ8MA&ixlib=rb-4.1.0&q=80&w=1080'
+  'proj5': 'https://images.unsplash.com/photo-1621930032188-2e4f2b8959c2?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxN3x8UmVzZWFyY2glMjBEYXRhJTIwTWFuYWdlbWVudCUyMFN5c3RlbXxlbnwwfHx8fDE3NTEzMTAzMjJ8MA&ixlib=rb-4.1.0&q=80&w=1080',
+  'proj6': 'https://images.unsplash.com/photo-1718806748183-edb0c438a006?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxNXx8QmxvY2tjaGFpbiUyMGZvciUyMEFjYWRlbWljJTIwQ3JlZGVudGlhbHN8ZW58MHx8fHwxNzUxMzEwMzk0fDA&ixlib=rb-4.1.0&q=80&w=1080'
 };
 
 export default async function ProjectsSection() {
