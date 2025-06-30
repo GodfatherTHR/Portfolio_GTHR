@@ -2,7 +2,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
-import { Github, Linkedin, Send, Phone, FlaskConical, GraduationCap, Info } from "lucide-react";
+import { Github, Linkedin, Send, Phone, FlaskConical, GraduationCap, Info, School } from "lucide-react";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 
@@ -47,6 +47,7 @@ export default async function ContactSection() {
                   <Button variant="outline" size="icon" asChild><Link href="https://orcid.org/0009-0003-0832-5539" target="_blank" rel="noopener noreferrer" aria-label="ORCID Profile"><Info /></Link></Button>
                   <Button variant="outline" size="icon" asChild><Link href="https://scholar.google.com/citations?user=oEaAQUQAAAAJ&hl=en" target="_blank" rel="noopener noreferrer" aria-label="Google Scholar Profile"><GraduationCap /></Link></Button>
                   <Button variant="outline" size="icon" asChild><Link href="https://www.researchgate.net/profile/Shariful-Haque-5?ev=hdr_xprf" target="_blank" rel="noopener noreferrer" aria-label="ResearchGate Profile"><FlaskConical /></Link></Button>
+                  <Button variant="outline" size="icon" asChild><Link href="https://www.semanticscholar.org/author/Shariful-Haque/2321960937" target="_blank" rel="noopener noreferrer" aria-label="Semantic Scholar Profile"><School /></Link></Button>
                 </div>
               </CardContent>
             </Card>
