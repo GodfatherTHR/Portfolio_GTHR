@@ -43,10 +43,10 @@ export default async function ContactSection() {
                 )}
                 <div className="flex flex-wrap gap-4 pt-4">
                   {owner?.github_url && <Button variant="outline" size="icon" asChild><Link href={owner.github_url} target="_blank" rel="noopener noreferrer" aria-label="GitHub Profile"><Github /></Link></Button>}
-                  {owner?.linkedin_url && <Button variant="outline" size="icon" asChild><Link href={owner.linkedin_url} target="_blank" rel="noopener noreferrer" aria-label="LinkedIn Profile"><Linkedin /></Link></Button>}
-                  <Button variant="outline" size="icon" asChild><Link href="https://orcid.org/your-orcid-id" target="_blank" rel="noopener noreferrer" aria-label="ORCID Profile"><Info /></Link></Button>
-                  <Button variant="outline" size="icon" asChild><Link href="https://scholar.google.com/citations?user=yourprofileid" target="_blank" rel="noopener noreferrer" aria-label="Google Scholar Profile"><GraduationCap /></Link></Button>
-                  <Button variant="outline" size="icon" asChild><Link href="https://www.researchgate.net/profile/Shariful_Haque" target="_blank" rel="noopener noreferrer" aria-label="ResearchGate Profile"><FlaskConical /></Link></Button>
+                  <Button variant="outline" size="icon" asChild><Link href="https://www.linkedin.com/in/shariful-haque-techy/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn Profile"><Linkedin /></Link></Button>
+                  <Button variant="outline" size="icon" asChild><Link href="https://orcid.org/0009-0003-0832-5539" target="_blank" rel="noopener noreferrer" aria-label="ORCID Profile"><Info /></Link></Button>
+                  <Button variant="outline" size="icon" asChild><Link href="https://scholar.google.com/citations?user=oEaAQUQAAAAJ&hl=en" target="_blank" rel="noopener noreferrer" aria-label="Google Scholar Profile"><GraduationCap /></Link></Button>
+                  <Button variant="outline" size="icon" asChild><Link href="https://www.researchgate.net/profile/Shariful-Haque-5?ev=hdr_xprf" target="_blank" rel="noopener noreferrer" aria-label="ResearchGate Profile"><FlaskConical /></Link></Button>
                 </div>
               </CardContent>
             </Card>
