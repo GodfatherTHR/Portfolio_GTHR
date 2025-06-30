@@ -39,13 +39,13 @@ export default async function AdminPage() {
 
   return (
     <div className="container mx-auto py-10">
-      <div className="flex justify-between items-center mb-10">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-10">
         <div>
           <h1 className="text-3xl font-bold">Admin Panel</h1>
           <p className="text-muted-foreground">Welcome back, {user.email}</p>
         </div>
-        <form action="/auth/signout" method="post">
-          <Button type="submit" variant="destructive">
+        <form action="/auth/signout" method="post" className="w-full md:w-auto">
+          <Button type="submit" variant="destructive" className="w-full md:w-auto">
             Sign Out
           </Button>
         </form>

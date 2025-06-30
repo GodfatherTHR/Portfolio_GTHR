@@ -48,7 +48,7 @@ export default async function AboutSection() {
             <h2 className="text-3xl md:text-4xl font-bold russo-one-regular">{aboutContent.title}</h2>
             <p className="text-lg text-muted-foreground">{aboutContent.description}</p>
             <h3 className="text-2xl font-bold russo-one-regular">{aboutContent.expertise_title}</h3>
-            <ul className="grid grid-cols-2 gap-x-6 gap-y-2 text-muted-foreground">
+            <ul className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-2 text-muted-foreground">
               {aboutContent.aboutexpertise.map((item: any) => (
                 <li key={item.id} className="flex items-center gap-2">
                   <ArrowRight className="w-4 h-4 text-primary flex-shrink-0" />
