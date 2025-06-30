@@ -18,6 +18,7 @@ const iconMap: { [key: string]: React.ReactNode } = {
 const projectImageMap: { [key: string]: string } = {
   'proj1': 'https://images.unsplash.com/photo-1743336751210-5205213290ca?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxJbnRlbGxpZ2VudCUyMEJsb2NrY2hhaW4lMjBFUlAlMjBNb2R1bGV8ZW58MHx8fHwxNzUxMTc4ODQwfDA&ixlib=rb-4.1.0&q=80&w=1080',
   'proj2': 'https://images.unsplash.com/photo-1716436329836-208bea5a55e6?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxuOG4lMjBhdXRvbWF0aW9ufGVufDB8fHx8MTc1MTI4NDMyNXww&ixlib=rb-4.1.0&q=80&w=1080',
+  'proj3': 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyMHx8RW50ZXJwcmlzZSUyMERhdGElMjBBbmFseXRpY3MlMjBEYXNoYm9hcmR8ZW58MHx8fHwxNzUxMjg0MzYzfDA&ixlib=rb-4.1.0&q=80&w=1080',
 };
 
 export default async function ProjectsSection() {
