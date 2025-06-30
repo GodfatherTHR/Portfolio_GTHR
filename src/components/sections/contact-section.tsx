@@ -2,7 +2,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
-import { Github, Linkedin, Send, Phone } from "lucide-react";
+import { Github, Linkedin, Send, Phone, FlaskConical, GraduationCap, Info } from "lucide-react";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 
@@ -41,9 +41,12 @@ export default async function ContactSection() {
                     </a>
                   </div>
                 )}
-                <div className="flex gap-4 pt-4">
-                  {owner?.github_url && <Button variant="outline" size="icon" asChild><Link href={owner.github_url} target="_blank"><Github /></Link></Button>}
-                  {owner?.linkedin_url && <Button variant="outline" size="icon" asChild><Link href={owner.linkedin_url} target="_blank"><Linkedin /></Link></Button>}
+                <div className="flex flex-wrap gap-4 pt-4">
+                  {owner?.github_url && <Button variant="outline" size="icon" asChild><Link href={owner.github_url} target="_blank" rel="noopener noreferrer" aria-label="GitHub Profile"><Github /></Link></Button>}
+                  {owner?.linkedin_url && <Button variant="outline" size="icon" asChild><Link href={owner.linkedin_url} target="_blank" rel="noopener noreferrer" aria-label="LinkedIn Profile"><Linkedin /></Link></Button>}
+                  <Button variant="outline" size="icon" asChild><Link href="https://orcid.org/your-orcid-id" target="_blank" rel="noopener noreferrer" aria-label="ORCID Profile"><Info /></Link></Button>
+                  <Button variant="outline" size="icon" asChild><Link href="https://scholar.google.com/citations?user=yourprofileid" target="_blank" rel="noopener noreferrer" aria-label="Google Scholar Profile"><GraduationCap /></Link></Button>
+                  <Button variant="outline" size="icon" asChild><Link href="https://www.researchgate.net/profile/Shariful_Haque" target="_blank" rel="noopener noreferrer" aria-label="ResearchGate Profile"><FlaskConical /></Link></Button>
                 </div>
               </CardContent>
             </Card>
