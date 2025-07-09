@@ -1,0 +1,253 @@
+'use server'
+
+import { createClient } from '@/lib/supabase/server'
+import { revalidatePath } from 'next/cache'
+import { z } from 'zod'
+
+const ownerSchema = z.object({
+  id: z.number(),
+  name: z.string().min(1, 'Name is required'),
+  email: z.string().email('Invalid email address'),
+  linkedin_url: z.string().url('Invalid LinkedIn URL'),
+  github_url: z.string().url('Invalid GitHub URL'),
+})
+
+export async function updateOwner(formData: FormData) {
+  const supabase = createClient()
+  const rawData = Object.fromEntries(formData)
+  
+  const parsed = ownerSchema.safeParse({
+      ...rawData,
+      id: parseInt(rawData.id as string)
+  })
+
+  if (!parsed.success) {
+    return { error: parsed.error.format() }
+  }
+  
+  const { error } = await supabase
+    .from('portfolioowner')
+    .update(parsed.data)
+    .eq('id', parsed.data.id)
+
+  if (error) {
+    return { error: { _server: [error.message] } }
+  }
+
+  revalidatePath('/admin')
+  revalidatePath('/')
+  return { data: 'Portfolio owner updated successfully.' }
+}
+
+
+const projectSchema = z.object({
+  id: z.coerce.number().optional(),
+  title: z.string().min(1),
+  category: z.string().min(1),
+  description: z.string().min(1),
+  button_link: z.string().url().optional().or(z.literal('')),
+  button_text: z.string().optional(),
+  icon: z.string().optional(),
+  json_id: z.string().optional(),
+})
+
+export async function upsertProject(formData: FormData) {
+  const supabase = createClient()
+  const rawData = Object.fromEntries(formData)
+  const parsed = projectSchema.safeParse(rawData)
+  
+  if (!parsed.success) {
+    return { error: parsed.error.format() }
+  }
+
+  const { id, ...data } = parsed.data
+  const { error } = await supabase.from('projects').upsert(id ? { id, ...data } : data)
+
+  if (error) {
+    return { error: { _server: [error.message] } }
+  }
+
+  revalidatePath('/admin')
+  revalidatePath('/#projects')
+  return { data: 'Project saved successfully.' }
+}
+
+export async function deleteProject(id: number) {
+    const supabase = createClient();
+    const { error } = await supabase.from('projects').delete().eq('id', id);
+
+    if (error) {
+        return { error: { _server: [error.message] } };
+    }
+    revalidatePath('/admin');
+    revalidatePath('/#projects');
+    return { data: 'Project deleted successfully.' };
+}
+
+
+const publicationSchema = z.object({
+  id: z.coerce.number().optional(),
+  title: z.string().min(1),
+  venue: z.string().min(1),
+  year: z.coerce.number().min(1900).max(2100),
+  link: z.string().url().optional().or(z.literal('')),
+  link_text: z.string().optional(),
+  type: z.string().optional(),
+  citation_count: z.coerce.number().optional(),
+});
+
+export async function upsertPublication(formData: FormData) {
+  const supabase = createClient();
+  const rawData = Object.fromEntries(formData);
+  const parsed = publicationSchema.safeParse(rawData);
+
+  if (!parsed.success) {
+    return { error: parsed.error.format() };
+  }
+  
+  const { id, ...data } = parsed.data;
+  const { error } = await supabase.from('publications').upsert(id ? { id, ...data } : data);
+
+  if (error) {
+    return { error: { _server: [error.message] } };
+  }
+
+  revalidatePath('/admin');
+  revalidatePath('/#research');
+  return { data: 'Publication saved successfully.' };
+}
+
+export async function deletePublication(id: number) {
+  const supabase = createClient();
+  const { error } = await supabase.from('publications').delete().eq('id', id);
+
+  if (error) {
+    return { error: { _server: [error.message] } };
+  }
+  revalidatePath('/admin');
+  revalidatePath('/#research');
+  return { data: 'Publication deleted successfully.' };
+}
+
+
+const experienceSchema = z.object({
+  id: z.coerce.number().optional(),
+  title: z.string().min(1),
+  company: z.string().min(1),
+  dates: z.string().min(1),
+});
+
+export async function upsertExperience(formData: FormData) {
+  const supabase = createClient();
+  const rawData = Object.fromEntries(formData);
+  const parsed = experienceSchema.safeParse(rawData);
+
+  if (!parsed.success) {
+    return { error: parsed.error.format() };
+  }
+  
+  const { id, ...data } = parsed.data;
+  const { error } = await supabase.from('professionalexperience').upsert(id ? { id, ...data } : data);
+
+  if (error) {
+    return { error: { _server: [error.message] } };
+  }
+
+  revalidatePath('/admin');
+  revalidatePath('/#resume');
+  return { data: 'Experience saved successfully.' };
+}
+
+export async function deleteExperience(id: number) {
+  const supabase = createClient();
+  const { error } = await supabase.from('professionalexperience').delete().eq('id', id);
+
+  if (error) {
+    return { error: { _server: [error.message] } };
+  }
+  revalidatePath('/admin');
+  revalidatePath('/#resume');
+  return { data: 'Experience deleted successfully.' };
+}
+
+const awardSchema = z.object({
+  id: z.coerce.number().optional(),
+  title: z.string().min(1),
+  organization: z.string().min(1),
+  year: z.coerce.number().min(1900).max(2100),
+  description: z.string().optional(),
+});
+
+export async function upsertAward(formData: FormData) {
+    const supabase = createClient();
+    const rawData = Object.fromEntries(formData);
+    const parsed = awardSchema.safeParse(rawData);
+
+    if (!parsed.success) {
+        return { error: parsed.error.format() };
+    }
+
+    const { id, ...data } = parsed.data;
+    const { error } = await supabase.from('awards').upsert(id ? { id, ...data } : data);
+
+    if (error) {
+        return { error: { _server: [error.message] } };
+    }
+
+    revalidatePath('/admin');
+    revalidatePath('/#awards');
+    return { data: 'Award saved successfully.' };
+}
+
+export async function deleteAward(id: number) {
+    const supabase = createClient();
+    const { error } = await supabase.from('awards').delete().eq('id', id);
+
+    if (error) {
+        return { error: { _server: [error.message] } };
+    }
+    revalidatePath('/admin');
+    revalidatePath('/#awards');
+    return { data: 'Award deleted successfully.' };
+}
+
+
+const skillSchema = z.object({
+  id: z.coerce.number().optional(),
+  skill_name: z.string().min(1),
+  skill_type: z.string().min(1),
+  resume_id: z.coerce.number().optional().default(1),
+});
+
+export async function upsertSkill(formData: FormData) {
+    const supabase = createClient();
+    const rawData = Object.fromEntries(formData);
+    const parsed = skillSchema.safeParse(rawData);
+    
+    if (!parsed.success) {
+        return { error: parsed.error.format() };
+    }
+
+    const { id, ...data } = parsed.data;
+    const { error } = await supabase.from('skills').upsert(id ? { id, ...data } : data);
+
+    if (error) {
+        return { error: { _server: [error.message] } };
+    }
+
+    revalidatePath('/admin');
+    revalidatePath('/#resume');
+    return { data: 'Skill saved successfully.' };
+}
+
+export async function deleteSkill(id: number) {
+    const supabase = createClient();
+    const { error } = await supabase.from('skills').delete().eq('id', id);
+
+    if (error) {
+        return { error: { _server: [error.message] } };
+    }
+    revalidatePath('/admin');
+    revalidatePath('/#resume');
+    return { data: 'Skill deleted successfully.' };
+}
