@@ -1,5 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
-import { CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
@@ -99,20 +99,22 @@ export default async function ResearchSection() {
               
               <div className="flex flex-wrap justify-center gap-4">
                 {researchProfiles.map((profile) => (
-                  <Button
-                    key={profile.id}
-                    asChild
-                    className="shadow-lg hover:scale-105 transition-transform"
-                    style={{ 
-                        backgroundColor: profile.bg_color || '#6B46C1', 
-                        color: profile.text_color || '#FFFFFF' 
-                    }}
-                  >
-                    <a href={profile.url} target="_blank" rel="noopener noreferrer">
-                      {iconMap[profile.icon] && <span className="mr-2">{iconMap[profile.icon]}</span>}
-                      {profile.name}
-                    </a>
-                  </Button>
+                    profile.url ? (
+                        <Button
+                            key={profile.id}
+                            asChild
+                            className="shadow-lg hover:scale-105 transition-transform"
+                            style={{ 
+                                backgroundColor: profile.bg_color || '#6B46C1', 
+                                color: profile.text_color || '#FFFFFF' 
+                            }}
+                        >
+                            <Link href={profile.url} target="_blank" rel="noopener noreferrer">
+                                {iconMap[profile.icon] && <span className="mr-2">{iconMap[profile.icon]}</span>}
+                                {profile.name}
+                            </Link>
+                        </Button>
+                    ) : null
                 ))}
               </div>
             </div>
