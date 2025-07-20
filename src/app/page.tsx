@@ -7,6 +7,7 @@ import AwardsSection from "@/components/sections/awards-section";
 import ResumeSection from "@/components/sections/resume-section";
 import ContactSection from "@/components/sections/contact-section";
 import ResearchProfilesSection from "@/components/sections/research-profiles-section";
+import Footer from "@/components/footer";
 
 export default function Home() {
   return (
@@ -22,6 +23,7 @@ export default function Home() {
         <ResumeSection />
         <ContactSection />
       </main>
+      <Footer />
     </div>
   );
 }
