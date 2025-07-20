@@ -110,10 +110,10 @@ export default async function ResearchSection() {
                       <Link href={profile.url} target="_blank" rel="noopener noreferrer">
                         {profile.icon && (
                           <span 
-                              className={`mr-2 p-1 rounded-full`}
+                              className="mr-2 flex items-center justify-center p-1 rounded-full"
                               style={{ backgroundColor: profile.bg_color || 'transparent', color: profile.text_color || 'inherit' }}
                           >
-                              {iconMap[profile.icon]}
+                              {iconMap[profile.icon] || null}
                           </span>
                         )}
                         {profile.name}
