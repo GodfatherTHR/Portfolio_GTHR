@@ -6,7 +6,16 @@ import Link from "next/link";
 import { Star, Terminal } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import GlareHover from "../animation/GlareHover";
-import ResearchProfileButtons from "./research-profile-buttons";
+import ResearchGateIcon from "../icons/researchgate-icon";
+import GoogleScholarIcon from "../icons/googlescholar-icon";
+import OrcidIcon from "../icons/orcid-icon";
+
+const iconMap: { [key: string]: React.ReactNode } = {
+  'researchgate': <ResearchGateIcon className="h-5 w-5" />,
+  'googlescholar': <GoogleScholarIcon className="h-5 w-5" />,
+  'orcid': <OrcidIcon className="h-5 w-5" />,
+};
+
 
 export default async function ResearchSection() {
   const supabase = createClient();
@@ -83,7 +92,30 @@ export default async function ResearchSection() {
         
         {researchProfiles && researchProfiles.length > 0 && (
           <div className="mt-16">
-             <ResearchProfileButtons profiles={researchProfiles} />
+            <div className="bg-muted p-8 rounded-lg max-w-2xl mx-auto">
+              <p className="text-muted-foreground text-center mb-6 text-lg">
+                For my complete research profile, please visit:
+              </p>
+              
+              <div className="flex flex-wrap justify-center gap-4">
+                {researchProfiles.map((profile) => (
+                  <Button
+                    key={profile.id}
+                    asChild
+                    className="shadow-lg hover:scale-105 transition-transform"
+                    style={{ 
+                        backgroundColor: profile.bg_color || '#6B46C1', 
+                        color: profile.text_color || '#FFFFFF' 
+                    }}
+                  >
+                    <a href={profile.url} target="_blank" rel="noopener noreferrer">
+                      {iconMap[profile.icon] && <span className="mr-2">{iconMap[profile.icon]}</span>}
+                      {profile.name}
+                    </a>
+                  </Button>
+                ))}
+              </div>
+            </div>
           </div>
         )}
       </div>
