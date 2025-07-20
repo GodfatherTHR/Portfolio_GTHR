@@ -104,23 +104,28 @@ export default async function ResearchSection() {
           <div className="mt-16 text-center">
             <p className="text-muted-foreground mb-4">For my complete research profile, please visit:</p>
             <div className="flex justify-center items-center flex-wrap gap-4">
-              {researchProfiles.map(profile => (
-                  profile.url && (
+              {researchProfiles.map(profile => {
+                  if (!profile.url) return null;
+                  
+                  return (
                     <Button key={profile.id} asChild variant="secondary" className="shadow-lg">
                       <Link href={profile.url} target="_blank" rel="noopener noreferrer">
                         {profile.icon && (
                           <span 
                               className="mr-2 flex items-center justify-center p-1 rounded-full"
-                              style={{ backgroundColor: profile.bg_color || 'transparent', color: profile.text_color || 'inherit' }}
+                              style={{ 
+                                backgroundColor: profile.bg_color || 'transparent', 
+                                color: profile.text_color || 'inherit' 
+                              }}
                           >
-                              {iconMap[profile.icon] || null}
+                            {iconMap[profile.icon]}
                           </span>
                         )}
                         {profile.name}
                       </Link>
                     </Button>
-                  )
-              ))}
+                  );
+              })}
             </div>
           </div>
         )}
