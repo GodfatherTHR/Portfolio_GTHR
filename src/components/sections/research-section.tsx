@@ -23,7 +23,6 @@ export default async function ResearchSection() {
     .from("publications")
     .select("*, publicationtags(*, tags(*))")
     .order("year", { ascending: false });
-  const { data: researchProfiles } = await supabase.from("researchprofiles").select().order('id');
 
   const hasContent = !error && publications && publications.length > 0;
   
@@ -87,37 +86,6 @@ export default async function ResearchSection() {
                 </CardFooter>
               </GlareHover>
             ))}
-          </div>
-        )}
-        
-        {researchProfiles && researchProfiles.length > 0 && (
-          <div className="mt-16">
-            <div className="bg-muted p-8 rounded-lg max-w-2xl mx-auto">
-              <p className="text-muted-foreground text-center mb-6 text-lg">
-                For my complete research profile, please visit:
-              </p>
-              
-              <div className="flex flex-wrap justify-center gap-4">
-                {researchProfiles.map((profile) => (
-                    profile.url ? (
-                        <Button
-                            key={profile.id}
-                            asChild
-                            className="shadow-lg hover:scale-105 transition-transform"
-                            style={{ 
-                                backgroundColor: profile.bg_color || '#6B46C1', 
-                                color: profile.text_color || '#FFFFFF' 
-                            }}
-                        >
-                            <Link href={profile.url} target="_blank" rel="noopener noreferrer">
-                                {iconMap[profile.icon] && <span className="mr-2">{iconMap[profile.icon]}</span>}
-                                {profile.name}
-                            </Link>
-                        </Button>
-                    ) : null
-                ))}
-              </div>
-            </div>
           </div>
         )}
       </div>
