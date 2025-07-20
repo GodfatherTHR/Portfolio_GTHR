@@ -3,7 +3,7 @@ import { CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { Star, Terminal, GraduationCap, Info } from "lucide-react";
+import { Star, Terminal, GraduationCap } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import GlareHover from "../animation/GlareHover";
 
@@ -21,40 +21,22 @@ const OrcidIcon = () => (
     </svg>
 );
 
+const iconMap: { [key: string]: React.ReactNode } = {
+  researchgate: <ResearchGateIcon />,
+  googlescholar: <GraduationCap className="w-5 h-5"/>,
+  orcid: <OrcidIcon />,
+};
+
 export default async function ResearchSection() {
   const supabase = createClient();
   const { data: publications, error } = await supabase
     .from("publications")
     .select("*, publicationtags(*, tags(*))")
     .order("year", { ascending: false });
-  const { data: owner } = await supabase.from("portfolioowner").select().single();
+  const { data: researchProfiles } = await supabase.from("researchprofiles").select().order('id');
 
   const hasContent = !error && publications && publications.length > 0;
   
-  const researchLinks = [
-    { 
-      href: owner?.researchgate_url, 
-      label: 'ResearchGate', 
-      icon: <ResearchGateIcon />, 
-      bgColor: 'bg-[#00CCBB]', 
-      textColor: 'text-white' 
-    },
-    { 
-      href: owner?.googlescholar_url, 
-      label: 'Google Scholar', 
-      icon: <GraduationCap className="w-5 h-5"/>, 
-      bgColor: 'bg-[#4285F4]', 
-      textColor: 'text-white' 
-    },
-    { 
-      href: owner?.orcid_url, 
-      label: 'ORCID', 
-      icon: <OrcidIcon />, 
-      bgColor: 'bg-[#A6CE39]', 
-      textColor: 'text-black' 
-    }
-  ].filter(link => link.href);
-
   return (
     <section id="research" className="py-16 md:py-24 bg-secondary">
       <div className="container">
@@ -118,19 +100,26 @@ export default async function ResearchSection() {
           </div>
         )}
         
-        {researchLinks.length > 0 && (
+        {researchProfiles && researchProfiles.length > 0 && (
           <div className="mt-16 text-center">
             <p className="text-muted-foreground mb-4">For my complete research profile, please visit:</p>
             <div className="flex justify-center items-center flex-wrap gap-4">
-              {researchLinks.map(link => (
-                  <Button key={link.label} asChild variant="secondary" className="shadow-lg">
-                    <Link href={link.href!} target="_blank" rel="noopener noreferrer">
-                      <span className={`mr-2 p-1 rounded-full ${link.bgColor} ${link.textColor}`}>
-                        {link.icon}
-                      </span>
-                      {link.label}
-                    </Link>
-                  </Button>
+              {researchProfiles.map(profile => (
+                  profile.url && (
+                    <Button key={profile.id} asChild variant="secondary" className="shadow-lg">
+                      <Link href={profile.url} target="_blank" rel="noopener noreferrer">
+                        {profile.icon && (
+                          <span 
+                              className={`mr-2 p-1 rounded-full`}
+                              style={{ backgroundColor: profile.bg_color || 'transparent', color: profile.text_color || 'inherit' }}
+                          >
+                              {iconMap[profile.icon]}
+                          </span>
+                        )}
+                        {profile.name}
+                      </Link>
+                    </Button>
+                  )
               ))}
             </div>
           </div>

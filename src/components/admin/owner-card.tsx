@@ -64,9 +64,6 @@ export default function OwnerCard({ owner }: { owner: any }) {
             <p><strong>Email:</strong> {owner.email}</p>
             <p><strong>LinkedIn:</strong> <a href={owner.linkedin_url} className="text-primary hover:underline">{owner.linkedin_url}</a></p>
             <p><strong>GitHub:</strong> <a href={owner.github_url} className="text-primary hover:underline">{owner.github_url}</a></p>
-            <p><strong>ResearchGate URL:</strong> <a href={owner.researchgate_url} className="text-primary hover:underline">{owner.researchgate_url}</a></p>
-            <p><strong>Google Scholar URL:</strong> <a href={owner.googlescholar_url} className="text-primary hover:underline">{owner.googlescholar_url}</a></p>
-            <p><strong>ORCID URL:</strong> <a href={owner.orcid_url} className="text-primary hover:underline">{owner.orcid_url}</a></p>
           </div>
         ) : (
           <p>No owner data found.</p>
@@ -98,18 +95,6 @@ export default function OwnerCard({ owner }: { owner: any }) {
               <div className="grid gap-2">
                 <Label htmlFor="github_url">GitHub URL</Label>
                 <Input id="github_url" name="github_url" type="url" defaultValue={owner?.github_url} />
-              </div>
-               <div className="grid gap-2">
-                <Label htmlFor="researchgate_url">ResearchGate URL</Label>
-                <Input id="researchgate_url" name="researchgate_url" type="url" defaultValue={owner?.researchgate_url} />
-              </div>
-              <div className="grid gap-2">
-                <Label htmlFor="googlescholar_url">Google Scholar URL</Label>
-                <Input id="googlescholar_url" name="googlescholar_url" type="url" defaultValue={owner?.googlescholar_url} />
-              </div>
-              <div className="grid gap-2">
-                <Label htmlFor="orcid_url">ORCID URL</Label>
-                <Input id="orcid_url" name="orcid_url" type="url" defaultValue={owner?.orcid_url} />
               </div>
               <DialogFooter className="sticky bottom-0 bg-background pt-4">
                 <DialogClose asChild>

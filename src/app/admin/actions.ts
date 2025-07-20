@@ -10,9 +10,6 @@ const ownerSchema = z.object({
   email: z.string().email('Invalid email address'),
   linkedin_url: z.string().url('Invalid LinkedIn URL').optional().or(z.literal('')),
   github_url: z.string().url('Invalid GitHub URL').optional().or(z.literal('')),
-  researchgate_url: z.string().url().optional().or(z.literal('')),
-  googlescholar_url: z.string().url().optional().or(z.literal('')),
-  orcid_url: z.string().url().optional().or(z.literal('')),
 })
 
 export async function updateOwner(formData: FormData) {
@@ -286,4 +283,46 @@ export async function updateContactInfo(formData: FormData) {
   revalidatePath('/admin')
   revalidatePath('/#contact')
   return { data: 'Contact info updated successfully.' }
+}
+
+const researchProfileSchema = z.object({
+  id: z.coerce.number().optional(),
+  name: z.string().min(1),
+  url: z.string().url(),
+  icon: z.string().min(1),
+  bg_color: z.string().optional(),
+  text_color: z.string().optional(),
+});
+
+export async function upsertResearchProfile(formData: FormData) {
+  const supabase = createClient();
+  const rawData = Object.fromEntries(formData);
+  const parsed = researchProfileSchema.safeParse(rawData);
+
+  if (!parsed.success) {
+    return { error: parsed.error.format() };
+  }
+
+  const { id, ...data } = parsed.data;
+  const { error } = await supabase.from('researchprofiles').upsert(id ? { id, ...data } : data);
+
+  if (error) {
+    return { error: { _server: [error.message] } };
+  }
+
+  revalidatePath('/admin');
+  revalidatePath('/#research');
+  return { data: 'Research profile saved successfully.' };
+}
+
+export async function deleteResearchProfile(id: number) {
+  const supabase = createClient();
+  const { error } = await supabase.from('researchprofiles').delete().eq('id', id);
+
+  if (error) {
+    return { error: { _server: [error.message] } };
+  }
+  revalidatePath('/admin');
+  revalidatePath('/#research');
+  return { data: 'Research profile deleted successfully.' };
 }

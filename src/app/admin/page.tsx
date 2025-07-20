@@ -9,6 +9,7 @@ import ExperienceCard from "@/components/admin/experience-card";
 import AwardsCard from "@/components/admin/awards-card";
 import SkillsCard from "@/components/admin/skills-card";
 import ContactInfoCard from "@/components/admin/contact-info-card";
+import ResearchProfilesCard from "@/components/admin/research-profiles-card";
 
 export default async function AdminPage() {
   const supabase = createClient();
@@ -28,6 +29,7 @@ export default async function AdminPage() {
   const { data: publications } = await supabase.from("publications").select();
   const { data: awards } = await supabase.from("awards").select();
   const { data: contactInfo } = await supabase.from("contactinfo").select().single();
+  const { data: researchProfiles } = await supabase.from("researchprofiles").select();
 
 
   return (
@@ -49,6 +51,7 @@ export default async function AdminPage() {
         <ContactInfoCard contactInfo={contactInfo} />
         <ProjectsCard projects={projects || []} />
         <PublicationsCard publications={publications || []} />
+        <ResearchProfilesCard researchProfiles={researchProfiles || []} />
         <ExperienceCard experiences={experiences || []} />
         <AwardsCard awards={awards || []} />
         <SkillsCard skills={skills || []} />
