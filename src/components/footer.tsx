@@ -1,20 +1,43 @@
-'use client';
+import { createClient } from "@/lib/supabase/server";
+import Link from "next/link";
+import { Linkedin } from "lucide-react";
+import ResearchGateIcon from "./icons/researchgate-icon";
+import GoogleScholarIcon from "./icons/googlescholar-icon";
+import OrcidIcon from "./icons/orcid-icon";
 
-import React, { useEffect, useState } from 'react';
+const iconMap: { [key: string]: React.ReactNode } = {
+  'linkedin': <Linkedin className="h-6 w-6" />,
+  'researchgate': <ResearchGateIcon className="h-6 w-6" />,
+  'googlescholar': <GoogleScholarIcon className="h-6 w-6" />,
+  'orcid': <OrcidIcon className="h-6 w-6" />,
+};
 
-export default function Footer() {
-  const [currentYear, setCurrentYear] = useState('');
+export default async function Footer() {
+  const supabase = createClient();
+  const { data: owner } = await supabase.from("portfolioowner").select("name, linkedin_url").single();
+  const { data: profiles } = await supabase.from("researchprofiles").select("name, icon, link");
 
-  useEffect(() => {
-    setCurrentYear(new Date().getFullYear().toString());
-  }, []);
+  const socialLinks = [];
+  if (owner?.linkedin_url) {
+    socialLinks.push({ name: 'LinkedIn', icon: 'linkedin', link: owner.linkedin_url });
+  }
+
+  const allLinks = [...socialLinks, ...(profiles || [])];
 
   return (
-    <footer className="border-t py-6 md:px-8 md:py-0">
-      <div className="container flex flex-col items-center justify-center gap-4 md:h-24 md:flex-row">
-        <p className="text-balance text-center text-sm leading-loose text-muted-foreground">
-          © {currentYear} Shariful Haque. All rights reserved.
-        </p>
+    <footer className="bg-secondary text-secondary-foreground py-6">
+      <div className="container flex flex-col md:flex-row items-center justify-between text-center md:text-left">
+        <div className="text-sm text-muted-foreground mb-4 md:mb-0">
+          &copy; {new Date().getFullYear()} {owner?.name || 'Your Name'}. All Rights Reserved.
+        </div>
+        <div className="flex items-center space-x-4">
+          {allLinks.map(profile => (
+            <Link key={profile.name} href={profile.link || '#'} target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors">
+              {iconMap[profile.icon] || <span className="text-sm">{profile.name}</span>}
+              <span className="sr-only">{profile.name}</span>
+            </Link>
+          ))}
+        </div>
       </div>
     </footer>
   );

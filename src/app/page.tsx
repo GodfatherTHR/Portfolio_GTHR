@@ -1,5 +1,4 @@
 import Header from "@/components/header";
-import Footer from "@/components/footer";
 import HeroSection from "@/components/sections/hero-section";
 import AboutSection from "@/components/sections/about-section";
 import ResearchSection from "@/components/sections/research-section";
@@ -7,6 +6,8 @@ import ProjectsSection from "@/components/sections/projects-section";
 import AwardsSection from "@/components/sections/awards-section";
 import ResumeSection from "@/components/sections/resume-section";
 import ContactSection from "@/components/sections/contact-section";
+import ResearchProfilesSection from "@/components/sections/research-profiles-section";
+import Footer from "@/components/footer";
 
 export default function Home() {
   return (
@@ -16,6 +17,7 @@ export default function Home() {
         <HeroSection />
         <AboutSection />
         <ResearchSection />
+        <ResearchProfilesSection />
         <ProjectsSection />
         <AwardsSection />
         <ResumeSection />
