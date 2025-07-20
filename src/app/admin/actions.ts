@@ -251,3 +251,39 @@ export async function deleteSkill(id: number) {
     revalidatePath('/#resume');
     return { data: 'Skill deleted successfully.' };
 }
+
+const contactInfoSchema = z.object({
+  id: z.coerce.number(),
+  title: z.string().min(1),
+  description: z.string().min(1),
+  email: z.string().email().optional().or(z.literal('')),
+  phone: z.string().optional(),
+  researchgate_url: z.string().url().optional().or(z.literal('')),
+  googlescholar_url: z.string().url().optional().or(z.literal('')),
+  orcid_url: z.string().url().optional().or(z.literal('')),
+})
+
+export async function updateContactInfo(formData: FormData) {
+  const supabase = createClient()
+  const rawData = Object.fromEntries(formData)
+  
+  const parsed = contactInfoSchema.safeParse(rawData)
+
+  if (!parsed.success) {
+    return { error: parsed.error.format() }
+  }
+  
+  const { error } = await supabase
+    .from('contactinfo')
+    .update(parsed.data)
+    .eq('id', parsed.data.id)
+
+  if (error) {
+    return { error: { _server: [error.message] } }
+  }
+
+  revalidatePath('/admin')
+  revalidatePath('/#contact')
+  revalidatePath('/#research')
+  return { data: 'Contact info updated successfully.' }
+}

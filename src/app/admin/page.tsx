@@ -8,6 +8,7 @@ import PublicationsCard from "@/components/admin/publications-card";
 import ExperienceCard from "@/components/admin/experience-card";
 import AwardsCard from "@/components/admin/awards-card";
 import SkillsCard from "@/components/admin/skills-card";
+import ContactInfoCard from "@/components/admin/contact-info-card";
 
 export default async function AdminPage() {
   const supabase = createClient();
@@ -26,6 +27,7 @@ export default async function AdminPage() {
   const { data: skills } = await supabase.from("skills").select();
   const { data: publications } = await supabase.from("publications").select();
   const { data: awards } = await supabase.from("awards").select();
+  const { data: contactInfo } = await supabase.from("contactinfo").select().single();
 
 
   return (
@@ -44,6 +46,7 @@ export default async function AdminPage() {
 
       <div className="grid gap-10">
         <OwnerCard owner={owner} />
+        <ContactInfoCard contactInfo={contactInfo} />
         <ProjectsCard projects={projects || []} />
         <PublicationsCard publications={publications || []} />
         <ExperienceCard experiences={experiences || []} />
