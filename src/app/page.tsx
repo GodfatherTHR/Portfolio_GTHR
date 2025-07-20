@@ -1,5 +1,4 @@
 import Header from "@/components/header";
-import Footer from "@/components/footer";
 import HeroSection from "@/components/sections/hero-section";
 import AboutSection from "@/components/sections/about-section";
 import ResearchSection from "@/components/sections/research-section";
@@ -23,7 +22,6 @@ export default function Home() {
         <ResumeSection />
         <ContactSection />
       </main>
-      <Footer />
     </div>
   );
 }
