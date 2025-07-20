@@ -8,8 +8,11 @@ const ownerSchema = z.object({
   id: z.number(),
   name: z.string().min(1, 'Name is required'),
   email: z.string().email('Invalid email address'),
-  linkedin_url: z.string().url('Invalid LinkedIn URL'),
-  github_url: z.string().url('Invalid GitHub URL'),
+  linkedin_url: z.string().url('Invalid LinkedIn URL').optional().or(z.literal('')),
+  github_url: z.string().url('Invalid GitHub URL').optional().or(z.literal('')),
+  researchgate_url: z.string().url().optional().or(z.literal('')),
+  googlescholar_url: z.string().url().optional().or(z.literal('')),
+  orcid_url: z.string().url().optional().or(z.literal('')),
 })
 
 export async function updateOwner(formData: FormData) {
@@ -36,6 +39,7 @@ export async function updateOwner(formData: FormData) {
 
   revalidatePath('/admin')
   revalidatePath('/')
+  revalidatePath('/#research')
   return { data: 'Portfolio owner updated successfully.' }
 }
 
@@ -258,9 +262,6 @@ const contactInfoSchema = z.object({
   description: z.string().min(1),
   email: z.string().email().optional().or(z.literal('')),
   phone: z.string().optional(),
-  researchgate_url: z.string().url().optional().or(z.literal('')),
-  googlescholar_url: z.string().url().optional().or(z.literal('')),
-  orcid_url: z.string().url().optional().or(z.literal('')),
 })
 
 export async function updateContactInfo(formData: FormData) {
@@ -284,6 +285,5 @@ export async function updateContactInfo(formData: FormData) {
 
   revalidatePath('/admin')
   revalidatePath('/#contact')
-  revalidatePath('/#research')
   return { data: 'Contact info updated successfully.' }
 }

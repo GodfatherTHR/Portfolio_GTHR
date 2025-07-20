@@ -27,27 +27,27 @@ export default async function ResearchSection() {
     .from("publications")
     .select("*, publicationtags(*, tags(*))")
     .order("year", { ascending: false });
-  const { data: contactInfo } = await supabase.from("contactinfo").select().single();
+  const { data: owner } = await supabase.from("portfolioowner").select().single();
 
   const hasContent = !error && publications && publications.length > 0;
   
   const researchLinks = [
     { 
-      href: contactInfo?.researchgate_url, 
+      href: owner?.researchgate_url, 
       label: 'ResearchGate', 
       icon: <ResearchGateIcon />, 
       bgColor: 'bg-[#00CCBB]', 
       textColor: 'text-white' 
     },
     { 
-      href: contactInfo?.googlescholar_url, 
+      href: owner?.googlescholar_url, 
       label: 'Google Scholar', 
       icon: <GraduationCap className="w-5 h-5"/>, 
       bgColor: 'bg-[#4285F4]', 
       textColor: 'text-white' 
     },
     { 
-      href: contactInfo?.orcid_url, 
+      href: owner?.orcid_url, 
       label: 'ORCID', 
       icon: <OrcidIcon />, 
       bgColor: 'bg-[#A6CE39]', 
