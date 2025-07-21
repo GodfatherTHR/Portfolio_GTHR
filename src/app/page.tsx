@@ -10,6 +10,7 @@ import ResearchProfilesSection from "@/components/sections/research-profiles-sec
 import Footer from "@/components/footer";
 import { createClient } from "@/lib/supabase/server";
 import type { Metadata } from 'next'
+import BlogSection from "@/components/sections/blog-section";
 
 export async function generateMetadata(): Promise<Metadata> {
   const supabase = createClient();
@@ -39,6 +40,7 @@ export default function Home() {
         <ResearchProfilesSection />
         <ProjectsSection />
         <AwardsSection />
+        <BlogSection />
         <ResumeSection />
         <ContactSection />
       </main>

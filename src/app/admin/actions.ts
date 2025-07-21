@@ -376,3 +376,60 @@ export async function deleteEducation(id: number) {
   revalidatePath('/#resume');
   return { data: 'Education deleted successfully.' };
 }
+
+const blogPostSchema = z.object({
+  id: z.string().uuid().optional(),
+  title: z.string().min(1, 'Title is required'),
+  slug: z.string().min(1, 'Slug is required').regex(/^[a-z0-9-]+$/, 'Slug can only contain lowercase letters, numbers, and hyphens'),
+  content: z.string().min(1, 'Content is required'),
+  excerpt: z.string().optional(),
+  author: z.string().min(1, 'Author is required'),
+  status: z.enum(['draft', 'published']),
+});
+
+export async function upsertBlogPost(formData: FormData) {
+  const supabase = createClient()
+  const rawData = Object.fromEntries(formData)
+
+  const parsed = blogPostSchema.safeParse(rawData);
+
+  if (!parsed.success) {
+    return { error: parsed.error.format() };
+  }
+
+  const { id, ...data } = parsed.data;
+
+  const dataToUpsert: any = { ...data };
+  if (data.status === 'published' && !id) { // Only set published_at on first publish
+    dataToUpsert.published_at = new Date().toISOString();
+  } else if (data.status === 'published' && id) {
+    const { data: existingPost } = await supabase.from('blog_posts').select('published_at').eq('id', id).single();
+    if (!existingPost?.published_at) {
+      dataToUpsert.published_at = new Date().toISOString();
+    }
+  }
+
+
+  const { error } = await supabase.from('blog_posts').upsert(id ? { id, ...dataToUpsert } : dataToUpsert);
+
+  if (error) {
+    return { error: { _server: [error.message] } };
+  }
+
+  revalidatePath('/admin');
+  revalidatePath('/blog');
+  revalidatePath(`/blog/${data.slug}`);
+  return { data: 'Blog post saved successfully.' };
+}
+
+export async function deleteBlogPost(id: string) {
+    const supabase = createClient();
+    const { error } = await supabase.from('blog_posts').delete().eq('id', id);
+
+    if (error) {
+        return { error: { _server: [error.message] } };
+    }
+    revalidatePath('/admin');
+    revalidatePath('/blog');
+    return { data: 'Blog post deleted successfully.' };
+}

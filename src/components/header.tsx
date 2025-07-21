@@ -23,6 +23,11 @@ export default async function Header() {
       label: item.text,
       is_button: item.is_button,
     })) || [];
+  
+  // Manually add blog link if not present
+  if (!navLinks.find(link => link.href === '/blog')) {
+    navLinks.push({ href: '/blog', label: 'Blog', is_button: false });
+  }
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
