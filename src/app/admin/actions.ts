@@ -136,6 +136,7 @@ const experienceSchema = z.object({
   title: z.string().min(1),
   company: z.string().min(1),
   dates: z.string().min(1),
+  description: z.string().optional(),
 });
 
 export async function upsertExperience(formData: FormData) {
@@ -148,7 +149,9 @@ export async function upsertExperience(formData: FormData) {
   }
   
   const { id, ...data } = parsed.data;
-  const { error } = await supabase.from('professionalexperience').upsert(id ? { id, ...data } : data);
+  const dataToUpsert = { ...data, resume_id: 1 };
+  
+  const { error } = await supabase.from('professionalexperience').upsert(id ? { id, ...dataToUpsert } : dataToUpsert);
 
   if (error) {
     return { error: { _server: [error.message] } };
@@ -177,6 +180,8 @@ const awardSchema = z.object({
   organization: z.string().min(1),
   year: z.coerce.number().min(1900).max(2100),
   description: z.string().optional(),
+  image_url: z.string().url().optional().or(z.literal('')),
+  url: z.string().url().optional().or(z.literal('')),
 });
 
 export async function upsertAward(formData: FormData) {
@@ -287,11 +292,9 @@ export async function updateContactInfo(formData: FormData) {
 
 const researchProfileSchema = z.object({
   id: z.coerce.number().optional(),
-  name: z.string().min(1),
-  url: z.string().url(),
-  icon: z.string().min(1),
-  bg_color: z.string().optional(),
-  text_color: z.string().optional(),
+  name: z.string().min(1, "Name is required"),
+  link: z.string().url("Must be a valid URL"),
+  icon: z.string().optional(),
 });
 
 export async function upsertResearchProfile(formData: FormData) {
@@ -311,7 +314,9 @@ export async function upsertResearchProfile(formData: FormData) {
   }
 
   revalidatePath('/admin');
+  revalidatePath('/#research-profiles');
   revalidatePath('/#research');
+  revalidatePath('/');
   return { data: 'Research profile saved successfully.' };
 }
 
@@ -323,6 +328,8 @@ export async function deleteResearchProfile(id: number) {
     return { error: { _server: [error.message] } };
   }
   revalidatePath('/admin');
+  revalidatePath('/#research-profiles');
   revalidatePath('/#research');
+  revalidatePath('/');
   return { data: 'Research profile deleted successfully.' };
 }

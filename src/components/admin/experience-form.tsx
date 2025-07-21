@@ -10,6 +10,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Textarea } from "../ui/textarea";
 
 export function ExperienceForm({
   isOpen,
@@ -28,7 +29,7 @@ export function ExperienceForm({
 
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="sm:max-w-lg">
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
         </DialogHeader>
@@ -45,6 +46,10 @@ export function ExperienceForm({
           <div className="grid gap-2">
             <Label htmlFor="dates">Dates (e.g., 2020 - Present)</Label>
             <Input id="dates" name="dates" defaultValue={experience?.dates} required />
+          </div>
+          <div className="grid gap-2">
+            <Label htmlFor="description">Description (Optional)</Label>
+            <Textarea id="description" name="description" defaultValue={experience?.description} />
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => onOpenChange(false)} type="button">Cancel</Button>

@@ -39,20 +39,12 @@ export function ResearchProfileForm({
             <Input id="name" name="name" defaultValue={profile?.name} required />
           </div>
           <div className="grid gap-2">
-            <Label htmlFor="url">URL</Label>
-            <Input id="url" name="url" type="url" defaultValue={profile?.url} required />
+            <Label htmlFor="link">URL</Label>
+            <Input id="link" name="link" type="url" defaultValue={profile?.link} required />
           </div>
           <div className="grid gap-2">
             <Label htmlFor="icon">Icon Key (e.g., researchgate, googlescholar, orcid)</Label>
-            <Input id="icon" name="icon" defaultValue={profile?.icon} required />
-          </div>
-          <div className="grid gap-2">
-            <Label htmlFor="bg_color">Icon BG Color (hex, e.g., #00CCBB)</Label>
-            <Input id="bg_color" name="bg_color" defaultValue={profile?.bg_color} />
-          </div>
-          <div className="grid gap-2">
-            <Label htmlFor="text_color">Icon Text Color (hex, e.g., #FFFFFF)</Label>
-            <Input id="text_color" name="text_color" defaultValue={profile?.text_color} />
+            <Input id="icon" name="icon" defaultValue={profile?.icon} />
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => onOpenChange(false)} type="button">Cancel</Button>

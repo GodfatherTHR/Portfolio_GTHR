@@ -29,7 +29,7 @@ export function AwardForm({
 
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="sm:max-w-lg">
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
         </DialogHeader>
@@ -50,6 +50,14 @@ export function AwardForm({
            <div className="grid gap-2">
             <Label htmlFor="description">Description (Optional)</Label>
             <Textarea id="description" name="description" defaultValue={award?.description} />
+          </div>
+          <div className="grid gap-2">
+            <Label htmlFor="image_url">Image URL (Optional)</Label>
+            <Input id="image_url" name="image_url" type="url" defaultValue={award?.image_url} />
+          </div>
+           <div className="grid gap-2">
+            <Label htmlFor="url">Link URL (Optional)</Label>
+            <Input id="url" name="url" type="url" defaultValue={award?.url} />
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => onOpenChange(false)} type="button">Cancel</Button>

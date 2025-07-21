@@ -10,6 +10,8 @@ import AwardsCard from "@/components/admin/awards-card";
 import SkillsCard from "@/components/admin/skills-card";
 import ContactInfoCard from "@/components/admin/contact-info-card";
 import ResearchProfilesCard from "@/components/admin/research-profiles-card";
+import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
+import { Terminal } from "lucide-react";
 
 export default async function AdminPage() {
   const supabase = createClient();
@@ -22,14 +24,53 @@ export default async function AdminPage() {
     return redirect("/login");
   }
 
-  const { data: owner } = await supabase.from("portfolioowner").select().single();
-  const { data: projects } = await supabase.from("projects").select();
-  const { data: experiences } = await supabase.from("professionalexperience").select();
-  const { data: skills } = await supabase.from("skills").select();
-  const { data: publications } = await supabase.from("publications").select();
-  const { data: awards } = await supabase.from("awards").select();
-  const { data: contactInfo } = await supabase.from("contactinfo").select().single();
-  const { data: researchProfiles } = await supabase.from("researchprofiles").select();
+  const [
+    ownerResult,
+    projectsResult,
+    experiencesResult,
+    skillsResult,
+    publicationsResult,
+    awardsResult,
+    contactInfoResult,
+    researchProfilesResult,
+  ] = await Promise.all([
+    supabase.from("portfolioowner").select().maybeSingle(),
+    supabase.from("projects").select(),
+    supabase.from("professionalexperience").select(),
+    supabase.from("skills").select(),
+    supabase.from("publications").select(),
+    supabase.from("awards").select(),
+    supabase.from("contactinfo").select().maybeSingle(),
+    supabase.from("researchprofiles").select(),
+  ]);
+
+  const owner = ownerResult.data;
+  const projects = projectsResult.data;
+  const experiences = experiencesResult.data;
+  const skills = skillsResult.data;
+  const publications = publicationsResult.data;
+  const awards = awardsResult.data;
+  const contactInfo = contactInfoResult.data;
+  const researchProfiles = researchProfilesResult.data;
+  
+  const anyError = ownerResult.error || projectsResult.error || experiencesResult.error || skillsResult.error || publicationsResult.error || awardsResult.error || contactInfoResult.error || researchProfilesResult.error;
+
+  if (anyError) {
+     return (
+       <div className="container mx-auto py-10">
+         <Alert variant="destructive">
+           <Terminal className="h-4 w-4" />
+           <AlertTitle>Error Fetching Admin Data</AlertTitle>
+           <AlertDescription>
+             <p>Could not fetch all necessary data for the admin panel. Please check the database connection and ensure all required tables exist and are accessible.</p>
+             <pre className="mt-2 whitespace-pre-wrap rounded-md bg-destructive/10 p-4 text-xs font-mono">
+               {anyError.message}
+             </pre>
+           </AlertDescription>
+         </Alert>
+       </div>
+     );
+  }
 
 
   return (
