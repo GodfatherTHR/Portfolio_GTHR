@@ -3,7 +3,10 @@ import './globals.css';
 import { Toaster } from "@/components/ui/toaster"
 
 export const metadata: Metadata = {
-  title: 'Shariful Haque | Portfolio',
+  title: {
+    template: '%s | Shariful Haque',
+    default: 'Shariful Haque | Portfolio',
+  },
   description: 'Personal portfolio of Shariful Haque, a passionate developer.',
 };
 
