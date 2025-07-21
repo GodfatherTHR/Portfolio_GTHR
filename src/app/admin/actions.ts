@@ -385,6 +385,7 @@ const blogPostSchema = z.object({
   excerpt: z.string().optional(),
   author: z.string().min(1, 'Author is required'),
   status: z.enum(['draft', 'published']),
+  image_url: z.string().url().optional().or(z.literal('')),
 });
 
 export async function upsertBlogPost(formData: FormData) {

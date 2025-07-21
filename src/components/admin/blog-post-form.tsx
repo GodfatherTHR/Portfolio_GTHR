@@ -75,6 +75,10 @@ export function BlogPostForm({
             <Input id="author" name="author" defaultValue={post?.author} required />
           </div>
           <div className="grid gap-2">
+            <Label htmlFor="image_url">Image URL (Optional)</Label>
+            <Input id="image_url" name="image_url" type="url" defaultValue={post?.image_url} />
+          </div>
+          <div className="grid gap-2">
             <Label htmlFor="excerpt">Excerpt (Short Summary)</Label>
             <Textarea id="excerpt" name="excerpt" defaultValue={post?.excerpt} />
           </div>

@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { Card, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { format } from 'date-fns'
+import Image from 'next/image'
 
 export const metadata = {
   title: 'Blog | Shariful Haque',
@@ -26,7 +27,17 @@ export default async function BlogIndexPage() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         {posts && posts.map((post) => (
-          <Card key={post.id} className="flex flex-col">
+          <Card key={post.id} className="flex flex-col overflow-hidden">
+             {post.image_url && (
+              <div className="relative h-48 w-full">
+                <Image
+                  src={post.image_url}
+                  alt={post.title}
+                  fill
+                  className="object-cover"
+                />
+              </div>
+            )}
             <CardHeader>
               <CardTitle>
                 <Link href={`/blog/${post.slug}`} className="hover:text-primary transition-colors">

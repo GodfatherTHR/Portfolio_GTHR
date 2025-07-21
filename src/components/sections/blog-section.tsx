@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { format } from 'date-fns';
+import Image from "next/image";
 
 export default async function BlogSection() {
   const supabase = createClient();
@@ -27,7 +28,17 @@ export default async function BlogSection() {
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {posts.map((post) => (
-            <Card key={post.id} className="flex flex-col">
+            <Card key={post.id} className="flex flex-col overflow-hidden">
+               {post.image_url && (
+                <div className="relative h-48 w-full">
+                  <Image
+                    src={post.image_url}
+                    alt={post.title}
+                    fill
+                    className="object-cover"
+                  />
+                </div>
+              )}
               <CardHeader>
                 <CardTitle>{post.title}</CardTitle>
                 <CardDescription>
