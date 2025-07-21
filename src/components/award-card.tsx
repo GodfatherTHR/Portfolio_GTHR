@@ -15,14 +15,14 @@ export default function AwardCard({ award }: { award: any }) {
   return (
     <Card className="flex flex-col overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300">
       {award.image_url && (
-        <div className="relative h-56 w-full">
+        <Link href={award.image_url} target="_blank" rel="noopener noreferrer" className="block relative h-56 w-full">
           <Image
             src={award.image_url}
             alt={award.title}
             fill
             className="object-cover"
           />
-        </div>
+        </Link>
       )}
       <CardHeader className="flex flex-row items-start gap-4">
         <div className="mt-1 flex-shrink-0">
