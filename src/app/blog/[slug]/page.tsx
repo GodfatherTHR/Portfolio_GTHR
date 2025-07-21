@@ -1,3 +1,4 @@
+import { createClient as createSupabaseClient } from '@supabase/supabase-js'
 import { createClient } from '@/lib/supabase/server'
 import { notFound } from 'next/navigation'
 import { Badge } from '@/components/ui/badge'
@@ -58,7 +59,10 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
 }
 
 export async function generateStaticParams() {
-  const supabase = createClient();
+  const supabase = createSupabaseClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  );
   const { data: posts } = await supabase.from('blog_posts').select('slug').eq('status', 'published');
   return posts || [];
 }
