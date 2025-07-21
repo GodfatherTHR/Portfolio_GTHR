@@ -2,13 +2,17 @@ import type {Metadata} from 'next';
 import './globals.css';
 import { Toaster } from "@/components/ui/toaster"
 
-export const metadata: Metadata = {
-  title: {
-    template: '%s | Shariful Haque',
-    default: 'Shariful Haque | Portfolio',
-  },
-  description: 'Personal portfolio of Shariful Haque, a passionate developer.',
-};
+export async function generateMetadata(): Promise<Metadata> {
+  // Note: This is now a placeholder as the dynamic metadata is generated in page.tsx
+  // We keep this structure in case you want to add global metadata later.
+  return {
+    title: {
+      template: '%s | Shariful Haque',
+      default: 'Shariful Haque | Portfolio',
+    },
+    description: 'Personal portfolio of Shariful Haque, a passionate developer.',
+  }
+}
 
 export default function RootLayout({
   children,
@@ -16,7 +20,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="!scroll-smooth">
+    <html lang="en" className="!scroll-smooth" suppressHydrationWarning={true}>
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
