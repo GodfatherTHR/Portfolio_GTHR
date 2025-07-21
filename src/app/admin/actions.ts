@@ -177,6 +177,8 @@ const awardSchema = z.object({
   organization: z.string().min(1),
   year: z.coerce.number().min(1900).max(2100),
   description: z.string().optional(),
+  image_url: z.string().url().optional().or(z.literal('')),
+  url: z.string().url().optional().or(z.literal('')),
 });
 
 export async function upsertAward(formData: FormData) {

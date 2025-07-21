@@ -1,7 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Award, Terminal } from "lucide-react";
+import { Terminal } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import AwardCard from "@/components/award-card";
 
 export default async function AwardsSection() {
   const supabase = createClient();
@@ -35,18 +35,7 @@ export default async function AwardsSection() {
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {awards.map((award: any) => (
-            <Card key={award.id}>
-              <CardHeader className="flex flex-row items-center gap-4">
-                <Award className="w-8 h-8 text-primary" />
-                <div>
-                  <CardTitle>{award.title}</CardTitle>
-                  <p className="text-sm text-muted-foreground">{award.organization}, {award.year}</p>
-                </div>
-              </CardHeader>
-              <CardContent>
-                <p>{award.description}</p>
-              </CardContent>
-            </Card>
+            <AwardCard key={award.id} award={award} />
           ))}
         </div>
       </div>
