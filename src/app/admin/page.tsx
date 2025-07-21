@@ -12,6 +12,7 @@ import ContactInfoCard from "@/components/admin/contact-info-card";
 import ResearchProfilesCard from "@/components/admin/research-profiles-card";
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
 import { Terminal } from "lucide-react";
+import EducationCard from "@/components/admin/education-card";
 
 export default async function AdminPage() {
   const supabase = createClient();
@@ -33,6 +34,7 @@ export default async function AdminPage() {
     awardsResult,
     contactInfoResult,
     researchProfilesResult,
+    educationResult,
   ] = await Promise.all([
     supabase.from("portfolioowner").select().maybeSingle(),
     supabase.from("projects").select(),
@@ -42,6 +44,7 @@ export default async function AdminPage() {
     supabase.from("awards").select(),
     supabase.from("contactinfo").select().maybeSingle(),
     supabase.from("researchprofiles").select(),
+    supabase.from("education").select(),
   ]);
 
   const owner = ownerResult.data;
@@ -52,8 +55,9 @@ export default async function AdminPage() {
   const awards = awardsResult.data;
   const contactInfo = contactInfoResult.data;
   const researchProfiles = researchProfilesResult.data;
+  const education = educationResult.data;
   
-  const anyError = ownerResult.error || projectsResult.error || experiencesResult.error || skillsResult.error || publicationsResult.error || awardsResult.error || contactInfoResult.error || researchProfilesResult.error;
+  const anyError = ownerResult.error || projectsResult.error || experiencesResult.error || skillsResult.error || publicationsResult.error || awardsResult.error || contactInfoResult.error || researchProfilesResult.error || educationResult.error;
 
   if (anyError) {
      return (
@@ -94,6 +98,7 @@ export default async function AdminPage() {
         <PublicationsCard publications={publications || []} />
         <ResearchProfilesCard researchProfiles={researchProfiles || []} />
         <ExperienceCard experiences={experiences || []} />
+        <EducationCard education={education || []} />
         <AwardsCard awards={awards || []} />
         <SkillsCard skills={skills || []} />
       </div>

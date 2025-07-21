@@ -333,3 +333,46 @@ export async function deleteResearchProfile(id: number) {
   revalidatePath('/');
   return { data: 'Research profile deleted successfully.' };
 }
+
+const educationSchema = z.object({
+  id: z.coerce.number().optional(),
+  degree: z.string().min(1, 'Degree is required'),
+  institution: z.string().min(1, 'Institution is required'),
+  dates: z.string().min(1, 'Dates are required'),
+  notes: z.string().optional(),
+});
+
+export async function upsertEducation(formData: FormData) {
+  const supabase = createClient();
+  const rawData = Object.fromEntries(formData);
+  const parsed = educationSchema.safeParse(rawData);
+
+  if (!parsed.success) {
+    return { error: parsed.error.format() };
+  }
+  
+  const { id, ...data } = parsed.data;
+  const dataToUpsert = { ...data, resume_id: 1 };
+  
+  const { error } = await supabase.from('education').upsert(id ? { id, ...dataToUpsert } : dataToUpsert);
+
+  if (error) {
+    return { error: { _server: [error.message] } };
+  }
+
+  revalidatePath('/admin');
+  revalidatePath('/#resume');
+  return { data: 'Education saved successfully.' };
+}
+
+export async function deleteEducation(id: number) {
+  const supabase = createClient();
+  const { error } = await supabase.from('education').delete().eq('id', id);
+
+  if (error) {
+    return { error: { _server: [error.message] } };
+  }
+  revalidatePath('/admin');
+  revalidatePath('/#resume');
+  return { data: 'Education deleted successfully.' };
+}
