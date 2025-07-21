@@ -149,7 +149,9 @@ export async function upsertExperience(formData: FormData) {
   }
   
   const { id, ...data } = parsed.data;
-  const { error } = await supabase.from('professionalexperience').upsert(id ? { id, ...data } : data);
+  const dataToUpsert = { ...data, resume_id: 1 };
+  
+  const { error } = await supabase.from('professionalexperience').upsert(id ? { id, ...dataToUpsert } : dataToUpsert);
 
   if (error) {
     return { error: { _server: [error.message] } };
