@@ -71,6 +71,7 @@ export default async function ResumeSection() {
                                         <CardDescription>{exp.company} | {exp.dates}</CardDescription>
                                     </CardHeader>
                                     <CardContent>
+                                        {exp.description && <p className="text-muted-foreground mb-4">{exp.description}</p>}
                                         <ul className="list-disc list-inside space-y-1 text-muted-foreground">
                                             {exp.experienceresponsibilities.map((resp: any) => (
                                                 <li key={resp.id}>{resp.responsibility}</li>

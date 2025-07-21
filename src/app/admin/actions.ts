@@ -136,6 +136,7 @@ const experienceSchema = z.object({
   title: z.string().min(1),
   company: z.string().min(1),
   dates: z.string().min(1),
+  description: z.string().optional(),
 });
 
 export async function upsertExperience(formData: FormData) {
