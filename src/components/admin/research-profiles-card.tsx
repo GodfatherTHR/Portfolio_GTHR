@@ -105,7 +105,7 @@ export default function ResearchProfilesCard({ researchProfiles }: { researchPro
               {researchProfiles.map((profile) => (
                 <TableRow key={profile.id}>
                   <TableCell className="font-medium">{profile.name}</TableCell>
-                  <TableCell>{profile.url}</TableCell>
+                  <TableCell>{profile.link}</TableCell>
                   <TableCell>{profile.icon}</TableCell>
                   <TableCell className="text-right space-x-2">
                     <Button variant="outline" size="sm" onClick={() => openFormForEdit(profile)}>
