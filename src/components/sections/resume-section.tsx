@@ -62,7 +62,7 @@ export default async function ResumeSection() {
                         <h3 className="text-2xl font-bold russo-one-regular mb-8 flex items-center gap-3"><Briefcase /> Professional Experience</h3>
                         <div className="space-y-8 relative pl-6 before:absolute before:inset-y-0 before:w-0.5 before:bg-border before:left-0">
                             {experiences.map((exp: any) => (
-                                <Card key={exp.id} className="relative">
+                                <Card key={exp.id} className="relative flex flex-col">
                                     <div className="absolute -left-[37px] top-1/2 -translate-y-1/2 p-2 bg-primary rounded-full">
                                       <Briefcase className="h-5 w-5 text-primary-foreground" />
                                     </div>
@@ -70,7 +70,7 @@ export default async function ResumeSection() {
                                         <CardTitle>{exp.title}</CardTitle>
                                         <CardDescription>{exp.company} | {exp.dates}</CardDescription>
                                     </CardHeader>
-                                    <CardContent>
+                                    <CardContent className="flex-grow">
                                         {exp.description && <p className="text-muted-foreground mb-4">{exp.description}</p>}
                                         <ul className="list-disc list-inside space-y-1 text-muted-foreground">
                                             {exp.experienceresponsibilities.map((resp: any) => (
@@ -86,7 +86,7 @@ export default async function ResumeSection() {
                         <h3 className="text-2xl font-bold russo-one-regular mb-8 flex items-center gap-3"><GraduationCap /> Education</h3>
                         <div className="space-y-8 relative pl-6 before:absolute before:inset-y-0 before:w-0.5 before:bg-border before:left-0">
                              {educations.map((edu: any) => (
-                                <Card key={edu.id} className="relative">
+                                <Card key={edu.id} className="relative flex flex-col">
                                      <div className="absolute -left-[37px] top-1/2 -translate-y-1/2 p-2 bg-primary rounded-full">
                                       <GraduationCap className="h-5 w-5 text-primary-foreground" />
                                     </div>
@@ -95,7 +95,7 @@ export default async function ResumeSection() {
                                         <CardDescription>{edu.institution} | {edu.dates}</CardDescription>
                                     </CardHeader>
                                     {edu.notes && (
-                                      <CardContent>
+                                      <CardContent className="flex-grow">
                                         <p className="text-sm text-muted-foreground">{edu.notes}</p>
                                       </CardContent>
                                     )}
