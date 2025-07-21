@@ -14,9 +14,13 @@ import type { Metadata } from 'next'
 export async function generateMetadata(): Promise<Metadata> {
   const supabase = createClient();
   const { data: heroContent } = await supabase.from("herocontent").select("title, description").single();
+  const { data: subtitles } = await supabase.from("herosubtitles").select("subtitle_text");
 
-  const title = heroContent?.title || 'Shariful Haque | Portfolio';
-  const description = heroContent?.description || 'Personal portfolio of Shariful Haque, a passionate developer.';
+  const title = heroContent?.title || 'Shariful Haque';
+  const subtitleText = (subtitles || []).map((s: any) => s.subtitle_text).join(' | ');
+  const mainDescription = heroContent?.description || "I'm a DBA student and data analytics expert pioneering blockchain and AI solutions for ERP systems and beyond.";
+  
+  const description = `${subtitleText}. ${mainDescription}`;
 
   return {
     title,
