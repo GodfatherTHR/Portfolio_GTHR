@@ -13,6 +13,7 @@ import ResearchProfilesCard from "@/components/admin/research-profiles-card";
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
 import { Terminal } from "lucide-react";
 import EducationCard from "@/components/admin/education-card";
+import BlogPostsCard from "@/components/admin/blog-posts-card";
 
 export default async function AdminPage() {
   const supabase = createClient();
@@ -35,6 +36,7 @@ export default async function AdminPage() {
     contactInfoResult,
     researchProfilesResult,
     educationResult,
+    blogPostsResult
   ] = await Promise.all([
     supabase.from("portfolioowner").select().maybeSingle(),
     supabase.from("projects").select(),
@@ -45,6 +47,7 @@ export default async function AdminPage() {
     supabase.from("contactinfo").select().maybeSingle(),
     supabase.from("researchprofiles").select(),
     supabase.from("education").select(),
+    supabase.from("blog_posts").select(),
   ]);
 
   const owner = ownerResult.data;
@@ -56,8 +59,9 @@ export default async function AdminPage() {
   const contactInfo = contactInfoResult.data;
   const researchProfiles = researchProfilesResult.data;
   const education = educationResult.data;
+  const blogPosts = blogPostsResult.data;
   
-  const anyError = ownerResult.error || projectsResult.error || experiencesResult.error || skillsResult.error || publicationsResult.error || awardsResult.error || contactInfoResult.error || researchProfilesResult.error || educationResult.error;
+  const anyError = ownerResult.error || projectsResult.error || experiencesResult.error || skillsResult.error || publicationsResult.error || awardsResult.error || contactInfoResult.error || researchProfilesResult.error || educationResult.error || blogPostsResult.error;
 
   if (anyError) {
      return (
@@ -101,6 +105,7 @@ export default async function AdminPage() {
         <EducationCard education={education || []} />
         <AwardsCard awards={awards || []} />
         <SkillsCard skills={skills || []} />
+        <BlogPostsCard blogPosts={blogPosts || []} />
       </div>
     </div>
   );
