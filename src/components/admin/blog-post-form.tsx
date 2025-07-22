@@ -18,7 +18,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Sparkles, Upload } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import Image from "next/image";
@@ -44,6 +44,18 @@ export function BlogPostForm({
   const [isConverting, setIsConverting] = useState(false);
   const [imagePreview, setImagePreview] = useState(post?.image_url || null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [imageUrl, setImageUrl] = useState(post?.image_url || '');
+
+  useEffect(() => {
+    if (post) {
+      setImagePreview(post.image_url);
+      setImageUrl(post.image_url || '');
+    } else {
+      setImagePreview(null);
+      setImageUrl('');
+    }
+  }, [post]);
+
 
   const slugify = (str: string) => {
     return str
@@ -95,16 +107,27 @@ export function BlogPostForm({
       const reader = new FileReader();
       reader.onloadend = () => {
         setImagePreview(reader.result as string);
+        setImageUrl(''); // Clear URL input when a file is chosen
       };
       reader.readAsDataURL(file);
     }
   };
+  
+  const handleUrlChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      const url = e.target.value;
+      setImageUrl(url);
+      setImagePreview(url);
+      if (fileInputRef.current) {
+          fileInputRef.current.value = ''; // Clear file input
+      }
+  }
 
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => {
         if (!open) {
             setImagePreview(post?.image_url || null);
+            setImageUrl(post?.image_url || '');
         }
         onOpenChange(open);
     }}>
@@ -114,7 +137,7 @@ export function BlogPostForm({
         </DialogHeader>
         <form action={onSave} className="space-y-4 flex-grow overflow-y-auto pr-6">
           {post && <input type="hidden" name="id" defaultValue={post.id} />}
-           <input type="hidden" name="image_url" defaultValue={post?.image_url || ''} />
+          
           <div className="grid gap-2">
             <Label htmlFor="title">Title</Label>
             <Input 
@@ -137,27 +160,45 @@ export function BlogPostForm({
             <Input id="author" name="author" defaultValue={post?.author} required />
           </div>
           
-          <div className="grid gap-2">
-            <Label>Featured Image</Label>
-            <div className="flex items-center gap-4">
-              {imagePreview && (
-                 <Image src={imagePreview} alt="Image preview" width={80} height={80} className="rounded-md object-cover" />
+          <div className="space-y-4 rounded-md border p-4">
+            <h3 className="text-sm font-medium">Featured Image</h3>
+             {imagePreview && (
+                 <Image src={imagePreview} alt="Image preview" width={120} height={80} className="rounded-md object-cover" />
               )}
-               <Button type="button" variant="outline" onClick={() => fileInputRef.current?.click()}>
-                <Upload className="mr-2 h-4 w-4" />
-                {imagePreview ? 'Change Image' : 'Upload Image'}
-              </Button>
+            <div className="grid gap-2">
+                <Label htmlFor="image_url">Image URL</Label>
+                <Input 
+                    id="image_url" 
+                    name="image_url" 
+                    type="url" 
+                    placeholder="https://example.com/image.png"
+                    value={imageUrl}
+                    onChange={handleUrlChange}
+                />
             </div>
-            <Input 
-              id="image" 
-              name="image" 
-              type="file" 
-              className="hidden" 
-              ref={fileInputRef} 
-              onChange={handleImageChange}
-              accept="image/*"
-            />
+            <div className="grid gap-2">
+                <Label htmlFor="image">Or Upload an Image</Label>
+                <div className="flex items-center gap-4">
+                   <Button type="button" variant="outline" onClick={() => fileInputRef.current?.click()}>
+                    <Upload className="mr-2 h-4 w-4" />
+                    Choose File
+                  </Button>
+                  <span className="text-sm text-muted-foreground">
+                    {fileInputRef.current?.files?.[0]?.name || "No file chosen"}
+                  </span>
+                </div>
+                <Input 
+                  id="image" 
+                  name="image" 
+                  type="file" 
+                  className="hidden" 
+                  ref={fileInputRef} 
+                  onChange={handleImageChange}
+                  accept="image/*"
+                />
+            </div>
           </div>
+
 
           <div className="grid gap-2">
             <Label htmlFor="excerpt">Excerpt (Short Summary)</Label>
@@ -197,3 +238,5 @@ export function BlogPostForm({
     </Dialog>
   );
 }
+
+    
