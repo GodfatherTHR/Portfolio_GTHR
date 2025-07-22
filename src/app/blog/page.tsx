@@ -4,6 +4,7 @@ import { Card, CardHeader, CardTitle, CardDescription, CardFooter } from '@/comp
 import { Button } from '@/components/ui/button'
 import { format } from 'date-fns'
 import Image from 'next/image'
+import { ArrowLeft } from 'lucide-react'
 
 export const metadata = {
   title: 'Blog | Shariful Haque',
@@ -20,6 +21,14 @@ export default async function BlogIndexPage() {
 
   return (
     <div className="container mx-auto py-12 md:py-20">
+      <div className="mb-8">
+          <Button asChild variant="outline">
+            <Link href="/">
+              <ArrowLeft className="mr-2 h-4 w-4" />
+              Back to Homepage
+            </Link>
+          </Button>
+        </div>
       <header className="text-center mb-12">
         <h1 className="text-4xl md:text-5xl font-extrabold russo-one-regular">Blog</h1>
         <p className="text-lg text-muted-foreground mt-2">My latest articles and insights.</p>
