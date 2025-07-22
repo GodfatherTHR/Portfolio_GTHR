@@ -407,8 +407,20 @@ export async function upsertBlogPost(formData: FormData) {
   let imageUrl = data.image_url;
 
   if (image && image.size > 0) {
+    const cookieStore = cookies()
+    const supabase = createServerClient(
+        process.env.NEXT_PUBLIC_SUPABASE_URL!,
+        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+        {
+            cookies: {
+              get(name: string) {
+                return cookieStore.get(name)?.value
+              },
+            },
+        }
+    )
     const fileName = `${randomUUID()}-${image.name}`;
-    const { data: uploadData, error: uploadError } = await supabase
+    const { error: uploadError } = await supabase
       .storage
       .from('sh-storage')
       .upload(fileName, image);
@@ -464,15 +476,15 @@ const messageSchema = z.object({
 export async function saveMessage(formData: FormData) {
   const cookieStore = cookies()
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+  const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
-  if (!supabaseUrl || !supabaseAnonKey) {
+  if (!supabaseUrl || !supabaseServiceKey) {
       throw new Error("Your project's URL and Key are required to create a Supabase client! Check your Supabase project's API settings to find these values");
   }
 
   const supabase = createServerClient(
       supabaseUrl,
-      supabaseAnonKey,
+      supabaseServiceKey,
       {
         cookies: {
           get(name: string) {
@@ -526,3 +538,5 @@ export async function markMessageAsRead(id: number) {
   revalidatePath('/admin/messages')
   return { data: 'Message marked as read.' }
 }
+
+    
