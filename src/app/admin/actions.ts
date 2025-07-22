@@ -3,6 +3,11 @@
 import { createClient } from '@/lib/supabase/server'
 import { revalidatePath } from 'next/cache'
 import { z } from 'zod'
+import { createServerClient as createServerClientSSR } from '@supabase/ssr'
+import type { CookieOptions } from '@supabase/ssr'
+import { cookies } from 'next/headers'
+import { randomUUID } from 'crypto'
+import { createClient as createAdminClient } from '@supabase/supabase-js'
 
 const ownerSchema = z.object({
   id: z.number(),
@@ -389,8 +394,8 @@ const blogPostSchema = z.object({
 });
 
 export async function upsertBlogPost(formData: FormData) {
-  const supabase = createClient()
-  const rawData = Object.fromEntries(formData)
+  const supabase = createClient();
+  const rawData = Object.fromEntries(formData);
 
   const parsed = blogPostSchema.safeParse(rawData);
 
@@ -399,9 +404,9 @@ export async function upsertBlogPost(formData: FormData) {
   }
 
   const { id, ...data } = parsed.data;
-
+  
   const dataToUpsert: any = { ...data };
-  if (data.status === 'published' && !id) { // Only set published_at on first publish
+  if (data.status === 'published' && !id) { 
     dataToUpsert.published_at = new Date().toISOString();
   } else if (data.status === 'published' && id) {
     const { data: existingPost } = await supabase.from('blog_posts').select('published_at').eq('id', id).single();
@@ -411,7 +416,8 @@ export async function upsertBlogPost(formData: FormData) {
   }
 
 
-  const { error } = await supabase.from('blog_posts').upsert(id ? { id, ...dataToUpsert } : dataToUpsert);
+  const { error } = await supabase.from('blog_posts').upsert(id ? { id, ...dataToUpsert } : { ...dataToUpsert, id: randomUUID() });
+
 
   if (error) {
     return { error: { _server: [error.message] } };
@@ -423,6 +429,7 @@ export async function upsertBlogPost(formData: FormData) {
   return { data: 'Blog post saved successfully.' };
 }
 
+
 export async function deleteBlogPost(id: string) {
     const supabase = createClient();
     const { error } = await supabase.from('blog_posts').delete().eq('id', id);
@@ -433,4 +440,58 @@ export async function deleteBlogPost(id: string) {
     revalidatePath('/admin');
     revalidatePath('/blog');
     return { data: 'Blog post deleted successfully.' };
+}
+
+const messageSchema = z.object({
+  name: z.string().min(1, 'Name is required'),
+  email: z.string().email('Invalid email format'),
+  message: z.string().min(1, 'Message is required'),
+})
+
+export async function saveMessage(formData: FormData) {
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+
+  if (!supabaseUrl || !supabaseServiceKey) {
+      throw new Error("Your project's URL and Key are required to create a Supabase client! Check your Supabase project's API settings to find these values");
+  }
+
+  const supabase = createAdminClient(supabaseUrl, supabaseServiceKey);
+
+  const rawData = Object.fromEntries(formData)
+  const parsed = messageSchema.safeParse(rawData)
+
+  if (!parsed.success) {
+    return { error: parsed.error.format() }
+  }
+  
+  const dataToInsert = {
+    ...parsed.data,
+  };
+
+  const { error } = await supabase.from('messages').insert(dataToInsert);
+
+  if (error) {
+    return { error: { _server: [error.message] } }
+  }
+
+  revalidatePath('/admin')
+  revalidatePath('/admin/messages')
+  return { data: 'Message sent successfully!' }
+}
+
+export async function markMessageAsRead(id: number) {
+  const supabase = createClient()
+  const { error } = await supabase
+    .from('messages')
+    .update({ is_read: true })
+    .eq('id', id)
+
+  if (error) {
+    return { error: { _server: [error.message] } }
+  }
+
+  revalidatePath('/admin')
+  revalidatePath('/admin/messages')
+  return { data: 'Message marked as read.' }
 }

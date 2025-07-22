@@ -4,6 +4,9 @@ import { notFound } from 'next/navigation'
 import { Badge } from '@/components/ui/badge'
 import { format } from 'date-fns'
 import Image from 'next/image'
+import { Button } from '@/components/ui/button'
+import Link from 'next/link'
+import { ArrowLeft } from 'lucide-react'
 
 export async function generateMetadata({ params }: { params: { slug: string } }) {
   const supabase = createClient();
@@ -43,6 +46,15 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
 
   return (
     <article className="container max-w-4xl mx-auto py-12 md:py-20">
+      <div className="mb-8">
+        <Button asChild variant="outline">
+          <Link href="/">
+            <ArrowLeft className="mr-2 h-4 w-4" />
+            Back to Homepage
+          </Link>
+        </Button>
+      </div>
+
       <header className="mb-8">
         <h1 className="text-4xl md:text-5xl font-extrabold russo-one-regular mb-4 text-center">{post.title}</h1>
         <div className="text-muted-foreground text-sm text-center">

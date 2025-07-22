@@ -18,9 +18,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Sparkles } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import Image from "next/image";
 
 
 export function BlogPostForm({
@@ -41,6 +42,12 @@ export function BlogPostForm({
   const contentRef = useRef<HTMLTextAreaElement>(null);
   const { toast } = useToast();
   const [isConverting, setIsConverting] = useState(false);
+  const [imagePreview, setImagePreview] = useState(post?.image_url || null);
+  
+  useEffect(() => {
+    setImagePreview(post?.image_url || null);
+  }, [post]);
+
 
   const slugify = (str: string) => {
     return str
@@ -86,7 +93,6 @@ export function BlogPostForm({
     }
   };
 
-
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-3xl max-h-[90vh] flex flex-col">
@@ -95,6 +101,7 @@ export function BlogPostForm({
         </DialogHeader>
         <form action={onSave} className="space-y-4 flex-grow overflow-y-auto pr-6">
           {post && <input type="hidden" name="id" defaultValue={post.id} />}
+          
           <div className="grid gap-2">
             <Label htmlFor="title">Title</Label>
             <Input 
@@ -116,10 +123,26 @@ export function BlogPostForm({
             <Label htmlFor="author">Author</Label>
             <Input id="author" name="author" defaultValue={post?.author} required />
           </div>
-          <div className="grid gap-2">
-            <Label htmlFor="image_url">Image URL (Optional)</Label>
-            <Input id="image_url" name="image_url" type="url" defaultValue={post?.image_url} />
+          
+          <div className="space-y-4 rounded-md border p-4">
+            <h3 className="text-sm font-medium">Featured Image</h3>
+             {imagePreview && (
+                 <Image src={imagePreview} alt="Image preview" width={120} height={80} className="rounded-md object-cover" />
+              )}
+            <div className="grid gap-2">
+                <Label htmlFor="image_url">Image URL</Label>
+                <Input 
+                    id="image_url" 
+                    name="image_url" 
+                    type="url" 
+                    placeholder="https://example.com/image.png"
+                    defaultValue={post?.image_url}
+                    onBlur={(e) => setImagePreview(e.target.value)}
+                />
+            </div>
           </div>
+
+
           <div className="grid gap-2">
             <Label htmlFor="excerpt">Excerpt (Short Summary)</Label>
             <Textarea id="excerpt" name="excerpt" defaultValue={post?.excerpt} />

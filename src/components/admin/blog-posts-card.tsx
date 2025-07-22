@@ -1,3 +1,4 @@
+
 "use client";
 
 import {
@@ -18,12 +19,25 @@ import {
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { useState, useTransition } from "react";
+import { useState, useTransition, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { upsertBlogPost, deleteBlogPost } from "@/app/admin/actions";
 import { BlogPostForm } from "./blog-post-form";
 import { DeleteConfirmationDialog } from "./delete-confirmation-dialog";
 import { format } from "date-fns";
+
+function ClientFormattedDate({ dateString }: { dateString: string | null }) {
+    const [formattedDate, setFormattedDate] = useState<string | null>(null);
+
+    useEffect(() => {
+        if (dateString) {
+            setFormattedDate(format(new Date(dateString), 'MMM d, yyyy'));
+        }
+    }, [dateString]);
+
+    return <>{formattedDate || 'N/A'}</>;
+}
+
 
 export default function BlogPostsCard({ blogPosts }: { blogPosts: any[] }) {
   const { toast } = useToast();
@@ -112,7 +126,7 @@ export default function BlogPostsCard({ blogPosts }: { blogPosts: any[] }) {
                   <TableCell>
                     <Badge variant={post.status === 'published' ? 'default' : 'secondary'}>{post.status}</Badge>
                   </TableCell>
-                   <TableCell>{post.published_at ? format(new Date(post.published_at), 'MMM d, yyyy') : 'N/A'}</TableCell>
+                   <TableCell><ClientFormattedDate dateString={post.published_at} /></TableCell>
                   <TableCell className="text-right space-x-2">
                     <Button variant="outline" size="sm" onClick={() => openFormForEdit(post)}>
                       Edit

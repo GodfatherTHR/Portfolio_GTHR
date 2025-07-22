@@ -22,15 +22,33 @@ import {
   DialogFooter,
   DialogClose,
 } from "@/components/ui/dialog";
-import { useState, useRef, useTransition } from "react";
+import { useState, useRef, useTransition, useEffect } from "react";
 import { updateContactInfo } from "@/app/admin/actions";
 import { Textarea } from "../ui/textarea";
+import Link from "next/link";
+import { createClient } from "@/lib/supabase/client";
 
 export default function ContactInfoCard({ contactInfo }: { contactInfo: any }) {
   const { toast } = useToast();
   const [isOpen, setIsOpen] = useState(false);
   const formRef = useRef<HTMLFormElement>(null);
   const [isPending, startTransition] = useTransition();
+  const [unreadCount, setUnreadCount] = useState(0);
+
+  useEffect(() => {
+    const fetchUnreadCount = async () => {
+      const supabase = createClient();
+      const { count, error } = await supabase
+        .from('messages')
+        .select('*', { count: 'exact', head: true })
+        .eq('is_read', false)
+      
+      if (!error && count !== null) {
+        setUnreadCount(count);
+      }
+    }
+    fetchUnreadCount();
+  }, []);
 
   const handleAction = async (formData: FormData) => {
     startTransition(async () => {
@@ -71,7 +89,7 @@ export default function ContactInfoCard({ contactInfo }: { contactInfo: any }) {
           <p>No contact info data found.</p>
         )}
       </CardContent>
-      <CardFooter>
+      <CardFooter className="gap-2">
         <Dialog open={isOpen} onOpenChange={setIsOpen}>
           <DialogTrigger asChild>
             <Button>Edit</Button>
@@ -114,6 +132,17 @@ export default function ContactInfoCard({ contactInfo }: { contactInfo: any }) {
             </form>
           </DialogContent>
         </Dialog>
+         <Button asChild variant="secondary" className="relative">
+          <Link href="/admin/messages">
+            Messages
+            {unreadCount > 0 && (
+              <span className="absolute -top-1 -right-1 flex h-3 w-3">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-3 w-3 bg-red-500"></span>
+              </span>
+            )}
+          </Link>
+        </Button>
       </CardFooter>
     </Card>
   );
