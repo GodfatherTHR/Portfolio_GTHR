@@ -446,7 +446,7 @@ export async function upsertBlogPost(formData: FormData) {
   }
   
   const dataToUpsert: any = { ...data, image_url: imageUrl };
-  if (data.status === 'published' && !id) { // Only set published_at on first publish
+  if (data.status === 'published' && !id) { 
     dataToUpsert.published_at = new Date().toISOString();
   } else if (data.status === 'published' && id) {
     const { data: existingPost } = await supabase.from('blog_posts').select('published_at').eq('id', id).single();
@@ -456,7 +456,8 @@ export async function upsertBlogPost(formData: FormData) {
   }
 
 
-  const { error } = await supabase.from('blog_posts').upsert(id ? { id, ...dataToUpsert } : dataToUpsert);
+  const { error } = await supabase.from('blog_posts').upsert(id ? { id, ...dataToUpsert } : { ...dataToUpsert, id: randomUUID() });
+
 
   if (error) {
     return { error: { _server: [error.message] } };
@@ -467,6 +468,7 @@ export async function upsertBlogPost(formData: FormData) {
   revalidatePath(`/blog/${data.slug}`);
   return { data: 'Blog post saved successfully.' };
 }
+
 
 export async function deleteBlogPost(id: string) {
     const supabase = createClient();
@@ -522,7 +524,6 @@ export async function saveMessage(formData: FormData) {
   
   const dataToInsert = {
     ...parsed.data,
-    created_at: new Date().toISOString(),
   };
 
   const { error } = await supabase.from('messages').insert(dataToInsert);
