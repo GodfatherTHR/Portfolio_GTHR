@@ -6,6 +6,7 @@ import { z } from 'zod'
 import { createServerClient } from '@supabase/ssr'
 import type { CookieOptions } from '@supabase/ssr'
 import { cookies } from 'next/headers'
+import { randomUUID } from 'crypto'
 
 const ownerSchema = z.object({
   id: z.number(),
@@ -389,6 +390,7 @@ const blogPostSchema = z.object({
   author: z.string().min(1, 'Author is required'),
   status: z.enum(['draft', 'published']),
   image_url: z.string().url().optional().or(z.literal('')),
+  image: z.instanceof(File).optional()
 });
 
 export async function upsertBlogPost(formData: FormData) {
@@ -401,9 +403,24 @@ export async function upsertBlogPost(formData: FormData) {
     return { error: parsed.error.format() };
   }
 
-  const { id, ...data } = parsed.data;
+  const { id, image, ...data } = parsed.data;
+  let imageUrl = data.image_url;
 
-  const dataToUpsert: any = { ...data };
+  if (image && image.size > 0) {
+    const fileName = `${randomUUID()}-${image.name}`;
+    const { data: uploadData, error: uploadError } = await supabase
+      .storage
+      .from('sh-storage')
+      .upload(fileName, image);
+
+    if (uploadError) {
+      return { error: { _server: [uploadError.message] } };
+    }
+     const { data: publicUrlData } = supabase.storage.from('sh-storage').getPublicUrl(fileName);
+     imageUrl = publicUrlData.publicUrl;
+  }
+  
+  const dataToUpsert: any = { ...data, image_url: imageUrl };
   if (data.status === 'published' && !id) { // Only set published_at on first publish
     dataToUpsert.published_at = new Date().toISOString();
   } else if (data.status === 'published' && id) {
@@ -509,5 +526,3 @@ export async function markMessageAsRead(id: number) {
   revalidatePath('/admin/messages')
   return { data: 'Message marked as read.' }
 }
-
-    

@@ -19,8 +19,9 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useState, useRef } from "react";
-import { Sparkles } from "lucide-react";
+import { Sparkles, Upload } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import Image from "next/image";
 
 
 export function BlogPostForm({
@@ -41,6 +42,8 @@ export function BlogPostForm({
   const contentRef = useRef<HTMLTextAreaElement>(null);
   const { toast } = useToast();
   const [isConverting, setIsConverting] = useState(false);
+  const [imagePreview, setImagePreview] = useState(post?.image_url || null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const slugify = (str: string) => {
     return str
@@ -86,15 +89,32 @@ export function BlogPostForm({
     }
   };
 
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImagePreview(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
 
   return (
-    <Dialog open={isOpen} onOpenChange={onOpenChange}>
+    <Dialog open={isOpen} onOpenChange={(open) => {
+        if (!open) {
+            setImagePreview(post?.image_url || null);
+        }
+        onOpenChange(open);
+    }}>
       <DialogContent className="sm:max-w-3xl max-h-[90vh] flex flex-col">
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
         </DialogHeader>
         <form action={onSave} className="space-y-4 flex-grow overflow-y-auto pr-6">
           {post && <input type="hidden" name="id" defaultValue={post.id} />}
+           <input type="hidden" name="image_url" defaultValue={post?.image_url || ''} />
           <div className="grid gap-2">
             <Label htmlFor="title">Title</Label>
             <Input 
@@ -116,10 +136,29 @@ export function BlogPostForm({
             <Label htmlFor="author">Author</Label>
             <Input id="author" name="author" defaultValue={post?.author} required />
           </div>
+          
           <div className="grid gap-2">
-            <Label htmlFor="image_url">Image URL (Optional)</Label>
-            <Input id="image_url" name="image_url" type="url" defaultValue={post?.image_url} />
+            <Label>Featured Image</Label>
+            <div className="flex items-center gap-4">
+              {imagePreview && (
+                 <Image src={imagePreview} alt="Image preview" width={80} height={80} className="rounded-md object-cover" />
+              )}
+               <Button type="button" variant="outline" onClick={() => fileInputRef.current?.click()}>
+                <Upload className="mr-2 h-4 w-4" />
+                {imagePreview ? 'Change Image' : 'Upload Image'}
+              </Button>
+            </div>
+            <Input 
+              id="image" 
+              name="image" 
+              type="file" 
+              className="hidden" 
+              ref={fileInputRef} 
+              onChange={handleImageChange}
+              accept="image/*"
+            />
           </div>
+
           <div className="grid gap-2">
             <Label htmlFor="excerpt">Excerpt (Short Summary)</Label>
             <Textarea id="excerpt" name="excerpt" defaultValue={post?.excerpt} />

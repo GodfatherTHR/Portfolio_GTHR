@@ -109,8 +109,8 @@ export default async function AdminPage() {
         <ExperienceCard experiences={experiences || []} />
         <EducationCard education={education || []} />
         <AwardsCard awards={awards || []} />
-        <SkillsCard skills={skills || []} />
         <BlogPostsCard blogPosts={blogPosts || []} />
+        <SkillsCard skills={skills || []} />
       </div>
     </div>
   );
