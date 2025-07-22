@@ -446,9 +446,16 @@ const messageSchema = z.object({
 
 export async function saveMessage(formData: FormData) {
   const cookieStore = cookies()
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+
+  if (!supabaseUrl || !supabaseServiceKey) {
+      throw new Error("Your project's URL and Key are required to create a Supabase client! Check your Supabase project's API settings to find these values");
+  }
+
   const supabase = createServerClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.SUPABASE_SERVICE_ROLE_KEY!,
+      supabaseUrl,
+      supabaseServiceKey,
       {
         cookies: {
           get(name: string) {
@@ -500,5 +507,3 @@ export async function markMessageAsRead(id: number) {
   revalidatePath('/admin/messages')
   return { data: 'Message marked as read.' }
 }
-
-    
