@@ -19,7 +19,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useState, useRef, useEffect } from "react";
-import { Sparkles, Upload } from "lucide-react";
+import { Sparkles } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import Image from "next/image";
 
@@ -43,17 +43,9 @@ export function BlogPostForm({
   const { toast } = useToast();
   const [isConverting, setIsConverting] = useState(false);
   const [imagePreview, setImagePreview] = useState(post?.image_url || null);
-  const fileInputRef = useRef<HTMLInputElement>(null);
-  const [imageUrl, setImageUrl] = useState(post?.image_url || '');
-
+  
   useEffect(() => {
-    if (post) {
-      setImagePreview(post.image_url);
-      setImageUrl(post.image_url || '');
-    } else {
-      setImagePreview(null);
-      setImageUrl('');
-    }
+    setImagePreview(post?.image_url || null);
   }, [post]);
 
 
@@ -101,36 +93,8 @@ export function BlogPostForm({
     }
   };
 
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setImagePreview(reader.result as string);
-        setImageUrl(''); // Clear URL input when a file is chosen
-      };
-      reader.readAsDataURL(file);
-    }
-  };
-  
-  const handleUrlChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-      const url = e.target.value;
-      setImageUrl(url);
-      setImagePreview(url);
-      if (fileInputRef.current) {
-          fileInputRef.current.value = ''; // Clear file input
-      }
-  }
-
-
   return (
-    <Dialog open={isOpen} onOpenChange={(open) => {
-        if (!open) {
-            setImagePreview(post?.image_url || null);
-            setImageUrl(post?.image_url || '');
-        }
-        onOpenChange(open);
-    }}>
+    <Dialog open={isOpen} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-3xl max-h-[90vh] flex flex-col">
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
@@ -172,29 +136,8 @@ export function BlogPostForm({
                     name="image_url" 
                     type="url" 
                     placeholder="https://example.com/image.png"
-                    value={imageUrl}
-                    onChange={handleUrlChange}
-                />
-            </div>
-            <div className="grid gap-2">
-                <Label htmlFor="image">Or Upload an Image</Label>
-                <div className="flex items-center gap-4">
-                   <Button type="button" variant="outline" onClick={() => fileInputRef.current?.click()}>
-                    <Upload className="mr-2 h-4 w-4" />
-                    Choose File
-                  </Button>
-                  <span className="text-sm text-muted-foreground">
-                    {fileInputRef.current?.files?.[0]?.name || "No file chosen"}
-                  </span>
-                </div>
-                <Input 
-                  id="image" 
-                  name="image" 
-                  type="file" 
-                  className="hidden" 
-                  ref={fileInputRef} 
-                  onChange={handleImageChange}
-                  accept="image/*"
+                    defaultValue={post?.image_url}
+                    onBlur={(e) => setImagePreview(e.target.value)}
                 />
             </div>
           </div>
@@ -238,5 +181,3 @@ export function BlogPostForm({
     </Dialog>
   );
 }
-
-    

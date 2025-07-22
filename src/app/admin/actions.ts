@@ -391,23 +391,11 @@ const blogPostSchema = z.object({
   author: z.string().min(1, 'Author is required'),
   status: z.enum(['draft', 'published']),
   image_url: z.string().url().optional().or(z.literal('')),
-  image: z.instanceof(File).optional()
 });
 
 export async function upsertBlogPost(formData: FormData) {
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
-
-  if (!supabaseUrl || !supabaseServiceKey) {
-      throw new Error("Your project's URL and Key are required to create a Supabase client! Check your Supabase project's API settings to find these values");
-  }
-
-  // Use the standard client for storage operations with the service key
-  const supabaseAdmin = createAdminClient(supabaseUrl, supabaseServiceKey);
-  // Use the server client for database operations to respect RLS and user session
   const supabase = createClient();
-    
-  const rawData = Object.fromEntries(formData)
+  const rawData = Object.fromEntries(formData);
 
   const parsed = blogPostSchema.safeParse(rawData);
 
@@ -415,24 +403,9 @@ export async function upsertBlogPost(formData: FormData) {
     return { error: parsed.error.format() };
   }
 
-  const { id, image, ...data } = parsed.data;
-  let imageUrl = data.image_url;
-
-  if (image && image.size > 0) {
-    const fileName = `${randomUUID()}-${image.name}`;
-    const { error: uploadError } = await supabaseAdmin
-      .storage
-      .from('sh-storage')
-      .upload(fileName, image);
-
-    if (uploadError) {
-      return { error: { _server: [uploadError.message] } };
-    }
-     const { data: publicUrlData } = supabaseAdmin.storage.from('sh-storage').getPublicUrl(fileName);
-     imageUrl = publicUrlData.publicUrl;
-  }
+  const { id, ...data } = parsed.data;
   
-  const dataToUpsert: any = { ...data, image_url: imageUrl };
+  const dataToUpsert: any = { ...data };
   if (data.status === 'published' && !id) { 
     dataToUpsert.published_at = new Date().toISOString();
   } else if (data.status === 'published' && id) {
