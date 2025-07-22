@@ -3,10 +3,11 @@
 import { createClient } from '@/lib/supabase/server'
 import { revalidatePath } from 'next/cache'
 import { z } from 'zod'
-import { createServerClient } from '@supabase/ssr'
+import { createServerClient as createServerClientSSR } from '@supabase/ssr'
 import type { CookieOptions } from '@supabase/ssr'
 import { cookies } from 'next/headers'
 import { randomUUID } from 'crypto'
+import { createClient as createAdminClient } from '@supabase/supabase-js'
 
 const ownerSchema = z.object({
   id: z.number(),
@@ -394,7 +395,6 @@ const blogPostSchema = z.object({
 });
 
 export async function upsertBlogPost(formData: FormData) {
-  const cookieStore = cookies()
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
@@ -402,23 +402,10 @@ export async function upsertBlogPost(formData: FormData) {
       throw new Error("Your project's URL and Key are required to create a Supabase client! Check your Supabase project's API settings to find these values");
   }
 
-  const supabase = createServerClient(
-      supabaseUrl,
-      supabaseServiceKey,
-      {
-        cookies: {
-          get(name: string) {
-            return cookieStore.get(name)?.value
-          },
-          set(name: string, value: string, options: CookieOptions) {
-            cookieStore.set({ name, value, ...options })
-          },
-          remove(name: string, options: CookieOptions) {
-            cookieStore.set({ name, value: '', ...options })
-          },
-        },
-      }
-    )
+  // Use the standard client for storage operations with the service key
+  const supabaseAdmin = createAdminClient(supabaseUrl, supabaseServiceKey);
+  // Use the server client for database operations to respect RLS and user session
+  const supabase = createClient();
     
   const rawData = Object.fromEntries(formData)
 
@@ -433,7 +420,7 @@ export async function upsertBlogPost(formData: FormData) {
 
   if (image && image.size > 0) {
     const fileName = `${randomUUID()}-${image.name}`;
-    const { error: uploadError } = await supabase
+    const { error: uploadError } = await supabaseAdmin
       .storage
       .from('sh-storage')
       .upload(fileName, image);
@@ -441,7 +428,7 @@ export async function upsertBlogPost(formData: FormData) {
     if (uploadError) {
       return { error: { _server: [uploadError.message] } };
     }
-     const { data: publicUrlData } = supabase.storage.from('sh-storage').getPublicUrl(fileName);
+     const { data: publicUrlData } = supabaseAdmin.storage.from('sh-storage').getPublicUrl(fileName);
      imageUrl = publicUrlData.publicUrl;
   }
   
@@ -489,7 +476,6 @@ const messageSchema = z.object({
 })
 
 export async function saveMessage(formData: FormData) {
-  const cookieStore = cookies()
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
@@ -497,23 +483,7 @@ export async function saveMessage(formData: FormData) {
       throw new Error("Your project's URL and Key are required to create a Supabase client! Check your Supabase project's API settings to find these values");
   }
 
-  const supabase = createServerClient(
-      supabaseUrl,
-      supabaseServiceKey,
-      {
-        cookies: {
-          get(name: string) {
-            return cookieStore.get(name)?.value
-          },
-          set(name: string, value: string, options: CookieOptions) {
-            cookieStore.set({ name, value, ...options })
-          },
-          remove(name: string, options: CookieOptions) {
-            cookieStore.set({ name, value: '', ...options })
-          },
-        },
-      }
-    )
+  const supabase = createAdminClient(supabaseUrl, supabaseServiceKey);
 
   const rawData = Object.fromEntries(formData)
   const parsed = messageSchema.safeParse(rawData)
