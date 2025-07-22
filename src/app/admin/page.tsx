@@ -50,18 +50,13 @@ export default async function AdminPage() {
     supabase.from("blog_posts").select(),
   ]);
 
-  const owner = ownerResult.data;
-  const projects = projectsResult.data;
-  const experiences = experiencesResult.data;
-  const skills = skillsResult.data;
-  const publications = publicationsResult.data;
-  const awards = awardsResult.data;
-  const contactInfo = contactInfoResult.data;
-  const researchProfiles = researchProfilesResult.data;
-  const education = educationResult.data;
-  const blogPosts = blogPostsResult.data;
+  const results = [
+    ownerResult, projectsResult, experiencesResult, skillsResult, 
+    publicationsResult, awardsResult, contactInfoResult, 
+    researchProfilesResult, educationResult, blogPostsResult
+  ];
   
-  const anyError = ownerResult.error || projectsResult.error || experiencesResult.error || skillsResult.error || publicationsResult.error || awardsResult.error || contactInfoResult.error || researchProfilesResult.error || educationResult.error || blogPostsResult.error;
+  const anyError = results.find(result => result.error);
 
   if (anyError) {
      return (
@@ -72,14 +67,24 @@ export default async function AdminPage() {
            <AlertDescription>
              <p>Could not fetch all necessary data for the admin panel. Please check the database connection and ensure all required tables exist and are accessible.</p>
              <pre className="mt-2 whitespace-pre-wrap rounded-md bg-destructive/10 p-4 text-xs font-mono">
-               {anyError.message}
+               {anyError.error.message}
              </pre>
            </AlertDescription>
          </Alert>
        </div>
      );
   }
-
+  
+  const owner = ownerResult.data;
+  const projects = projectsResult.data;
+  const experiences = experiencesResult.data;
+  const skills = skillsResult.data;
+  const publications = publicationsResult.data;
+  const awards = awardsResult.data;
+  const contactInfo = contactInfoResult.data;
+  const researchProfiles = researchProfilesResult.data;
+  const education = educationResult.data;
+  const blogPosts = blogPostsResult.data;
 
   return (
     <div className="container mx-auto py-10">

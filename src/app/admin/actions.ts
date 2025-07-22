@@ -450,7 +450,13 @@ export async function saveMessage(formData: FormData) {
     return { error: parsed.error.format() }
   }
 
-  const { error } = await supabase.from('messages').insert(parsed.data)
+  const dataToInsert = {
+    ...parsed.data,
+    created_at: new Date().toISOString(),
+  };
+
+  const { error } = await supabase.from('messages').insert(dataToInsert);
+
 
   if (error) {
     return { error: { _server: [error.message] } }
