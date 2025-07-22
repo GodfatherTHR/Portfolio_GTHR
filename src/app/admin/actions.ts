@@ -526,5 +526,3 @@ export async function markMessageAsRead(id: number) {
   revalidatePath('/admin/messages')
   return { data: 'Message marked as read.' }
 }
-
-    
