@@ -3,6 +3,9 @@
 import { createClient } from '@/lib/supabase/server'
 import { revalidatePath } from 'next/cache'
 import { z } from 'zod'
+import { createServerClient } from '@supabase/ssr'
+import type { CookieOptions } from '@supabase/ssr'
+import { cookies } from 'next/headers'
 
 const ownerSchema = z.object({
   id: z.number(),
@@ -442,7 +445,25 @@ const messageSchema = z.object({
 })
 
 export async function saveMessage(formData: FormData) {
-  const supabase = createClient()
+  const cookieStore = cookies()
+  const supabase = createServerClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.SUPABASE_SERVICE_ROLE_KEY!,
+      {
+        cookies: {
+          get(name: string) {
+            return cookieStore.get(name)?.value
+          },
+          set(name: string, value: string, options: CookieOptions) {
+            cookieStore.set({ name, value, ...options })
+          },
+          remove(name: string, options: CookieOptions) {
+            cookieStore.set({ name, value: '', ...options })
+          },
+        },
+      }
+    )
+
   const rawData = Object.fromEntries(formData)
   const parsed = messageSchema.safeParse(rawData)
 
@@ -452,7 +473,6 @@ export async function saveMessage(formData: FormData) {
 
   const dataToInsert = {
     ...parsed.data,
-    created_at: new Date().toISOString(),
   };
 
   const { error } = await supabase.from('messages').insert(dataToInsert);
@@ -480,3 +500,5 @@ export async function markMessageAsRead(id: number) {
   revalidatePath('/admin/messages')
   return { data: 'Message marked as read.' }
 }
+
+    
