@@ -28,34 +28,34 @@ export default async function BlogSection() {
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {posts.map((post) => (
-            <Card key={post.id} className="flex flex-col overflow-hidden">
-               {post.image_url && (
-                <div className="relative h-48 w-full">
-                  <Image
-                    src={post.image_url}
-                    alt={post.title}
-                    fill
-                    className="object-cover"
-                  />
-                </div>
-              )}
-              <CardHeader>
-                <CardTitle>{post.title}</CardTitle>
-                <CardDescription>
-                  {format(new Date(post.published_at), 'MMMM d, yyyy')}
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="flex-grow">
-                <p className="text-muted-foreground">{post.excerpt}</p>
-              </CardContent>
-              <CardFooter>
-                <Button asChild variant="ghost" className="p-0 h-auto">
-                  <Link href={`/blog/${post.slug}`}>
+            <Link key={post.id} href={`/blog/${post.slug}`} className="group block">
+              <Card className="flex flex-col overflow-hidden h-full group-hover:shadow-xl transition-shadow duration-300">
+                 {post.image_url && (
+                  <div className="relative h-48 w-full">
+                    <Image
+                      src={post.image_url}
+                      alt={post.title}
+                      fill
+                      className="object-cover"
+                    />
+                  </div>
+                )}
+                <CardHeader>
+                  <CardTitle>{post.title}</CardTitle>
+                  <CardDescription>
+                    {format(new Date(post.published_at), 'MMMM d, yyyy')}
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="flex-grow">
+                  <p className="text-muted-foreground">{post.excerpt}</p>
+                </CardContent>
+                <CardFooter>
+                  <div className="text-primary font-semibold flex items-center group-hover:underline">
                     Read More <ArrowRight className="ml-2 h-4 w-4" />
-                  </Link>
-                </Button>
-              </CardFooter>
-            </Card>
+                  </div>
+                </CardFooter>
+              </Card>
+            </Link>
           ))}
         </div>
         <div className="text-center mt-12">
