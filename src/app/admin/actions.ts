@@ -457,7 +457,6 @@ export async function saveMessage(formData: FormData) {
 
   const { error } = await supabase.from('messages').insert(dataToInsert);
 
-
   if (error) {
     return { error: { _server: [error.message] } }
   }
