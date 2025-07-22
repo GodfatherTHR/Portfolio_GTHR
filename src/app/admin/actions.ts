@@ -434,3 +434,44 @@ export async function deleteBlogPost(id: string) {
     revalidatePath('/blog');
     return { data: 'Blog post deleted successfully.' };
 }
+
+const messageSchema = z.object({
+  name: z.string().min(1, 'Name is required'),
+  email: z.string().email('Invalid email format'),
+  message: z.string().min(1, 'Message is required'),
+})
+
+export async function saveMessage(formData: FormData) {
+  const supabase = createClient()
+  const rawData = Object.fromEntries(formData)
+  const parsed = messageSchema.safeParse(rawData)
+
+  if (!parsed.success) {
+    return { error: parsed.error.format() }
+  }
+
+  const { error } = await supabase.from('messages').insert(parsed.data)
+
+  if (error) {
+    return { error: { _server: [error.message] } }
+  }
+
+  revalidatePath('/admin')
+  return { data: 'Message sent successfully!' }
+}
+
+export async function markMessageAsRead(id: number) {
+  const supabase = createClient()
+  const { error } = await supabase
+    .from('messages')
+    .update({ is_read: true })
+    .eq('id', id)
+
+  if (error) {
+    return { error: { _server: [error.message] } }
+  }
+
+  revalidatePath('/admin')
+  revalidatePath('/admin/messages')
+  return { data: 'Message marked as read.' }
+}

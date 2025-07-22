@@ -1,10 +1,9 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Button } from "@/components/ui/button";
 import { Github, Linkedin, Send, Phone, FlaskConical, GraduationCap, Info, School } from "lucide-react";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
+import ContactForm from "../contact-form";
+import { Button } from "../ui/button";
 
 export default async function ContactSection() {
   const supabase = createClient();
@@ -43,7 +42,7 @@ export default async function ContactSection() {
                 )}
                 <div className="flex flex-wrap gap-4 pt-4">
                   {owner?.github_url && <Button variant="outline" size="icon" asChild><Link href={owner.github_url} target="_blank" rel="noopener noreferrer" aria-label="GitHub Profile"><Github /></Link></Button>}
-                  <Button variant="outline" size="icon" asChild><Link href="https://www.linkedin.com/in/shariful-haque-techy/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn Profile"><Linkedin /></Link></Button>
+                  {owner?.linkedin_url && <Button variant="outline" size="icon" asChild><Link href={owner.linkedin_url} target="_blank" rel="noopener noreferrer" aria-label="LinkedIn Profile"><Linkedin /></Link></Button>}
                   <Button variant="outline" size="icon" asChild><Link href="https://orcid.org/0009-0003-0832-5539" target="_blank" rel="noopener noreferrer" aria-label="ORCID Profile"><Info /></Link></Button>
                   <Button variant="outline" size="icon" asChild><Link href="https://scholar.google.com/citations?user=oEaAQUQAAAAJ&hl=en" target="_blank" rel="noopener noreferrer" aria-label="Google Scholar Profile"><GraduationCap /></Link></Button>
                   <Button variant="outline" size="icon" asChild><Link href="https://www.researchgate.net/profile/Shariful-Haque-5?ev=hdr_xprf" target="_blank" rel="noopener noreferrer" aria-label="ResearchGate Profile"><FlaskConical /></Link></Button>
@@ -52,24 +51,7 @@ export default async function ContactSection() {
               </CardContent>
             </Card>
           </div>
-          <Card className="shadow-lg">
-            <CardHeader>
-              <CardTitle>Send a Message</CardTitle>
-              <CardDescription>Your message will be sent directly to my inbox.</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <form className="space-y-4">
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <Input placeholder="Your Name" required />
-                  <Input type="email" placeholder="Your Email" required />
-                </div>
-                <Textarea placeholder="Your Message" rows={5} required />
-                <Button type="submit" className="w-full">
-                  Send Message <Send className="ml-2 w-4 h-4" />
-                </Button>
-              </form>
-            </CardContent>
-          </Card>
+          <ContactForm />
         </div>
       </div>
     </section>
