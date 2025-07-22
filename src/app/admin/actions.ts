@@ -447,15 +447,15 @@ const messageSchema = z.object({
 export async function saveMessage(formData: FormData) {
   const cookieStore = cookies()
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
-  if (!supabaseUrl || !supabaseServiceKey) {
+  if (!supabaseUrl || !supabaseAnonKey) {
       throw new Error("Your project's URL and Key are required to create a Supabase client! Check your Supabase project's API settings to find these values");
   }
 
   const supabase = createServerClient(
       supabaseUrl,
-      supabaseServiceKey,
+      supabaseAnonKey,
       {
         cookies: {
           get(name: string) {
@@ -477,9 +477,10 @@ export async function saveMessage(formData: FormData) {
   if (!parsed.success) {
     return { error: parsed.error.format() }
   }
-
+  
   const dataToInsert = {
     ...parsed.data,
+    created_at: new Date().toISOString(),
   };
 
   const { error } = await supabase.from('messages').insert(dataToInsert);
@@ -489,6 +490,7 @@ export async function saveMessage(formData: FormData) {
   }
 
   revalidatePath('/admin')
+  revalidatePath('/admin/messages')
   return { data: 'Message sent successfully!' }
 }
 
@@ -507,3 +509,5 @@ export async function markMessageAsRead(id: number) {
   revalidatePath('/admin/messages')
   return { data: 'Message marked as read.' }
 }
+
+    
