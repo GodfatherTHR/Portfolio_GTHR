@@ -18,12 +18,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useTransition } from "react";
 import { Sparkles, UploadCloud } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import Image from "next/image";
-import { createClient } from "@/lib/supabase/client";
 import { Progress } from "../ui/progress";
+import { uploadImageAction } from "@/app/admin/actions";
 
 
 export function BlogPostForm({
@@ -47,8 +47,9 @@ export function BlogPostForm({
 
   const { toast } = useToast();
   const [isConverting, setIsConverting] = useState(false);
+  const [isUploading, startUploadTransition] = useTransition();
+
   const [imagePreview, setImagePreview] = useState(post?.image_url || null);
-  const [uploadProgress, setUploadProgress] = useState<number | null>(null);
   
   useEffect(() => {
     setImagePreview(post?.image_url || null);
@@ -99,48 +100,32 @@ export function BlogPostForm({
       setIsConverting(false);
     }
   };
-
+  
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (!file) {
-      return;
-    }
+    if (!file) return;
 
     const allowedTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
     if (!allowedTypes.includes(file.type)) {
-      toast({ title: "Invalid File Type", description: "Please select a valid image file (JPEG, PNG, WEBP, GIF).", variant: "destructive" });
-      return;
+        toast({ title: "Invalid File Type", description: "Please select a valid image file (JPEG, PNG, WEBP, GIF).", variant: "destructive" });
+        return;
     }
 
-    const supabase = createClient();
-    const fileName = `${Date.now()}-${file.name}`;
+    const formData = new FormData();
+    formData.append('file', file);
     
-    setUploadProgress(0);
-
-    const { data, error } = await supabase.storage
-      .from('sh-storage')
-      .upload(fileName, file, {
-        cacheControl: '3600',
-        upsert: false
-      });
-    
-    if (error) {
-      toast({ title: "Upload Failed", description: error.message, variant: "destructive" });
-      setUploadProgress(null);
-      return;
-    }
-
-    const { data: { publicUrl } } = supabase.storage
-      .from('sh-storage')
-      .getPublicUrl(data.path);
-
-    setImagePreview(publicUrl);
-    if(imageUrlRef.current) {
-      imageUrlRef.current.value = publicUrl;
-    }
-    setUploadProgress(100);
-    toast({ title: "Upload Successful", description: "Image uploaded and URL set." });
-     setTimeout(() => setUploadProgress(null), 2000);
+    startUploadTransition(async () => {
+      const result = await uploadImageAction(formData);
+      if (result.success && result.url) {
+        setImagePreview(result.url);
+        if (imageUrlRef.current) {
+          imageUrlRef.current.value = result.url;
+        }
+        toast({ title: "Upload Successful", description: "Image uploaded and URL set." });
+      } else {
+        toast({ title: "Upload Failed", description: result.error || "An unknown error occurred.", variant: "destructive" });
+      }
+    });
   };
 
   return (
@@ -176,8 +161,15 @@ export function BlogPostForm({
           
           <div className="space-y-4 rounded-md border p-4">
             <h3 className="text-sm font-medium">Featured Image</h3>
+             <div className="grid gap-2">
+                <Label htmlFor="image_upload">Upload Image</Label>
+                <div className="flex items-center gap-2">
+                    <Input id="image_upload" type="file" accept="image/*" onChange={handleImageUpload} disabled={isUploading} className="flex-grow file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary/10 file:text-primary hover:file:bg-primary/20" />
+                </div>
+                {isUploading && <Progress value={undefined} className="w-full h-2" />}
+            </div>
             <div className="grid gap-2">
-              <Label htmlFor="image_url">Image URL</Label>
+              <Label htmlFor="image_url">Or paste Image URL</Label>
               <Input
                 id="image_url"
                 name="image_url"
@@ -192,13 +184,6 @@ export function BlogPostForm({
               <div className="mt-2">
                  <Image src={imagePreview} alt="Image preview" width={120} height={80} className="rounded-md object-cover" />
               </div>
-            )}
-             <div className="grid gap-2">
-              <Label htmlFor="image_upload">Or Upload an Image</Label>
-              <Input id="image_upload" type="file" accept="image/*" onChange={handleImageUpload} className="file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary/10 file:text-primary hover:file:bg-primary/20" />
-            </div>
-            {uploadProgress !== null && (
-              <Progress value={uploadProgress} className="w-full h-2" />
             )}
           </div>
 
@@ -232,8 +217,8 @@ export function BlogPostForm({
           </div>
           <DialogFooter className="sticky bottom-0 bg-background py-4">
             <Button variant="outline" onClick={() => onOpenChange(false)} type="button">Cancel</Button>
-            <Button type="submit" disabled={isPending}>
-              {isPending ? "Saving..." : "Save Post"}
+            <Button type="submit" disabled={isPending || isUploading}>
+              {isPending ? "Saving..." : isUploading ? "Uploading..." : "Save Post"}
             </Button>
           </DialogFooter>
         </form>

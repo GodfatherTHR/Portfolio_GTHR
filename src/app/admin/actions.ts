@@ -382,6 +382,46 @@ export async function deleteEducation(id: number) {
   return { data: 'Education deleted successfully.' };
 }
 
+export async function uploadImageAction(formData: FormData): Promise<{ success: boolean, url?: string, error?: string }> {
+    const file = formData.get('file') as File;
+
+    if (!file) {
+        return { success: false, error: "No file provided." };
+    }
+
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+    const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+
+    if (!supabaseUrl || !supabaseServiceKey) {
+        return { success: false, error: "Supabase credentials are not configured." };
+    }
+    
+    const supabase = createAdminClient(supabaseUrl, supabaseServiceKey);
+    const fileName = `${Date.now()}-${file.name}`;
+    
+    const { data: uploadData, error: uploadError } = await supabase.storage
+        .from('sh-storage')
+        .upload(fileName, file, {
+            cacheControl: '3600',
+            upsert: false
+        });
+
+    if (uploadError) {
+        console.error("Supabase upload error:", uploadError);
+        return { success: false, error: uploadError.message };
+    }
+    
+    const { data: { publicUrl } } = supabase.storage
+        .from('sh-storage')
+        .getPublicUrl(uploadData.path);
+
+    if (!publicUrl) {
+         return { success: false, error: "Could not get public URL for the uploaded file." };
+    }
+
+    return { success: true, url: publicUrl };
+}
+
 const blogPostSchema = z.object({
   id: z.string().uuid().optional(),
   title: z.string().min(1, 'Title is required'),
