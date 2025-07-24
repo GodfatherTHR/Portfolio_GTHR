@@ -396,7 +396,7 @@ const blogPostSchema = z.object({
 export async function upsertBlogPost(formData: FormData) {
   const supabase = createClient();
   const rawData = Object.fromEntries(formData);
-
+  
   const parsed = blogPostSchema.safeParse(rawData);
 
   if (!parsed.success) {
@@ -420,6 +420,7 @@ export async function upsertBlogPost(formData: FormData) {
 
 
   if (error) {
+    console.error('Supabase error:', error);
     return { error: { _server: [error.message] } };
   }
 
