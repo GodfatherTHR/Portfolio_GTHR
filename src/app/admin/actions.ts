@@ -3,11 +3,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { revalidatePath } from 'next/cache'
 import { z } from 'zod'
-import { createServerClient as createServerClientSSR } from '@supabase/ssr'
-import type { CookieOptions } from '@supabase/ssr'
-import { cookies } from 'next/headers'
 import { randomUUID } from 'crypto'
-import { createClient as createAdminClient } from '@supabase/supabase-js'
 
 const ownerSchema = z.object({
   id: z.number(),
@@ -396,7 +392,7 @@ const blogPostSchema = z.object({
 export async function upsertBlogPost(formData: FormData) {
   const supabase = createClient();
   const rawData = Object.fromEntries(formData);
-  
+
   const parsed = blogPostSchema.safeParse(rawData);
 
   if (!parsed.success) {
@@ -404,9 +400,9 @@ export async function upsertBlogPost(formData: FormData) {
   }
 
   const { id, ...data } = parsed.data;
-  
+
   const dataToUpsert: any = { ...data };
-  if (data.status === 'published' && !id) { 
+  if (data.status === 'published' && !id) {
     dataToUpsert.published_at = new Date().toISOString();
   } else if (data.status === 'published' && id) {
     const { data: existingPost } = await supabase.from('blog_posts').select('published_at').eq('id', id).single();
@@ -415,9 +411,7 @@ export async function upsertBlogPost(formData: FormData) {
     }
   }
 
-
   const { error } = await supabase.from('blog_posts').upsert(id ? { id, ...dataToUpsert } : { ...dataToUpsert, id: randomUUID() });
-
 
   if (error) {
     console.error('Supabase error:', error);
@@ -450,15 +444,7 @@ const messageSchema = z.object({
 })
 
 export async function saveMessage(formData: FormData) {
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
-
-  if (!supabaseUrl || !supabaseServiceKey) {
-      throw new Error("Your project's URL and Key are required to create a Supabase client! Check your Supabase project's API settings to find these values");
-  }
-
-  const supabase = createAdminClient(supabaseUrl, supabaseServiceKey);
-
+  const supabase = createClient();
   const rawData = Object.fromEntries(formData)
   const parsed = messageSchema.safeParse(rawData)
 

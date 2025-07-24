@@ -39,6 +39,12 @@ const nextConfig: NextConfig = {
         hostname: 'iili.io',
         port: '',
         pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'res.cloudinary.com',
+        port: '',
+        pathname: '/**',
       }
     ],
   },
