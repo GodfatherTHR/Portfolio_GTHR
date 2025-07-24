@@ -19,11 +19,11 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useState, useRef, useEffect, useTransition } from "react";
-import { Sparkles, UploadCloud } from "lucide-react";
+import { Sparkles } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import Image from "next/image";
 import { Progress } from "../ui/progress";
-import { uploadImageAction } from "@/app/admin/actions";
+import { createClient } from "@/lib/supabase/client";
 
 
 export function BlogPostForm({
@@ -47,7 +47,7 @@ export function BlogPostForm({
 
   const { toast } = useToast();
   const [isConverting, setIsConverting] = useState(false);
-  const [isUploading, startUploadTransition] = useTransition();
+  const [isUploading, setIsUploading] = useState(false);
 
   const [imagePreview, setImagePreview] = useState(post?.image_url || null);
   
@@ -110,22 +110,38 @@ export function BlogPostForm({
         toast({ title: "Invalid File Type", description: "Please select a valid image file (JPEG, PNG, WEBP, GIF).", variant: "destructive" });
         return;
     }
-
-    const formData = new FormData();
-    formData.append('file', file);
     
-    startUploadTransition(async () => {
-      const result = await uploadImageAction(formData);
-      if (result.success && result.url) {
-        setImagePreview(result.url);
-        if (imageUrlRef.current) {
-          imageUrlRef.current.value = result.url;
-        }
-        toast({ title: "Upload Successful", description: "Image uploaded and URL set." });
-      } else {
-        toast({ title: "Upload Failed", description: result.error || "An unknown error occurred.", variant: "destructive" });
+    setIsUploading(true);
+    const supabase = createClient();
+    const fileName = `${Date.now()}-${file.name}`;
+    
+    const { data: uploadData, error: uploadError } = await supabase.storage
+        .from('sh-storage')
+        .upload(fileName, file, {
+            cacheControl: '3600',
+            upsert: false
+        });
+
+    if (uploadError) {
+        toast({ title: "Upload Failed", description: uploadError.message, variant: "destructive" });
+        setIsUploading(false);
+        return;
+    }
+    
+    const { data: { publicUrl } } = supabase.storage
+        .from('sh-storage')
+        .getPublicUrl(uploadData.path);
+        
+    if (publicUrl) {
+      setImagePreview(publicUrl);
+      if (imageUrlRef.current) {
+        imageUrlRef.current.value = publicUrl;
       }
-    });
+      toast({ title: "Upload Successful", description: "Image uploaded and URL set." });
+    } else {
+       toast({ title: "Upload Failed", description: "Could not get public URL for the uploaded file.", variant: "destructive" });
+    }
+    setIsUploading(false);
   };
 
   return (
