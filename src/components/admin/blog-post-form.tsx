@@ -18,7 +18,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useState, useRef, useEffect, useTransition } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Sparkles, UploadCloud } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import Image from "next/image";
