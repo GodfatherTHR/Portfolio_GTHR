@@ -19,10 +19,9 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useState, useRef, useEffect } from "react";
-import { Sparkles, UploadCloud } from "lucide-react";
+import { Sparkles, UploadCloud, Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import Image from "next/image";
-import { CldUploadButton } from "next-cloudinary";
 
 export function BlogPostForm({
   isOpen,
@@ -41,6 +40,7 @@ export function BlogPostForm({
   const [status, setStatus] = useState(post?.status || "draft");
   const contentRef = useRef<HTMLTextAreaElement>(null);
   const imageUrlRef = useRef<HTMLInputElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const formRef = useRef<HTMLFormElement>(null);
 
   const { toast } = useToast();
@@ -97,19 +97,46 @@ export function BlogPostForm({
     }
   };
   
-  const handleUploadSuccess = (result: any) => {
-    const secureUrl = result?.info?.secure_url;
-    if (secureUrl) {
-        setImagePreview(secureUrl);
+  const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    setIsUploading(true);
+    const formData = new FormData();
+    formData.append('file', file);
+
+    try {
+      const response = await fetch('/api/upload', {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Upload failed');
+      }
+
+      const data = await response.json();
+      if (data.success && data.url) {
+        setImagePreview(data.url);
         if (imageUrlRef.current) {
-            imageUrlRef.current.value = secureUrl;
+          imageUrlRef.current.value = data.url;
         }
-        toast({ title: "Upload Successful", description: "Image uploaded and URL set." });
-    } else {
-        toast({ title: "Upload Failed", description: "Could not get URL from Cloudinary.", variant: "destructive" });
+        toast({ title: "Upload Successful", description: "Image has been uploaded." });
+      } else {
+        throw new Error(data.error || 'Failed to get URL from server.');
+      }
+    } catch (error: any) {
+      toast({
+        title: "Upload Failed",
+        description: error.message,
+        variant: "destructive"
+      });
+    } finally {
+      setIsUploading(false);
     }
-    setIsUploading(false);
   };
+
 
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
@@ -144,28 +171,22 @@ export function BlogPostForm({
           
           <div className="space-y-4 rounded-md border p-4">
              <h3 className="text-sm font-medium">Featured Image</h3>
-              <div className="flex items-center gap-4">
-                  <CldUploadButton
-                    options={{
-                        sources: ['local', 'url'],
-                        multiple: false,
-                    }}
-                    onUploadAdded={() => setIsUploading(true)}
-                    onSuccess={handleUploadSuccess}
-                    onError={() => {
-                        toast({ title: "Upload Failed", description: "An error occurred during upload.", variant: "destructive" });
-                        setIsUploading(false);
-                    }}
-                    uploadPreset="next-cloudinary-unsigned"
-                  >
-                     <div className="flex items-center gap-2 rounded-md border border-input bg-background px-4 py-2 text-sm hover:bg-accent hover:text-accent-foreground">
-                        <UploadCloud className="h-4 w-4"/>
-                        <span>{isUploading ? "Uploading..." : "Upload Image"}</span>
-                     </div>
-                  </CldUploadButton>
-              </div>
+             
+             <input
+                type="file"
+                ref={fileInputRef}
+                onChange={handleImageUpload}
+                className="hidden"
+                accept="image/*"
+                disabled={isUploading}
+              />
+               <Button type="button" variant="outline" onClick={() => fileInputRef.current?.click()} disabled={isUploading}>
+                  {isUploading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <UploadCloud className="mr-2 h-4 w-4" />}
+                  {isUploading ? 'Uploading...' : 'Upload from Device'}
+               </Button>
+               
               <div className="grid gap-2">
-                <Label htmlFor="image_url">Image URL</Label>
+                <Label htmlFor="image_url">Or paste Image URL</Label>
                 <Input
                   id="image_url"
                   name="image_url"
@@ -174,11 +195,12 @@ export function BlogPostForm({
                   placeholder="https://example.com/image.png"
                   defaultValue={post?.image_url}
                   onBlur={(e) => setImagePreview(e.target.value)}
-                  readOnly={true}
+                  readOnly={isUploading}
                 />
               </div>
                {imagePreview && (
                 <div className="mt-2">
+                   <p className="text-sm font-medium mb-2">Image Preview:</p>
                    <Image src={imagePreview} alt="Image preview" width={120} height={80} className="rounded-md object-cover" />
                 </div>
               )}
@@ -214,7 +236,7 @@ export function BlogPostForm({
           <DialogFooter className="sticky bottom-0 bg-background py-4">
             <Button variant="outline" onClick={() => onOpenChange(false)} type="button">Cancel</Button>
             <Button type="submit" disabled={isPending || isUploading}>
-              {isPending ? "Saving..." : isUploading ? "Uploading..." : "Save Post"}
+              {isPending ? "Saving..." : isUploading ? "Wait for Upload..." : "Save Post"}
             </Button>
           </DialogFooter>
         </form>
