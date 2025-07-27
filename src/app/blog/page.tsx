@@ -30,7 +30,7 @@ export default async function BlogIndexPage() {
           </Button>
         </div>
       <header className="text-center mb-12">
-        <h1 className="text-4xl md:text-5xl font-extrabold russo-one-regular">Blog</h1>
+        <h1 className="text-4xl md:text-5xl font-extrabold">Blog</h1>
         <p className="text-lg text-muted-foreground mt-2">My latest articles and insights.</p>
       </header>
 

@@ -23,8 +23,8 @@ export default {
     },
     extend: {
       fontFamily: {
-        body: ['"Russo One"', 'sans-serif'],
-        headline: ['"Russo One"', 'sans-serif'],
+        body: ['"Public Sans"', 'sans-serif'],
+        headline: ['"Public Sans"', 'sans-serif'],
         code: ['monospace'],
       },
       colors: {

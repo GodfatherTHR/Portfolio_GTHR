@@ -56,7 +56,7 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
       </div>
 
       <header className="mb-8">
-        <h1 className="text-4xl md:text-5xl font-extrabold russo-one-regular mb-4 text-center">{post.title}</h1>
+        <h1 className="text-4xl md:text-5xl font-extrabold mb-4 text-center">{post.title}</h1>
         <div className="text-muted-foreground text-sm text-center">
           <span>By {post.author}</span>
           <span className="mx-2">&middot;</span>

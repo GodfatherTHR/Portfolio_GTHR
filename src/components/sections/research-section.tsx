@@ -16,7 +16,7 @@ export default async function ResearchSection() {
     <section id="research" className="py-16 md:py-24 bg-secondary">
       <div className="container">
         <div className="text-center mb-12">
-          <h2 className="text-3xl md:text-4xl font-bold russo-one-regular">Research & Publications</h2>
+          <h2 className="text-3xl md:text-4xl font-bold">Research & Publications</h2>
           <p className="text-lg text-muted-foreground mt-2">My contributions to the academic community.</p>
         </div>
         

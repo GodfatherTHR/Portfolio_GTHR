@@ -45,7 +45,7 @@ export default async function ResumeSection() {
         <section id="resume" className="py-16 md:py-24 bg-secondary">
             <div className="container">
                 <div className="text-center mb-12">
-                    <h2 className="text-3xl md:text-4xl font-bold russo-one-regular">{resume.title}</h2>
+                    <h2 className="text-3xl md:text-4xl font-bold">{resume.title}</h2>
                     <p className="text-lg text-muted-foreground mt-2 max-w-2xl mx-auto">{resume.intro}</p>
                      {resume.cv_download_link && (
                         <Button asChild className="mt-4">
@@ -59,7 +59,7 @@ export default async function ResumeSection() {
 
                 <div className="grid md:grid-cols-2 gap-12">
                     <div>
-                        <h3 className="text-2xl font-bold russo-one-regular mb-8 flex items-center gap-3"><Briefcase /> Professional Experience</h3>
+                        <h3 className="text-2xl font-bold mb-8 flex items-center gap-3"><Briefcase /> Professional Experience</h3>
                         <div className="space-y-8 relative pl-6 before:absolute before:inset-y-0 before:w-0.5 before:bg-border before:left-0">
                             {experiences.map((exp: any) => (
                                 <Card key={exp.id} className="relative flex flex-col">
@@ -83,7 +83,7 @@ export default async function ResumeSection() {
                         </div>
                     </div>
                      <div>
-                        <h3 className="text-2xl font-bold russo-one-regular mb-8 flex items-center gap-3"><GraduationCap /> Education</h3>
+                        <h3 className="text-2xl font-bold mb-8 flex items-center gap-3"><GraduationCap /> Education</h3>
                         <div className="space-y-8 relative pl-6 before:absolute before:inset-y-0 before:w-0.5 before:bg-border before:left-0">
                              {educations.map((edu: any) => (
                                 <Card key={edu.id} className="relative flex flex-col">
@@ -106,7 +106,7 @@ export default async function ResumeSection() {
                 </div>
 
                 <div className="mt-16">
-                     <h3 className="text-2xl font-bold russo-one-regular mb-8 text-center">Skills</h3>
+                     <h3 className="text-2xl font-bold mb-8 text-center">Skills</h3>
                      <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
                         {Object.entries(groupedSkills).map(([type, skillList]) => (
                             <Card key={type}>

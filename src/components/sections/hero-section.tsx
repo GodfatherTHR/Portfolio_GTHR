@@ -31,7 +31,7 @@ export default async function HeroSection() {
             </div>
           ) : (
           <>
-            <h1 className="text-4xl md:text-6xl font-extrabold russo-one-regular tracking-tight text-white">
+            <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight text-white">
               {heroContent?.title || "Shariful Haque"}
             </h1>
             <p className="mt-4 text-lg md:text-xl text-white">
