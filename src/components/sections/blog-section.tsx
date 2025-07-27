@@ -24,7 +24,7 @@ export default async function BlogSection() {
       <div className="container">
         <div className="text-center mb-12">
           <h2 className="text-3xl md:text-4xl font-bold">From the Blog</h2>
-          <p className="text-lg text-muted-foreground mt-2">Check out my latest articles and insights.</p>
+          <p className="text-lg text-white mt-2">Check out my latest articles and insights.</p>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {posts.map((post) => (
