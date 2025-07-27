@@ -14,6 +14,7 @@ import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
 import { Terminal } from "lucide-react";
 import EducationCard from "@/components/admin/education-card";
 import BlogPostsCard from "@/components/admin/blog-posts-card";
+import AboutCard from "@/components/admin/about-card";
 
 export default async function AdminPage() {
   const supabase = createClient();
@@ -36,7 +37,8 @@ export default async function AdminPage() {
     contactInfoResult,
     researchProfilesResult,
     educationResult,
-    blogPostsResult
+    blogPostsResult,
+    aboutResult
   ] = await Promise.all([
     supabase.from("portfolioowner").select().maybeSingle(),
     supabase.from("projects").select(),
@@ -48,12 +50,13 @@ export default async function AdminPage() {
     supabase.from("researchprofiles").select(),
     supabase.from("education").select(),
     supabase.from("blog_posts").select(),
+    supabase.from("aboutcontent").select("*, aboutexpertise(*)").single(),
   ]);
 
   const results = [
     ownerResult, projectsResult, experiencesResult, skillsResult, 
     publicationsResult, awardsResult, contactInfoResult, 
-    researchProfilesResult, educationResult, blogPostsResult
+    researchProfilesResult, educationResult, blogPostsResult, aboutResult
   ];
   
   const anyError = results.find(result => result.error);
@@ -85,6 +88,7 @@ export default async function AdminPage() {
   const researchProfiles = researchProfilesResult.data;
   const education = educationResult.data;
   const blogPosts = blogPostsResult.data;
+  const aboutContent = aboutResult.data;
 
   return (
     <div className="container mx-auto py-10">
@@ -102,6 +106,7 @@ export default async function AdminPage() {
 
       <div className="grid gap-10">
         <OwnerCard owner={owner} />
+        <AboutCard aboutContent={aboutContent} />
         <ContactInfoCard contactInfo={contactInfo} />
         <ProjectsCard projects={projects || []} />
         <PublicationsCard publications={publications || []} />

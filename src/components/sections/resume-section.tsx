@@ -1,4 +1,3 @@
-
 import { createClient } from "@/lib/supabase/server";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Briefcase, GraduationCap, Download, Terminal } from 'lucide-react';
@@ -6,7 +5,7 @@ import { Button } from "../ui/button";
 import Link from "next/link";
 import { Badge } from "../ui/badge";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import FaultyTerminal from "../animation/FaultyTerminal";
+import Squares from "../animation/Squares";
 
 export default async function ResumeSection() {
     const supabase = createClient();
@@ -15,10 +14,14 @@ export default async function ResumeSection() {
 
     if (error || !resume) {
         return (
-            <section id="resume" className="py-16 md:py-24 relative bg-transparent">
-                 <FaultyTerminal
-                    tint="#00ff00"
-                />
+            <section id="resume" className="py-16 md:py-24 relative bg-black">
+                 <Squares 
+                    speed={0.5} 
+                    squareSize={40}
+                    direction='down'
+                    borderColor='#fff'
+                    hoverFillColor='#222'
+                  />
                 <div className="container relative z-10">
                    <Alert variant="destructive">
                     <Terminal className="h-4 w-4" />
@@ -29,7 +32,7 @@ export default async function ResumeSection() {
                   </Alert>
                 </div>
             </section>
-        )
+        );
     }
 
     const experiences = resume.professionalexperience || [];
@@ -47,10 +50,14 @@ export default async function ResumeSection() {
 
 
     return (
-        <section id="resume" className="py-16 md:py-24 relative bg-transparent">
-             <FaultyTerminal
-                tint="#00ff00"
-            />
+        <section id="resume" className="py-16 md:py-24 relative bg-black">
+             <Squares 
+                speed={0.5} 
+                squareSize={40}
+                direction='down'
+                borderColor='#fff'
+                hoverFillColor='#222'
+              />
             <div className="container relative z-10">
                 <div className="text-center mb-12">
                     <h2 className="text-3xl md:text-4xl font-bold text-white">{resume.title}</h2>
@@ -60,7 +67,7 @@ export default async function ResumeSection() {
                             <Link href={resume.cv_download_link} target="_blank">
                                 <Download className="mr-2 h-4 w-4"/>
                                 {resume.cv_download_text}
-                            </Link>
+                            </Button>
                         </Button>
                     )}
                 </div>
@@ -117,7 +124,7 @@ export default async function ResumeSection() {
                      <h3 className="text-2xl font-bold mb-8 text-center text-white">Skills</h3>
                      <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
                         {Object.entries(groupedSkills).map(([type, skillList]) => (
-                            <Card key={type} className="bg-primary text-primary-foreground">
+                            <Card key={type} className="bg-primary">
                                 <CardHeader>
                                     <CardTitle className="capitalize text-xl text-primary-foreground">{type.replace(/_/g, ' ')}</CardTitle>
                                 </CardHeader>

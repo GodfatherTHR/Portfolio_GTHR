@@ -5,7 +5,7 @@ import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { format } from 'date-fns';
 import Image from "next/image";
-import FaultyTerminal from "../animation/FaultyTerminal";
+import Squares from "../animation/Squares";
 
 export default async function BlogSection() {
   const supabase = createClient();
@@ -21,9 +21,13 @@ export default async function BlogSection() {
   }
 
   return (
-    <section id="blog" className="py-16 md:py-24 relative bg-transparent">
-       <FaultyTerminal
-          tint="#00ff00"
+    <section id="blog" className="py-16 md:py-24 relative bg-black">
+       <Squares 
+          speed={0.5} 
+          squareSize={40}
+          direction='down'
+          borderColor='#fff'
+          hoverFillColor='#222'
         />
       <div className="container relative z-10">
         <div className="text-center mb-12">
