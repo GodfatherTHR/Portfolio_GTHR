@@ -17,23 +17,7 @@ export default async function ResumeSection() {
         return (
             <section id="resume" className="py-16 md:py-24 relative bg-transparent">
                  <FaultyTerminal
-                    scale={1.5}
-                    gridMul={[2, 1]}
-                    digitSize={1.2}
-                    timeScale={1}
-                    pause={false}
-                    scanlineIntensity={1}
-                    glitchAmount={1}
-                    flickerAmount={1}
-                    noiseAmp={1}
-                    chromaticAberration={0}
-                    dither={0}
-                    curvature={0}
-                    tint="#ffffff"
-                    mouseReact={true}
-                    mouseStrength={0.5}
-                    pageLoadAnimation={false}
-                    brightness={1}
+                    tint="#00ff00"
                 />
                 <div className="container relative z-10">
                    <Alert variant="destructive">
@@ -65,23 +49,7 @@ export default async function ResumeSection() {
     return (
         <section id="resume" className="py-16 md:py-24 relative bg-transparent">
              <FaultyTerminal
-                scale={1.5}
-                gridMul={[2, 1]}
-                digitSize={1.2}
-                timeScale={1}
-                pause={false}
-                scanlineIntensity={1}
-                glitchAmount={1}
-                flickerAmount={1}
-                noiseAmp={1}
-                chromaticAberration={0}
-                dither={0}
-                curvature={0}
-                tint="#ffffff"
-                mouseReact={true}
-                mouseStrength={0.5}
-                pageLoadAnimation={false}
-                brightness={1}
+                tint="#00ff00"
             />
             <div className="container relative z-10">
                 <div className="text-center mb-12">
@@ -149,7 +117,7 @@ export default async function ResumeSection() {
                      <h3 className="text-2xl font-bold mb-8 text-center">Skills</h3>
                      <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
                         {Object.entries(groupedSkills).map(([type, skillList]) => (
-                            <Card key={type} className="bg-primary text-primary-foreground">
+                            <Card key={type} className="bg-primary">
                                 <CardHeader>
                                     <CardTitle className="capitalize text-xl text-primary-foreground">{type.replace(/_/g, ' ')}</CardTitle>
                                 </CardHeader>

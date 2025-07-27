@@ -1,3 +1,4 @@
+
 "use client";
 
 import { Renderer, Program, Mesh, Color, Triangle } from "ogl";
@@ -262,7 +263,7 @@ export default function FaultyTerminal({
   chromaticAberration = 0,
   dither = 0,
   curvature = 0.2,
-  tint = "#ffffff",
+  tint = "#00ff00",
   mouseReact = true,
   mouseStrength = 0.2,
   dpr = Math.min(window.devicePixelRatio || 1, 2),
@@ -283,6 +284,7 @@ export default function FaultyTerminal({
   const timeOffsetRef = useRef<number>(Math.random() * 100);
 
   const tintVec = useMemo(() => hexToRgb(tint), [tint]);
+  const backgroundVec = useMemo(() => hexToRgb("#002300"), []);
 
   const ditherValue = useMemo(
     () => (typeof dither === "boolean" ? (dither ? 1 : 0) : dither),
@@ -305,7 +307,7 @@ export default function FaultyTerminal({
     const renderer = new Renderer({ dpr });
     rendererRef.current = renderer;
     const gl = renderer.gl;
-    gl.clearColor(0, 0, 0, 1);
+    gl.clearColor(backgroundVec[0], backgroundVec[1], backgroundVec[2], 1);
 
     const geometry = new Triangle(gl);
 
@@ -433,6 +435,7 @@ export default function FaultyTerminal({
     mouseStrength,
     pageLoadAnimation,
     brightness,
+    backgroundVec,
     handleMouseMove,
   ]);
 
