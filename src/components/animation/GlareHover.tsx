@@ -15,11 +15,11 @@ interface GlareHoverProps {
 
 const GlareHover: React.FC<GlareHoverProps> = ({
   children,
-  glareColor = "#ffffff",
-  glareOpacity = 0.5,
-  glareAngle = -45,
-  glareSize = 250,
-  transitionDuration = 650,
+  glareColor = "#e5e5e4",
+  glareOpacity = 0.3,
+  glareAngle = -30,
+  glareSize = 300,
+  transitionDuration = 800,
   playOnce = false,
   className = "",
   style = {},

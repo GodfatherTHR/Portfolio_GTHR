@@ -5,6 +5,7 @@ import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { format } from 'date-fns';
 import Image from "next/image";
+import FaultyTerminal from "../animation/FaultyTerminal";
 
 export default async function BlogSection() {
   const supabase = createClient();
@@ -20,11 +21,14 @@ export default async function BlogSection() {
   }
 
   return (
-    <section id="blog" className="py-16 md:py-24 bg-secondary">
-      <div className="container">
+    <section id="blog" className="py-16 md:py-24 relative bg-transparent">
+       <FaultyTerminal
+          tint="#00ff00"
+        />
+      <div className="container relative z-10">
         <div className="text-center mb-12">
-          <h2 className="text-3xl md:text-4xl font-bold russo-one-regular">From the Blog</h2>
-          <p className="text-lg text-muted-foreground mt-2">Check out my latest articles and insights.</p>
+          <h2 className="text-3xl md:text-4xl font-bold text-white">From the Blog</h2>
+          <p className="text-lg text-white mt-2">Check out my latest articles and insights.</p>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {posts.map((post) => (

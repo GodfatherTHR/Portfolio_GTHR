@@ -11,8 +11,12 @@ export async function generateMetadata(): Promise<Metadata> {
       default: 'Shariful Haque | Portfolio',
     },
     description: 'Personal portfolio of Shariful Haque, a passionate developer.',
-    other: {
-      'google-site-verification': 'c15UaCh43Q5i2d1-pP1IF-kS_t1X1-g-gR-g-g'
+    robots: {
+      index: true,
+      follow: true,
+    },
+    verification: {
+      google: '5UsrGLgWGhkR1HVyuJxxkcFXubmeePr6ozOWgTytdAM',
     }
   }
 }
@@ -27,9 +31,9 @@ export default function RootLayout({
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link href="https://fonts.googleapis.com/css2?family=Russo+One&display=swap" rel="stylesheet" />
+        <link href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet" />
       </head>
-      <body className="font-headline antialiased" suppressHydrationWarning={true}>
+      <body className="font-body antialiased" suppressHydrationWarning={true}>
         {children}
         <Toaster />
       </body>

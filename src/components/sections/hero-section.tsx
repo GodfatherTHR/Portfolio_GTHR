@@ -17,8 +17,17 @@ export default async function HeroSection() {
   return (
     <section id="hero" className="relative w-full h-[80vh] min-h-[600px] flex items-center justify-center text-center text-white overflow-hidden">
       <HeroAnimation />
-      <div className="absolute inset-0 bg-black/30"></div>
-      <div className="relative z-10 p-4">
+       <video 
+        autoPlay 
+        loop 
+        muted 
+        playsInline 
+        className="absolute inset-0 w-full h-full object-cover z-10 opacity-50"
+      >
+        <source src="https://res.cloudinary.com/dudwzh2xy/video/upload/v1717088931/0727_veybao.mp4" type="video/mp4" />
+      </video>
+      <div className="absolute inset-0 bg-black/30 z-20"></div>
+      <div className="relative z-30 p-4">
         {hasError ? (
             <div className="container max-w-2xl">
               <Alert variant="destructive" className="bg-destructive/50 border-destructive text-destructive-foreground">
@@ -31,18 +40,18 @@ export default async function HeroSection() {
             </div>
           ) : (
           <>
-            <h1 className="text-4xl md:text-6xl font-extrabold russo-one-regular tracking-tight">
+            <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight text-white">
               {heroContent?.title || "Shariful Haque"}
             </h1>
-            <p className="mt-4 text-lg md:text-xl text-gray-200">
+            <p className="mt-4 text-lg md:text-xl text-white">
               {(subtitles || []).map((s: any) => s.subtitle_text).join(' | ') || "Data Analytics | Blockchain Innovator | Researcher"}
             </p>
-            <p className="mt-4 max-w-2xl mx-auto text-lg md:text-xl text-gray-200">
+            <p className="mt-4 max-w-2xl mx-auto text-lg md:text-xl text-white">
               {heroContent?.description || "I'm a DBA student and data analytics expert pioneering blockchain and AI solutions for ERP systems and beyond."}
             </p>
             <div className="mt-8 flex justify-center gap-4">
               {ctas?.map((cta: any) => (
-                <Button asChild size="lg" key={cta.id} variant={cta.icon ? 'secondary' : 'default'}>
+                <Button asChild size="lg" key={cta.id} variant={cta.text === 'Contact Me' ? 'inverted' : cta.icon ? 'secondary' : 'default'}>
                   <Link href={cta.link}>
                     {cta.text}
                     {cta.icon === 'arrow-right-circle' && <ArrowRightCircle className="ml-2" />}

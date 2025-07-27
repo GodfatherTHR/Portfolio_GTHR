@@ -34,7 +34,7 @@ export default async function Header() {
       <div className="container flex h-14 max-w-screen-2xl items-center">
         <div className="mr-4 hidden md:flex">
           <Link href="/" className="mr-6 flex items-center space-x-2">
-            <span className="font-bold sm:inline-block russo-one-regular">
+            <span className="font-bold sm:inline-block">
               Shariful Haque
             </span>
           </Link>
@@ -66,7 +66,7 @@ export default async function Header() {
               </SheetTrigger>
               <SheetContent side="left">
                 <Link href="/" className="mb-4 flex items-center">
-                   <span className="font-bold russo-one-regular">Shariful Haque</span>
+                   <span className="font-bold">Shariful Haque</span>
                 </Link>
                 <div className="flex flex-col gap-4">
                   {navLinks.map((link) => (

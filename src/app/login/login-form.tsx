@@ -1,3 +1,4 @@
+
 "use client";
 
 import { Button } from "@/components/ui/button";
@@ -39,12 +40,9 @@ export default function LoginForm() {
         variant: "destructive",
       });
     } else {
-      toast({
-        title: "Login Successful",
-        description: "Redirecting to admin panel...",
-      });
-      router.push("/admin");
+      // The router.refresh() is important to refresh the server session
       router.refresh();
+      router.push("/admin");
     }
     setLoading(false);
   };
