@@ -42,7 +42,7 @@ export default async function HeroSection() {
             </p>
             <div className="mt-8 flex justify-center gap-4">
               {ctas?.map((cta: any) => (
-                <Button asChild size="lg" key={cta.id} variant={cta.icon ? 'secondary' : 'default'}>
+                <Button asChild size="lg" key={cta.id} variant={cta.text === 'Contact Me' ? 'inverted' : cta.icon ? 'secondary' : 'default'}>
                   <Link href={cta.link}>
                     {cta.text}
                     {cta.icon === 'arrow-right-circle' && <ArrowRightCircle className="ml-2" />}
