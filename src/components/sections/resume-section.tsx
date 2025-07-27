@@ -117,7 +117,7 @@ export default async function ResumeSection() {
                      <h3 className="text-2xl font-bold mb-8 text-center text-white">Skills</h3>
                      <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
                         {Object.entries(groupedSkills).map(([type, skillList]) => (
-                            <Card key={type} className="bg-primary">
+                            <Card key={type} className="bg-primary text-primary-foreground">
                                 <CardHeader>
                                     <CardTitle className="capitalize text-xl text-primary-foreground">{type.replace(/_/g, ' ')}</CardTitle>
                                 </CardHeader>
