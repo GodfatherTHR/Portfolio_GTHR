@@ -11,8 +11,12 @@ export async function generateMetadata(): Promise<Metadata> {
       default: 'Shariful Haque | Portfolio',
     },
     description: 'Personal portfolio of Shariful Haque, a passionate developer.',
-    other: {
-      'google-site-verification': 'c15UaCh43Q5i2d1-pP1IF-kS_t1X1-g-gR-g-g'
+    robots: {
+      index: true,
+      follow: true,
+    },
+    verification: {
+      google: '5UsrGLgWGhkR1HVyuJxxkcFXubmeePr6ozOWgTytdAM',
     }
   }
 }
