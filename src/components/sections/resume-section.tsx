@@ -46,7 +46,7 @@ export default async function ResumeSection() {
             <div className="container">
                 <div className="text-center mb-12">
                     <h2 className="text-3xl md:text-4xl font-bold">{resume.title}</h2>
-                    <p className="text-lg text-muted-foreground mt-2 max-w-2xl mx-auto">{resume.intro}</p>
+                    <p className="text-lg text-white mt-2 max-w-2xl mx-auto">{resume.intro}</p>
                      {resume.cv_download_link && (
                         <Button asChild className="mt-4">
                             <Link href={resume.cv_download_link} target="_blank">

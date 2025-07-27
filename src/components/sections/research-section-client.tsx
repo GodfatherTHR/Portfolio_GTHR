@@ -21,7 +21,6 @@ export default function ResearchSectionClient({ publications }: { publications: 
           <GlareHover
             key={pub.id}
             className="rounded-lg border bg-card text-card-foreground shadow-sm flex flex-col h-full"
-            glareColor="#6B46C1"
             glareOpacity={0.3}
             glareAngle={-30}
             glareSize={300}
