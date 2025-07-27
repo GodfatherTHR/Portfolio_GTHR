@@ -109,14 +109,14 @@ export default async function ResumeSection() {
                      <h3 className="text-2xl font-bold mb-8 text-center">Skills</h3>
                      <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
                         {Object.entries(groupedSkills).map(([type, skillList]) => (
-                            <Card key={type}>
+                            <Card key={type} className="bg-primary text-primary-foreground">
                                 <CardHeader>
-                                    <CardTitle className="capitalize text-xl">{type.replace(/_/g, ' ')}</CardTitle>
+                                    <CardTitle className="capitalize text-xl text-primary-foreground">{type.replace(/_/g, ' ')}</CardTitle>
                                 </CardHeader>
                                 <CardContent>
                                     <div className="flex flex-wrap gap-2">
                                         {(skillList as any[]).map((skill: any) => (
-                                            <Badge key={skill.id} variant="outline">{skill.skill_name}</Badge>
+                                            <Badge key={skill.id} variant="secondary">{skill.skill_name}</Badge>
                                         ))}
                                     </div>
                                 </CardContent>
