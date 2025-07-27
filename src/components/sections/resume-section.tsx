@@ -1,3 +1,4 @@
+
 import { createClient } from "@/lib/supabase/server";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Briefcase, GraduationCap, Download, Terminal } from 'lucide-react';
