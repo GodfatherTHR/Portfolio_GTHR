@@ -42,6 +42,101 @@ export async function updateOwner(formData: FormData) {
 }
 
 
+const aboutContentSchema = z.object({
+  id: z.coerce.number(),
+  title: z.string().min(1, 'Title is required'),
+  description: z.string().min(1, 'Description is required'),
+  image_src: z.string().url('Must be a valid URL').or(z.literal('')),
+  image_alt: z.string().optional(),
+  expertise_title: z.string().min(1, 'Expertise title is required'),
+  cta_text: z.string().optional(),
+  cta_link: z.string().url('Must be a valid URL').optional().or(z.literal('')),
+  cta_icon: z.string().optional(),
+});
+
+const expertiseItemSchema = z.object({
+  id: z.coerce.number().optional(),
+  expertise_item: z.string().min(1, 'Expertise item cannot be empty'),
+  about_content_id: z.coerce.number(),
+});
+
+export async function updateAboutContent(formData: FormData) {
+  const supabase = createClient();
+
+  const data = Object.fromEntries(formData);
+
+  const aboutContentParsed = aboutContentSchema.safeParse({
+    id: data.id,
+    title: data.title,
+    description: data.description,
+    image_src: data.image_src,
+    image_alt: data.image_alt,
+    expertise_title: data.expertise_title,
+    cta_text: data.cta_text,
+    cta_link: data.cta_link,
+    cta_icon: data.cta_icon,
+  });
+
+  if (!aboutContentParsed.success) {
+    return { error: aboutContentParsed.error.format() };
+  }
+
+  const { error: aboutError } = await supabase
+    .from('aboutcontent')
+    .update(aboutContentParsed.data)
+    .eq('id', aboutContentParsed.data.id);
+
+  if (aboutError) {
+    return { error: { _server: ['Failed to update about content.'] } };
+  }
+
+  // Handle expertise items
+  const expertiseItems = Object.keys(data)
+    .filter(key => key.startsWith('expertise_item_'))
+    .map(key => {
+      const index = key.replace('expertise_item_', '');
+      return {
+        id: data[`expertise_id_${index}`] ? Number(data[`expertise_id_${index}`]) : undefined,
+        expertise_item: data[key],
+        about_content_id: aboutContentParsed.data.id,
+      };
+    });
+
+  const itemsToDelete = (data.deleted_expertise_ids as string || '')
+    .split(',')
+    .filter(Boolean)
+    .map(Number);
+    
+  if (itemsToDelete.length > 0) {
+      const { error: deleteError } = await supabase
+          .from('aboutexpertise')
+          .delete()
+          .in('id', itemsToDelete);
+      if (deleteError) {
+          return { error: { _server: ['Failed to delete expertise items.'] } };
+      }
+  }
+
+  const parsedExpertiseItems = z.array(expertiseItemSchema).safeParse(expertiseItems);
+  if (!parsedExpertiseItems.success) {
+    return { error: { _server: ['Invalid expertise item format.'] } };
+  }
+
+  const { data: upsertedData, error: expertiseError } = await supabase
+    .from('aboutexpertise')
+    .upsert(parsedExpertiseItems.data)
+    .select();
+
+  if (expertiseError) {
+    return { error: { _server: [expertiseError.message] } };
+  }
+
+  revalidatePath('/admin');
+  revalidatePath('/#about');
+
+  return { data: 'About section updated successfully.' };
+}
+
 const projectSchema = z.object({
   id: z.coerce.number().optional(),
   title: z.string().min(1),

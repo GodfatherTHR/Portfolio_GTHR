@@ -2,7 +2,7 @@ import { createClient } from "@/lib/supabase/server";
 import { Terminal } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import ResearchSectionClient from "./research-section-client";
-import FaultyTerminal from "../animation/FaultyTerminal";
+import Squares from "../animation/Squares";
 
 export default async function ResearchSection() {
   const supabase = createClient();
@@ -14,9 +14,13 @@ export default async function ResearchSection() {
   const hasContent = !error && publications && publications.length > 0;
 
   return (
-    <section id="research" className="py-16 md:py-24 relative bg-transparent">
-        <FaultyTerminal
-          tint="#00ff00"
+    <section id="research" className="py-16 md:py-24 relative bg-black">
+        <Squares 
+          speed={0.5} 
+          squareSize={40}
+          direction='down'
+          borderColor='#fff'
+          hoverFillColor='#222'
         />
       <div className="container relative z-10">
         <div className="text-center mb-12">
