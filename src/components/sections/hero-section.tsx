@@ -31,13 +31,13 @@ export default async function HeroSection() {
             </div>
           ) : (
           <>
-            <h1 className="text-4xl md:text-6xl font-extrabold russo-one-regular tracking-tight">
+            <h1 className="text-4xl md:text-6xl font-extrabold russo-one-regular tracking-tight text-white">
               {heroContent?.title || "Shariful Haque"}
             </h1>
-            <p className="mt-4 text-lg md:text-xl text-gray-200">
+            <p className="mt-4 text-lg md:text-xl text-white">
               {(subtitles || []).map((s: any) => s.subtitle_text).join(' | ') || "Data Analytics | Blockchain Innovator | Researcher"}
             </p>
-            <p className="mt-4 max-w-2xl mx-auto text-lg md:text-xl text-gray-200">
+            <p className="mt-4 max-w-2xl mx-auto text-lg md:text-xl text-white">
               {heroContent?.description || "I'm a DBA student and data analytics expert pioneering blockchain and AI solutions for ERP systems and beyond."}
             </p>
             <div className="mt-8 flex justify-center gap-4">
