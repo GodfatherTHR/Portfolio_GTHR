@@ -17,8 +17,17 @@ export default async function HeroSection() {
   return (
     <section id="hero" className="relative w-full h-[80vh] min-h-[600px] flex items-center justify-center text-center text-white overflow-hidden">
       <HeroAnimation />
-      <div className="absolute inset-0 bg-black/30"></div>
-      <div className="relative z-10 p-4">
+       <video 
+        autoPlay 
+        loop 
+        muted 
+        playsInline 
+        className="absolute inset-0 w-full h-full object-cover z-10 opacity-25"
+      >
+        <source src="https://res.cloudinary.com/dudwzh2xy/video/upload/v1717088931/0727_veybao.mp4" type="video/mp4" />
+      </video>
+      <div className="absolute inset-0 bg-black/30 z-20"></div>
+      <div className="relative z-30 p-4">
         {hasError ? (
             <div className="container max-w-2xl">
               <Alert variant="destructive" className="bg-destructive/50 border-destructive text-destructive-foreground">
