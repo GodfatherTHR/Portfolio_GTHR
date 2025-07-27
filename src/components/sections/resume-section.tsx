@@ -1,3 +1,4 @@
+
 import { createClient } from "@/lib/supabase/server";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Briefcase, GraduationCap, Download, Terminal } from 'lucide-react';
@@ -15,13 +16,13 @@ export default async function ResumeSection() {
     if (error || !resume) {
         return (
             <section id="resume" className="py-16 md:py-24 relative bg-black">
-                 <Squares 
-                    speed={0.5} 
+                <Squares
+                    speed={0.5}
                     squareSize={40}
                     direction='down'
                     borderColor='#fff'
                     hoverFillColor='#222'
-                  />
+                />
                 <div className="container relative z-10">
                    <Alert variant="destructive">
                     <Terminal className="h-4 w-4" />
@@ -67,7 +68,7 @@ export default async function ResumeSection() {
                             <Link href={resume.cv_download_link} target="_blank">
                                 <Download className="mr-2 h-4 w-4"/>
                                 {resume.cv_download_text}
-                            </Button>
+                            </Link>
                         </Button>
                     )}
                 </div>
@@ -86,7 +87,7 @@ export default async function ResumeSection() {
                                         <CardDescription className="text-primary-foreground/80">{exp.company} | {exp.dates}</CardDescription>
                                     </CardHeader>
                                     <CardContent className="flex-grow">
-                                        {exp.description && <p className="text-primary-foreground/80 mb-4">{exp.description}</p>}
+                                        <p className="text-primary-foreground/80 mb-4">{exp.description || ''}</p>
                                         <ul className="list-disc list-inside space-y-1 text-primary-foreground/80">
                                             {exp.experienceresponsibilities.map((resp: any) => (
                                                 <li key={resp.id}>{resp.responsibility}</li>
