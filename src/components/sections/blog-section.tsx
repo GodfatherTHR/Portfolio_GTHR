@@ -5,6 +5,7 @@ import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { format } from 'date-fns';
 import Image from "next/image";
+import FaultyTerminal from "../animation/FaultyTerminal";
 
 export default async function BlogSection() {
   const supabase = createClient();
@@ -20,8 +21,27 @@ export default async function BlogSection() {
   }
 
   return (
-    <section id="blog" className="py-16 md:py-24 bg-secondary">
-      <div className="container">
+    <section id="blog" className="py-16 md:py-24 relative bg-transparent">
+       <FaultyTerminal
+          scale={1.5}
+          gridMul={[2, 1]}
+          digitSize={1.2}
+          timeScale={1}
+          pause={false}
+          scanlineIntensity={1}
+          glitchAmount={1}
+          flickerAmount={1}
+          noiseAmp={1}
+          chromaticAberration={0}
+          dither={0}
+          curvature={0}
+          tint="#ffffff"
+          mouseReact={true}
+          mouseStrength={0.5}
+          pageLoadAnimation={false}
+          brightness={1}
+        />
+      <div className="container relative z-10">
         <div className="text-center mb-12">
           <h2 className="text-3xl md:text-4xl font-bold">From the Blog</h2>
           <p className="text-lg text-white mt-2">Check out my latest articles and insights.</p>
