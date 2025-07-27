@@ -2,7 +2,6 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { createClient } from "@/lib/supabase/server";
 import { ArrowRightCircle, Terminal } from "lucide-react";
-import HeroAnimation from "@/components/animation/hero-animation";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 export default async function HeroSection() {
@@ -16,7 +15,6 @@ export default async function HeroSection() {
 
   return (
     <section id="hero" className="relative w-full h-[80vh] min-h-[600px] flex items-center justify-center text-center text-white overflow-hidden">
-      <HeroAnimation />
        <video 
         autoPlay 
         loop 
