@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { Trash2 } from 'lucide-react';
+import React from "react";
 
 export function DeleteConfirmationDialog({
   onConfirm,
@@ -21,6 +22,8 @@ export function DeleteConfirmationDialog({
   onConfirm: () => void;
   itemName: string;
 }) {
+  const descriptionId = React.useId();
+
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>
@@ -28,10 +31,10 @@ export function DeleteConfirmationDialog({
             <Trash2 className="h-4 w-4"/>
         </Button>
       </AlertDialogTrigger>
-      <AlertDialogContent>
+      <AlertDialogContent aria-describedby={descriptionId}>
         <AlertDialogHeader>
           <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-          <AlertDialogDescription>
+          <AlertDialogDescription id={descriptionId}>
             This action cannot be undone. This will permanently delete the item: <br/>
             <strong>{itemName}</strong>
           </AlertDialogDescription>
