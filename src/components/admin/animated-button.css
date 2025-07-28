@@ -19,7 +19,6 @@
   position: relative;
   width: 220px;
   height: 80px;
-  transform: rotate(353deg) skewX(4deg);
 }
 
 .bg {
@@ -293,22 +292,6 @@
   animation: splash 0.8s cubic-bezier(0.3, 0, 0, 1) forwards 0.05s;
 }
 
-.button:focus .path {
-  animation: path 1.6s ease forwards 0.2s;
-}
-
-.button:focus .icon {
-  animation: arrow 1s cubic-bezier(0.7, -0.5, 0.3, 1.5) forwards;
-}
-
-.char.state-2 span::after,
-.button:focus .char.state-1 span {
-  animation: charDisappear 0.5s ease forwards calc(var(--i) * 0.03s);
-}
-
-.button:focus .char.state-2 span::after {
-  animation: charAppear 1s ease backwards calc(var(--i) * 0.03s);
-}
 
 @keyframes spin {
   0% {

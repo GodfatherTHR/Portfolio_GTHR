@@ -5,7 +5,7 @@ import './animated-button.css';
 
 const AnimatedButton = () => {
   return (
-    <button className="button">
+    <button className="button" type="button">
       <div className="bg"></div>
       <svg
         xmlns="http://www.w3.org/2000/svg"
