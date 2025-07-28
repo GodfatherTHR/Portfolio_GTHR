@@ -1,3 +1,4 @@
+
 "use client";
 
 import {
@@ -41,7 +42,7 @@ export function AboutForm({
   useEffect(() => {
     setImagePreview(aboutContent?.image_src || null);
     setExpertiseItems(aboutContent?.aboutexpertise || []);
-  }, [aboutContent]);
+  }, [aboutContent, isOpen]);
 
   const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -83,14 +84,14 @@ export function AboutForm({
   };
   
   const handleAddExpertise = () => {
-      setExpertiseItems([...expertiseItems, { id: `new-${Date.now()}`, expertise_item: '', about_id: aboutContent.id }]);
+      setExpertiseItems([...expertiseItems, { id: null, expertise_item: '', about_id: aboutContent.id }]);
   };
   
-  const handleRemoveExpertise = (id: number | string) => {
+  const handleRemoveExpertise = (id: number | null, index: number) => {
     if (typeof id === 'number') {
       setDeletedIds([...deletedIds, id]);
     }
-    setExpertiseItems(expertiseItems.filter((item: any) => item.id !== id));
+    setExpertiseItems(expertiseItems.filter((_: any, i: number) => i !== index));
   };
   
   const handleFormSubmit = (event: React.FormEvent<HTMLFormElement>) => {
@@ -162,15 +163,15 @@ export function AboutForm({
               </div>
               <div className="space-y-2">
                 {expertiseItems.map((item: any, index: number) => (
-                    <div key={item.id} className="flex items-center gap-2">
-                         <input type="hidden" name={`expertise_id_${index}`} value={typeof item.id === 'number' ? item.id : ''} />
+                    <div key={index} className="flex items-center gap-2">
+                         <input type="hidden" name={`expertise_id_${index}`} value={item.id || 'null'} />
                          <Input 
                             name={`expertise_item_${index}`} 
                             defaultValue={item.expertise_item} 
                             placeholder="e.g. Data Analytics"
                             required
                          />
-                         <Button type="button" variant="destructive" size="icon" onClick={() => handleRemoveExpertise(item.id)}>
+                         <Button type="button" variant="destructive" size="icon" onClick={() => handleRemoveExpertise(item.id, index)}>
                             <Trash2 className="h-4 w-4" />
                          </Button>
                     </div>

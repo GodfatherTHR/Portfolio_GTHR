@@ -97,8 +97,9 @@ export async function updateAboutContent(formData: FormData) {
     .filter(key => key.startsWith('expertise_item_'))
     .map(key => {
       const index = key.replace('expertise_item_', '');
+      const idValue = data[`expertise_id_${index}`];
       return {
-        id: data[`expertise_id_${index}`] ? Number(data[`expertise_id_${index}`]) : undefined,
+        id: idValue && idValue !== 'null' ? Number(idValue) : undefined,
         expertise_item: data[key],
         about_id: aboutContentParsed.data.id,
       };
