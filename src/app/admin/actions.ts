@@ -1,4 +1,5 @@
 
+
 'use server'
 
 import { createClient } from '@/lib/supabase/server'
@@ -187,29 +188,66 @@ export async function deleteProject(id: number) {
 
 const publicationSchema = z.object({
   id: z.coerce.number().optional(),
-  title: z.string().min(1),
-  venue: z.string().min(1),
-  year: z.coerce.number().min(1900).max(2100),
-  link: z.string().url().optional().or(z.literal('')),
+  title: z.string().min(1, 'Title is required'),
+  venue: z.string().min(1, 'Venue is required'),
+  year: z.coerce.number().min(1900, 'Invalid year').max(2100, 'Invalid year'),
+  link: z.string().url('Invalid URL').optional().or(z.literal('')),
   link_text: z.string().optional(),
   type: z.string().optional(),
-  citation_count: z.coerce.number().optional(),
+  citation_count: z.coerce.number().optional().default(0),
+  description: z.string().optional(),
+  json_id: z.string().optional(),
 });
 
 export async function upsertPublication(formData: FormData) {
   const supabase = createClient();
   const rawData = Object.fromEntries(formData);
+  const selectedTagIds = formData.getAll('tags').map(String);
+
   const parsed = publicationSchema.safeParse(rawData);
 
   if (!parsed.success) {
     return { error: parsed.error.format() };
   }
-  
-  const { id, ...data } = parsed.data;
-  const { error } = await supabase.from('publications').upsert(id ? { id, ...data } : data);
 
-  if (error) {
-    return { error: { _server: [error.message] } };
+  // 1. Upsert publication and get its ID
+  const { id, ...data } = parsed.data;
+  const { data: upsertedPublication, error } = await supabase
+    .from('publications')
+    .upsert(id ? { id, ...data } : data)
+    .select('id')
+    .single();
+
+  if (error || !upsertedPublication) {
+    return { error: { _server: [error?.message || 'Failed to save publication.'] } };
+  }
+
+  const publicationId = upsertedPublication.id;
+
+  // 2. Remove existing tag relations for this publication
+  const { error: deleteError } = await supabase
+    .from('publicationtags')
+    .delete()
+    .eq('publication_id', publicationId);
+
+  if (deleteError) {
+    return { error: { _server: ['Failed to update publication tags (delete step).'] } };
+  }
+
+  // 3. Insert new tag relations if any tags were selected
+  if (selectedTagIds.length > 0) {
+    const newRelations = selectedTagIds.map(tagId => ({
+      publication_id: publicationId,
+      tag_id: parseInt(tagId, 10),
+    }));
+
+    const { error: insertError } = await supabase
+      .from('publicationtags')
+      .insert(newRelations);
+
+    if (insertError) {
+      return { error: { _server: ['Failed to update publication tags (insert step).'] } };
+    }
   }
 
   revalidatePath('/admin');
@@ -217,8 +255,13 @@ export async function upsertPublication(formData: FormData) {
   return { data: 'Publication saved successfully.' };
 }
 
+
 export async function deletePublication(id: number) {
   const supabase = createClient();
+  
+  // Need to delete from the join table first due to foreign key constraints
+  await supabase.from('publicationtags').delete().eq('publication_id', id);
+  
   const { error } = await supabase.from('publications').delete().eq('id', id);
 
   if (error) {
@@ -580,5 +623,7 @@ export async function markMessageAsRead(id: number) {
   revalidatePath('/admin/messages')
   return { data: 'Message marked as read.' }
 }
+
+    
 
     

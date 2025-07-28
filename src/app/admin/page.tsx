@@ -38,25 +38,28 @@ export default async function AdminPage() {
     researchProfilesResult,
     educationResult,
     blogPostsResult,
-    aboutResult
+    aboutResult,
+    tagsResult,
   ] = await Promise.all([
     supabase.from("portfolioowner").select().maybeSingle(),
     supabase.from("projects").select(),
     supabase.from("professionalexperience").select(),
     supabase.from("skills").select(),
-    supabase.from("publications").select(),
+    supabase.from("publications").select("*, publicationtags(*, tags(*))"),
     supabase.from("awards").select(),
     supabase.from("contactinfo").select().maybeSingle(),
     supabase.from("researchprofiles").select(),
     supabase.from("education").select(),
     supabase.from("blog_posts").select(),
     supabase.from("aboutcontent").select("*, aboutexpertise(*)").single(),
+    supabase.from("tags").select("*"),
   ]);
 
   const results = [
     ownerResult, projectsResult, experiencesResult, skillsResult, 
     publicationsResult, awardsResult, contactInfoResult, 
-    researchProfilesResult, educationResult, blogPostsResult, aboutResult
+    researchProfilesResult, educationResult, blogPostsResult, aboutResult,
+    tagsResult,
   ];
   
   const anyError = results.find(result => result.error);
@@ -89,6 +92,7 @@ export default async function AdminPage() {
   const education = educationResult.data;
   const blogPosts = blogPostsResult.data;
   const aboutContent = aboutResult.data;
+  const allTags = tagsResult.data;
 
   return (
     <div className="container mx-auto py-10">
@@ -109,7 +113,7 @@ export default async function AdminPage() {
         <AboutCard aboutContent={aboutContent} />
         <ContactInfoCard contactInfo={contactInfo} />
         <ProjectsCard projects={projects || []} />
-        <PublicationsCard publications={publications || []} />
+        <PublicationsCard publications={publications || []} allTags={allTags || []} />
         <ResearchProfilesCard researchProfiles={researchProfiles || []} />
         <ExperienceCard experiences={experiences || []} />
         <EducationCard education={education || []} />
@@ -120,3 +124,5 @@ export default async function AdminPage() {
     </div>
   );
 }
+
+    
