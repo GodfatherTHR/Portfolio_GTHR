@@ -150,31 +150,72 @@ const projectSchema = z.object({
   button_text: z.string().optional(),
   icon: z.string().optional(),
   json_id: z.string().optional(),
-})
+  image_src: z.string().url().optional().or(z.literal('')),
+  alt_text: z.string().optional(),
+});
 
 export async function upsertProject(formData: FormData) {
-  const supabase = createClient()
-  const rawData = Object.fromEntries(formData)
-  const parsed = projectSchema.safeParse(rawData)
-  
+  const supabase = createClient();
+  const rawData = Object.fromEntries(formData);
+  const selectedTagIds = formData.getAll('tags').map(String);
+
+  const parsed = projectSchema.safeParse(rawData);
+
   if (!parsed.success) {
-    return { error: parsed.error.format() }
+    return { error: parsed.error.format() };
   }
 
-  const { id, ...data } = parsed.data
-  const { error } = await supabase.from('projects').upsert(id ? { id, ...data } : data)
+  // 1. Upsert project and get its ID
+  const { id, ...data } = parsed.data;
+  const { data: upsertedProject, error } = await supabase
+    .from('projects')
+    .upsert(id ? { id, ...data } : data)
+    .select('id')
+    .single();
 
-  if (error) {
-    return { error: { _server: [error.message] } }
+  if (error || !upsertedProject) {
+    return { error: { _server: [error?.message || 'Failed to save project.'] } };
   }
 
-  revalidatePath('/admin')
-  revalidatePath('/#projects')
-  return { data: 'Project saved successfully.' }
+  const projectId = upsertedProject.id;
+
+  // 2. Remove existing tag relations for this project
+  const { error: deleteError } = await supabase
+    .from('projecttags')
+    .delete()
+    .eq('project_id', projectId);
+
+  if (deleteError) {
+    return { error: { _server: ['Failed to update project tags (delete step).'] } };
+  }
+
+  // 3. Insert new tag relations if any tags were selected
+  if (selectedTagIds.length > 0) {
+    const newRelations = selectedTagIds.map(tagId => ({
+      project_id: projectId,
+      tag_id: parseInt(tagId, 10),
+    }));
+
+    const { error: insertError } = await supabase
+      .from('projecttags')
+      .insert(newRelations);
+
+    if (insertError) {
+      return { error: { _server: ['Failed to update project tags (insert step).'] } };
+    }
+  }
+
+  revalidatePath('/admin');
+  revalidatePath('/#projects');
+  return { data: 'Project saved successfully.' };
 }
 
 export async function deleteProject(id: number) {
     const supabase = createClient();
+
+    // Need to delete from the join table first due to foreign key constraints
+    await supabase.from('projecttags').delete().eq('project_id', id);
+
     const { error } = await supabase.from('projects').delete().eq('id', id);
 
     if (error) {
@@ -623,7 +664,3 @@ export async function markMessageAsRead(id: number) {
   revalidatePath('/admin/messages')
   return { data: 'Message marked as read.' }
 }
-
-    
-
-    

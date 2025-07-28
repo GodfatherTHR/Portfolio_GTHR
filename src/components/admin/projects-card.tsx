@@ -1,3 +1,4 @@
+
 "use client";
 
 import {
@@ -24,7 +25,7 @@ import { upsertProject, deleteProject } from "@/app/admin/actions";
 import { ProjectForm } from "./project-form";
 import { DeleteConfirmationDialog } from "./delete-confirmation-dialog";
 
-export default function ProjectsCard({ projects }: { projects: any[] }) {
+export default function ProjectsCard({ projects, allTags }: { projects: any[], allTags: any[] }) {
   const { toast } = useToast();
   const [isPending, startTransition] = useTransition();
   const [showForm, setShowForm] = useState(false);
@@ -36,7 +37,7 @@ export default function ProjectsCard({ projects }: { projects: any[] }) {
       if (result?.error) {
         toast({
           title: "Error",
-          description: "Failed to save project.",
+          description: result.error._server?.[0] || "Failed to save project.",
           variant: "destructive",
         });
       } else {
@@ -84,6 +85,7 @@ export default function ProjectsCard({ projects }: { projects: any[] }) {
         isOpen={showForm}
         onOpenChange={setShowForm}
         project={selectedProject}
+        allTags={allTags}
         onSave={handleSave}
         isPending={isPending}
       />
@@ -100,7 +102,7 @@ export default function ProjectsCard({ projects }: { projects: any[] }) {
               <TableRow>
                 <TableHead>Title</TableHead>
                 <TableHead>Category</TableHead>
-                <TableHead>Description</TableHead>
+                <TableHead>Tags</TableHead>
                 <TableHead className="text-right">Actions</TableHead>
               </TableRow>
             </TableHeader>
@@ -111,7 +113,13 @@ export default function ProjectsCard({ projects }: { projects: any[] }) {
                   <TableCell>
                     <Badge variant="secondary">{project.category}</Badge>
                   </TableCell>
-                  <TableCell>{project.description}</TableCell>
+                  <TableCell className="max-w-[200px]">
+                     <div className="flex flex-wrap gap-1">
+                        {project.projecttags?.map((pt: any) => (
+                          <Badge key={pt.tag_id} variant="outline">{pt.tags.name}</Badge>
+                        ))}
+                      </div>
+                  </TableCell>
                   <TableCell className="text-right space-x-2">
                     <Button
                       variant="outline"

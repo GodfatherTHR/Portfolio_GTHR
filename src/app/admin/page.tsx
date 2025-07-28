@@ -1,3 +1,4 @@
+
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import { Button } from "@/components/ui/button";
@@ -42,7 +43,7 @@ export default async function AdminPage() {
     tagsResult,
   ] = await Promise.all([
     supabase.from("portfolioowner").select().maybeSingle(),
-    supabase.from("projects").select(),
+    supabase.from("projects").select("*, projecttags(*, tags(*))"),
     supabase.from("professionalexperience").select(),
     supabase.from("skills").select(),
     supabase.from("publications").select("*, publicationtags(*, tags(*))"),
@@ -112,7 +113,7 @@ export default async function AdminPage() {
         <OwnerCard owner={owner} />
         <AboutCard aboutContent={aboutContent} />
         <ContactInfoCard contactInfo={contactInfo} />
-        <ProjectsCard projects={projects || []} />
+        <ProjectsCard projects={projects || []} allTags={allTags || []} />
         <PublicationsCard publications={publications || []} allTags={allTags || []} />
         <ResearchProfilesCard researchProfiles={researchProfiles || []} />
         <ExperienceCard experiences={experiences || []} />
@@ -124,5 +125,3 @@ export default async function AdminPage() {
     </div>
   );
 }
-
-    
