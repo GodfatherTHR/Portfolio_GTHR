@@ -83,7 +83,7 @@ export function AboutForm({
   };
   
   const handleAddExpertise = () => {
-      setExpertiseItems([...expertiseItems, { id: `new-${Date.now()}`, expertise_item: '', about_content_id: aboutContent.id }]);
+      setExpertiseItems([...expertiseItems, { id: `new-${Date.now()}`, expertise_item: '', about_id: aboutContent.id }]);
   };
   
   const handleRemoveExpertise = (id: number | string) => {

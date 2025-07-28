@@ -58,7 +58,7 @@ const aboutContentSchema = z.object({
 const expertiseItemSchema = z.object({
   id: z.coerce.number().optional(),
   expertise_item: z.string().min(1, 'Expertise item cannot be empty'),
-  about_content_id: z.coerce.number(),
+  about_id: z.coerce.number(),
 });
 
 export async function updateAboutContent(formData: FormData) {
@@ -100,7 +100,7 @@ export async function updateAboutContent(formData: FormData) {
       return {
         id: data[`expertise_id_${index}`] ? Number(data[`expertise_id_${index}`]) : undefined,
         expertise_item: data[key],
-        about_content_id: aboutContentParsed.data.id,
+        about_id: aboutContentParsed.data.id,
       };
     });
 
