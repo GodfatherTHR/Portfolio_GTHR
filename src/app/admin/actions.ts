@@ -79,6 +79,7 @@ export async function updateAboutContent(formData: FormData) {
   });
 
   if (!aboutContentParsed.success) {
+    console.error("About content validation failed:", aboutContentParsed.error.format());
     return { error: aboutContentParsed.error.format() };
   }
 
