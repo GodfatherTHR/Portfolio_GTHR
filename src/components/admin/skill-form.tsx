@@ -1,3 +1,4 @@
+
 "use client";
 
 import {
@@ -20,12 +21,10 @@ import {
 import { useState, useEffect } from "react";
 
 const skillTypes = [
-    "programming_languages",
-    "web_development",
-    "cloud_and_devops",
-    "data_analytics_and_visualization",
-    "blockchain_and_web3",
-    "tools_and_ide"
+    "technical",
+    "soft",
+    "tools_languages",
+    "research"
 ];
 
 
