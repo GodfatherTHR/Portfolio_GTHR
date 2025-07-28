@@ -59,8 +59,7 @@ export function SkillForm({
           </div>
           <div className="grid gap-2">
             <Label htmlFor="skill_type">Skill Type</Label>
-            <input type="hidden" name="skill_type" value={skillType} />
-             <Select name="skill_type_select" onValueChange={setSkillType} defaultValue={skillType} required>
+             <Select name="skill_type" onValueChange={setSkillType} defaultValue={skillType} required>
                 <SelectTrigger>
                     <SelectValue placeholder="Select a skill type" />
                 </SelectTrigger>

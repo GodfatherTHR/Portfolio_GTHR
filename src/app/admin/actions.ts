@@ -403,30 +403,39 @@ export async function deleteAward(id: number) {
 
 const skillSchema = z.object({
   id: z.coerce.number().optional(),
-  skill_name: z.string().min(1),
-  skill_type: z.string().min(1),
-  resume_id: z.coerce.number().optional().default(1),
+  skill_name: z.string().min(1, 'Skill name is required'),
+  skill_type: z.string().min(1, 'Skill type is required'),
 });
 
 export async function upsertSkill(formData: FormData) {
-    const supabase = createClient();
-    const rawData = Object.fromEntries(formData);
-    const parsed = skillSchema.safeParse(rawData);
-    
-    if (!parsed.success) {
-        return { error: parsed.error.format() };
-    }
+  const supabase = createClient();
+  const rawData = Object.fromEntries(formData);
 
-    const { id, ...data } = parsed.data;
-    const { error } = await supabase.from('skills').upsert(id ? { id, ...data } : data);
+  const parsed = skillSchema.safeParse(rawData);
 
-    if (error) {
-        return { error: { _server: [error.message] } };
-    }
+  if (!parsed.success) {
+    console.error("Skill validation failed:", parsed.error.format());
+    return { error: parsed.error.format() };
+  }
 
-    revalidatePath('/admin');
-    revalidatePath('/#resume');
-    return { data: 'Skill saved successfully.' };
+  const { id, ...data } = parsed.data;
+  const dataToUpsert = {
+    ...data,
+    resume_id: 1, // Always associate with the main resume
+  };
+
+  const { error } = await supabase
+    .from('skills')
+    .upsert(id ? { id, ...dataToUpsert } : dataToUpsert);
+
+  if (error) {
+    console.error("Supabase skill upsert error:", error);
+    return { error: { _server: [error.message] } };
+  }
+
+  revalidatePath('/admin');
+  revalidatePath('/#resume');
+  return { data: 'Skill saved successfully.' };
 }
 
 export async function deleteSkill(id: number) {
