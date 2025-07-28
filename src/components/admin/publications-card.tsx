@@ -22,8 +22,9 @@ import { useToast } from "@/hooks/use-toast";
 import { upsertPublication, deletePublication } from "@/app/admin/actions";
 import { PublicationForm } from "./publication-form";
 import { DeleteConfirmationDialog } from "./delete-confirmation-dialog";
+import { Badge } from "@/components/ui/badge";
 
-export default function PublicationsCard({ publications }: { publications: any[] }) {
+export default function PublicationsCard({ publications, allTags }: { publications: any[], allTags: any[] }) {
   const { toast } = useToast();
   const [isPending, startTransition] = useTransition();
   const [showForm, setShowForm] = useState(false);
@@ -35,7 +36,7 @@ export default function PublicationsCard({ publications }: { publications: any[]
       if (result?.error) {
         toast({
           title: "Error",
-          description: "Failed to save publication.",
+          description: result.error._server?.[0] || "Failed to save publication.",
           variant: "destructive",
         });
       } else {
@@ -83,6 +84,7 @@ export default function PublicationsCard({ publications }: { publications: any[]
         isOpen={showForm}
         onOpenChange={setShowForm}
         publication={selectedPublication}
+        allTags={allTags}
         onSave={handleSave}
         isPending={isPending}
       />
@@ -98,6 +100,7 @@ export default function PublicationsCard({ publications }: { publications: any[]
                 <TableHead>Title</TableHead>
                 <TableHead>Venue</TableHead>
                 <TableHead>Year</TableHead>
+                <TableHead>Tags</TableHead>
                 <TableHead className="text-right">Actions</TableHead>
               </TableRow>
             </TableHeader>
@@ -107,6 +110,13 @@ export default function PublicationsCard({ publications }: { publications: any[]
                   <TableCell className="font-medium">{pub.title}</TableCell>
                   <TableCell>{pub.venue}</TableCell>
                   <TableCell>{pub.year}</TableCell>
+                  <TableCell className="max-w-[200px]">
+                     <div className="flex flex-wrap gap-1">
+                        {pub.publicationtags?.map((pt: any) => (
+                          <Badge key={pt.tag_id} variant="secondary">{pt.tags.name}</Badge>
+                        ))}
+                      </div>
+                  </TableCell>
                   <TableCell className="text-right space-x-2">
                     <Button variant="outline" size="sm" onClick={() => openFormForEdit(pub)}>
                       Edit
@@ -125,3 +135,5 @@ export default function PublicationsCard({ publications }: { publications: any[]
     </>
   );
 }
+
+    

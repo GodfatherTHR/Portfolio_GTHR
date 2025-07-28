@@ -1,3 +1,4 @@
+
 "use client";
 
 import {
@@ -17,15 +18,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 const skillTypes = [
-    "programming_languages",
-    "web_development",
-    "cloud_and_devops",
-    "data_analytics_and_visualization",
-    "blockchain_and_web3",
-    "tools_and_ide"
+    "technical",
+    "soft",
+    "tools_languages",
+    "research"
 ];
 
 
@@ -45,6 +44,12 @@ export function SkillForm({
   const title = skill ? "Edit Skill" : "Add New Skill";
   const [skillType, setSkillType] = useState(skill?.skill_type || "");
 
+  useEffect(() => {
+    if (isOpen) {
+      setSkillType(skill?.skill_type || "");
+    }
+  }, [isOpen, skill]);
+
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[425px]">
@@ -59,8 +64,7 @@ export function SkillForm({
           </div>
           <div className="grid gap-2">
             <Label htmlFor="skill_type">Skill Type</Label>
-            <input type="hidden" name="skill_type" value={skillType} />
-             <Select name="skill_type_select" onValueChange={setSkillType} defaultValue={skillType} required>
+             <Select name="skill_type" onValueChange={setSkillType} value={skillType} required>
                 <SelectTrigger>
                     <SelectValue placeholder="Select a skill type" />
                 </SelectTrigger>

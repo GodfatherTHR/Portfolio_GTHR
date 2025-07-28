@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { Menu, User } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 
@@ -38,12 +38,12 @@ export default async function Header() {
               Shariful Haque
             </span>
           </Link>
-          <nav className="flex items-center gap-4 text-sm">
+          <nav className="flex items-center gap-4 text-sm font-medium">
             {navLinks.filter(l => !l.is_button).map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
-                className="transition-colors hover:text-foreground/80 text-foreground/60"
+                className="transition-colors hover:text-foreground/80 text-foreground"
               >
                 {link.label}
               </Link>
@@ -65,6 +65,9 @@ export default async function Header() {
                 </Button>
               </SheetTrigger>
               <SheetContent side="left">
+                <SheetHeader>
+                  <SheetTitle className="sr-only">Navigation Menu</SheetTitle>
+                </SheetHeader>
                 <Link href="/" className="mb-4 flex items-center">
                    <span className="font-bold">Shariful Haque</span>
                 </Link>

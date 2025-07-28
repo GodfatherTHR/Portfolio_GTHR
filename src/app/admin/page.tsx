@@ -1,8 +1,8 @@
+
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import { Button } from "@/components/ui/button";
 
-import OwnerCard from "@/components/admin/owner-card";
 import ProjectsCard from "@/components/admin/projects-card";
 import PublicationsCard from "@/components/admin/publications-card";
 import ExperienceCard from "@/components/admin/experience-card";
@@ -15,6 +15,8 @@ import { Terminal } from "lucide-react";
 import EducationCard from "@/components/admin/education-card";
 import BlogPostsCard from "@/components/admin/blog-posts-card";
 import AboutCard from "@/components/admin/about-card";
+import AnimatedButton from "@/components/admin/animated-button";
+import Link from "next/link";
 
 export default async function AdminPage() {
   const supabase = createClient();
@@ -28,7 +30,6 @@ export default async function AdminPage() {
   }
 
   const [
-    ownerResult,
     projectsResult,
     experiencesResult,
     skillsResult,
@@ -38,25 +39,27 @@ export default async function AdminPage() {
     researchProfilesResult,
     educationResult,
     blogPostsResult,
-    aboutResult
+    aboutResult,
+    tagsResult,
   ] = await Promise.all([
-    supabase.from("portfolioowner").select().maybeSingle(),
-    supabase.from("projects").select(),
+    supabase.from("projects").select("*, projecttags(*, tags(*))"),
     supabase.from("professionalexperience").select(),
-    supabase.from("skills").select(),
-    supabase.from("publications").select(),
+    supabase.from("skills").select("*"),
+    supabase.from("publications").select("*, publicationtags(*, tags(*))"),
     supabase.from("awards").select(),
     supabase.from("contactinfo").select().maybeSingle(),
     supabase.from("researchprofiles").select(),
     supabase.from("education").select(),
     supabase.from("blog_posts").select(),
     supabase.from("aboutcontent").select("*, aboutexpertise(*)").single(),
+    supabase.from("tags").select("*"),
   ]);
 
   const results = [
-    ownerResult, projectsResult, experiencesResult, skillsResult, 
+    projectsResult, experiencesResult, skillsResult, 
     publicationsResult, awardsResult, contactInfoResult, 
-    researchProfilesResult, educationResult, blogPostsResult, aboutResult
+    researchProfilesResult, educationResult, blogPostsResult, aboutResult,
+    tagsResult,
   ];
   
   const anyError = results.find(result => result.error);
@@ -78,7 +81,6 @@ export default async function AdminPage() {
      );
   }
   
-  const owner = ownerResult.data;
   const projects = projectsResult.data;
   const experiences = experiencesResult.data;
   const skills = skillsResult.data;
@@ -89,6 +91,7 @@ export default async function AdminPage() {
   const education = educationResult.data;
   const blogPosts = blogPostsResult.data;
   const aboutContent = aboutResult.data;
+  const allTags = tagsResult.data;
 
   return (
     <div className="container mx-auto py-10">
@@ -97,6 +100,14 @@ export default async function AdminPage() {
           <h1 className="text-3xl font-bold">Admin Panel</h1>
           <p className="text-muted-foreground">Welcome back, {user.email}</p>
         </div>
+
+        <div className="text-center">
+            <p className="text-sm font-medium mb-2">Check Now:</p>
+            <a href="https://www.sharifulhaque.org/" target="_blank" rel="noopener noreferrer">
+                <AnimatedButton />
+            </a>
+        </div>
+
         <form action="/auth/signout" method="post" className="w-full md:w-auto">
           <Button type="submit" variant="destructive" className="w-full md:w-auto">
             Sign Out
@@ -105,11 +116,10 @@ export default async function AdminPage() {
       </div>
 
       <div className="grid gap-10">
-        <OwnerCard owner={owner} />
         <AboutCard aboutContent={aboutContent} />
         <ContactInfoCard contactInfo={contactInfo} />
-        <ProjectsCard projects={projects || []} />
-        <PublicationsCard publications={publications || []} />
+        <ProjectsCard projects={projects || []} allTags={allTags || []} />
+        <PublicationsCard publications={publications || []} allTags={allTags || []} />
         <ResearchProfilesCard researchProfiles={researchProfiles || []} />
         <ExperienceCard experiences={experiences || []} />
         <EducationCard education={education || []} />
