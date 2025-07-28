@@ -136,16 +136,11 @@
   position: relative;
   z-index: 2;
 }
-.char span:nth-child(5) {
-  margin-left: 5px;
-}
-.char.state-1 span:nth-child(5) {
-  margin-right: 0;
-}
+
 .char.state-1 span {
   animation: charAppear 1.2s ease backwards calc(var(--i) * 0.03s);
 }
-.char.state-1 span::before,
+.char span::before,
 .char span::after {
   content: attr(data-label);
   position: absolute;
