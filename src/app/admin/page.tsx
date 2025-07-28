@@ -16,6 +16,7 @@ import EducationCard from "@/components/admin/education-card";
 import BlogPostsCard from "@/components/admin/blog-posts-card";
 import AboutCard from "@/components/admin/about-card";
 import AnimatedButton from "@/components/admin/animated-button";
+import Link from "next/link";
 
 export default async function AdminPage() {
   const supabase = createClient();
@@ -102,7 +103,9 @@ export default async function AdminPage() {
 
         <div className="text-center">
             <p className="text-sm font-medium mb-2">Check Now:</p>
-            <AnimatedButton />
+            <a href="https://www.sharifulhaque.org/" target="_blank" rel="noopener noreferrer">
+                <AnimatedButton />
+            </a>
         </div>
 
         <form action="/auth/signout" method="post" className="w-full md:w-auto">

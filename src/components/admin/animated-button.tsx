@@ -5,7 +5,7 @@ import './animated-button.css';
 
 const AnimatedButton = () => {
   return (
-    <button className="button" type="button">
+    <button className="button" type="button" onClick={(e) => e.currentTarget.blur()}>
       <div className="bg"></div>
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -109,7 +109,7 @@ const AnimatedButton = () => {
              <span data-label="f" style={{'--i': 6} as React.CSSProperties}>f</span>
              <span data-label="u" style={{'--i': 7} as React.CSSProperties}>u</span>
              <span data-label="l" style={{'--i': 8} as React.CSSProperties}>l</span>
-             <span data-label=" " style={{'--i': 9} as React.CSSProperties}> </span>
+             <span data-label=" " style={{'--i': 9, marginLeft: '5px'} as React.CSSProperties}> </span>
              <span data-label="H" style={{'--i': 10} as React.CSSProperties}>H</span>
              <span data-label="a" style={{'--i': 11} as React.CSSProperties}>a</span>
              <span data-label="q" style={{'--i': 12} as React.CSSProperties}>q</span>
