@@ -8,7 +8,7 @@ import { z } from 'zod'
 import { randomUUID } from 'crypto'
 
 const ownerSchema = z.object({
-  id: z.number(),
+  id: z.coerce.number(),
   name: z.string().min(1, 'Name is required'),
   email: z.string().email('Invalid email address'),
   linkedin_url: z.string().url('Invalid LinkedIn URL').optional().or(z.literal('')),
@@ -19,10 +19,7 @@ export async function updateOwner(formData: FormData) {
   const supabase = createClient()
   const rawData = Object.fromEntries(formData)
   
-  const parsed = ownerSchema.safeParse({
-      ...rawData,
-      id: parseInt(rawData.id as string)
-  })
+  const parsed = ownerSchema.safeParse(rawData);
 
   if (!parsed.success) {
     return { error: parsed.error.format() }

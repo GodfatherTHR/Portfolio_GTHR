@@ -1,3 +1,4 @@
+
 "use client";
 
 import {
@@ -21,22 +22,27 @@ import {
   DialogFooter,
   DialogClose,
 } from "@/components/ui/dialog";
-import { useState, useRef, useTransition } from "react";
+import { useState, useTransition } from "react";
 import { updateOwner } from "@/app/admin/actions";
 
 export default function OwnerCard({ owner }: { owner: any }) {
   const { toast } = useToast();
   const [isOpen, setIsOpen] = useState(false);
-  const formRef = useRef<HTMLFormElement>(null);
   const [isPending, startTransition] = useTransition();
 
   const handleAction = async (formData: FormData) => {
     startTransition(async () => {
       const result = await updateOwner(formData);
       if (result?.error) {
+        let errorMessage = "Failed to update owner info.";
+        // This checks for specific validation errors from Zod and displays them
+        const fieldErrors = Object.values(result.error).flat().join(' ');
+        if (fieldErrors) {
+            errorMessage = fieldErrors;
+        }
         toast({
           title: "Error",
-          description: "Failed to update owner info.",
+          description: errorMessage,
           variant: "destructive",
         });
       } else {
@@ -52,7 +58,7 @@ export default function OwnerCard({ owner }: { owner: any }) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Portfolio Owner & Social Links</CardTitle>
+        <CardTitle>Portfolio Owner &amp; Social Links</CardTitle>
         <CardDescription>
           This is the main identity, contact, and social profile information for the portfolio.
         </CardDescription>
@@ -74,11 +80,11 @@ export default function OwnerCard({ owner }: { owner: any }) {
           <DialogTrigger asChild>
             <Button>Edit</Button>
           </DialogTrigger>
-          <DialogContent className="sm:max-w-2xl">
+          <DialogContent className="sm:max-w-lg">
             <DialogHeader>
-              <DialogTitle>Edit Owner Info & Links</DialogTitle>
+              <DialogTitle>Edit Owner Info &amp; Links</DialogTitle>
             </DialogHeader>
-            <form ref={formRef} action={handleAction} className="space-y-4 max-h-[70vh] overflow-y-auto p-4">
+            <form action={handleAction} className="space-y-4">
               <input type="hidden" name="id" defaultValue={owner?.id} />
               <div className="grid gap-2">
                 <Label htmlFor="name">Name</Label>
@@ -96,9 +102,9 @@ export default function OwnerCard({ owner }: { owner: any }) {
                 <Label htmlFor="github_url">GitHub URL</Label>
                 <Input id="github_url" name="github_url" type="url" defaultValue={owner?.github_url} />
               </div>
-              <DialogFooter className="sticky bottom-0 bg-background pt-4">
+              <DialogFooter>
                 <DialogClose asChild>
-                  <Button variant="outline">Cancel</Button>
+                  <Button variant="outline" type="button">Cancel</Button>
                 </DialogClose>
                 <Button type="submit" disabled={isPending}>
                   {isPending ? "Saving..." : "Save Changes"}
