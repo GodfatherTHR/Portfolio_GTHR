@@ -3,7 +3,6 @@ import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import { Button } from "@/components/ui/button";
 
-import OwnerCard from "@/components/admin/owner-card";
 import ProjectsCard from "@/components/admin/projects-card";
 import PublicationsCard from "@/components/admin/publications-card";
 import ExperienceCard from "@/components/admin/experience-card";
@@ -29,7 +28,6 @@ export default async function AdminPage() {
   }
 
   const [
-    ownerResult,
     projectsResult,
     experiencesResult,
     skillsResult,
@@ -42,7 +40,6 @@ export default async function AdminPage() {
     aboutResult,
     tagsResult,
   ] = await Promise.all([
-    supabase.from("portfolioowner").select().maybeSingle(),
     supabase.from("projects").select("*, projecttags(*, tags(*))"),
     supabase.from("professionalexperience").select(),
     supabase.from("skills").select("*"),
@@ -57,7 +54,7 @@ export default async function AdminPage() {
   ]);
 
   const results = [
-    ownerResult, projectsResult, experiencesResult, skillsResult, 
+    projectsResult, experiencesResult, skillsResult, 
     publicationsResult, awardsResult, contactInfoResult, 
     researchProfilesResult, educationResult, blogPostsResult, aboutResult,
     tagsResult,
@@ -82,7 +79,6 @@ export default async function AdminPage() {
      );
   }
   
-  const owner = ownerResult.data;
   const projects = projectsResult.data;
   const experiences = experiencesResult.data;
   const skills = skillsResult.data;
@@ -110,7 +106,6 @@ export default async function AdminPage() {
       </div>
 
       <div className="grid gap-10">
-        <OwnerCard owner={owner} />
         <AboutCard aboutContent={aboutContent} />
         <ContactInfoCard contactInfo={contactInfo} />
         <ProjectsCard projects={projects || []} allTags={allTags || []} />
