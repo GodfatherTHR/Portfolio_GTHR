@@ -121,19 +121,22 @@ export async function updateAboutContent(formData: FormData) {
       }
   }
 
-  const parsedExpertiseItems = z.array(expertiseItemSchema).safeParse(expertiseItems);
-  if (!parsedExpertiseItems.success) {
-    return { error: { _server: ['Invalid expertise item format.'] } };
+  if (expertiseItems.length > 0) {
+    const parsedExpertiseItems = z.array(expertiseItemSchema).safeParse(expertiseItems);
+    if (!parsedExpertiseItems.success) {
+      return { error: { _server: ['Invalid expertise item format.'] } };
+    }
+
+    const { data: upsertedData, error: expertiseError } = await supabase
+      .from('aboutexpertise')
+      .upsert(parsedExpertiseItems.data)
+      .select();
+
+    if (expertiseError) {
+      return { error: { _server: [expertiseError.message] } };
+    }
   }
 
-  const { data: upsertedData, error: expertiseError } = await supabase
-    .from('aboutexpertise')
-    .upsert(parsedExpertiseItems.data)
-    .select();
-
-  if (expertiseError) {
-    return { error: { _server: [expertiseError.message] } };
-  }
 
   revalidatePath('/admin');
   revalidatePath('/#about');

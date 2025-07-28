@@ -17,7 +17,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 const skillTypes = [
     "programming_languages",
@@ -45,6 +45,12 @@ export function SkillForm({
   const title = skill ? "Edit Skill" : "Add New Skill";
   const [skillType, setSkillType] = useState(skill?.skill_type || "");
 
+  useEffect(() => {
+    if (isOpen) {
+      setSkillType(skill?.skill_type || "");
+    }
+  }, [isOpen, skill]);
+
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[425px]">
@@ -59,7 +65,7 @@ export function SkillForm({
           </div>
           <div className="grid gap-2">
             <Label htmlFor="skill_type">Skill Type</Label>
-             <Select name="skill_type" onValueChange={setSkillType} defaultValue={skillType} required>
+             <Select name="skill_type" onValueChange={setSkillType} value={skillType} required>
                 <SelectTrigger>
                     <SelectValue placeholder="Select a skill type" />
                 </SelectTrigger>

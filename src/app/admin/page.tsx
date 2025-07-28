@@ -45,7 +45,7 @@ export default async function AdminPage() {
     supabase.from("portfolioowner").select().maybeSingle(),
     supabase.from("projects").select("*, projecttags(*, tags(*))"),
     supabase.from("professionalexperience").select(),
-    supabase.from("skills").select(),
+    supabase.from("skills").select("*"),
     supabase.from("publications").select("*, publicationtags(*, tags(*))"),
     supabase.from("awards").select(),
     supabase.from("contactinfo").select().maybeSingle(),
