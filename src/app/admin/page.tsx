@@ -15,6 +15,7 @@ import { Terminal } from "lucide-react";
 import EducationCard from "@/components/admin/education-card";
 import BlogPostsCard from "@/components/admin/blog-posts-card";
 import AboutCard from "@/components/admin/about-card";
+import AnimatedButton from "@/components/admin/animated-button";
 
 export default async function AdminPage() {
   const supabase = createClient();
@@ -98,6 +99,12 @@ export default async function AdminPage() {
           <h1 className="text-3xl font-bold">Admin Panel</h1>
           <p className="text-muted-foreground">Welcome back, {user.email}</p>
         </div>
+
+        <div className="text-center">
+            <p className="text-sm font-medium mb-2">Check Now:</p>
+            <AnimatedButton />
+        </div>
+
         <form action="/auth/signout" method="post" className="w-full md:w-auto">
           <Button type="submit" variant="destructive" className="w-full md:w-auto">
             Sign Out
