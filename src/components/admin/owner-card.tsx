@@ -34,12 +34,17 @@ export default function OwnerCard({ owner }: { owner: any }) {
     startTransition(async () => {
       const result = await updateOwner(formData);
       if (result?.error) {
-        let errorMessage = "Failed to update owner info.";
-        // This checks for specific validation errors from Zod and displays them
-        const fieldErrors = Object.values(result.error).flat().join(' ');
-        if (fieldErrors) {
-            errorMessage = fieldErrors;
+        let errorMessage = "An unknown error occurred.";
+        if (result.error._server) {
+          errorMessage = result.error._server.join(' ');
+        } else {
+          // This handles Zod validation errors
+          const fieldErrors = Object.values(result.error).map(e => e._errors.join(' ')).filter(Boolean).join(' ');
+          if (fieldErrors) {
+              errorMessage = fieldErrors;
+          }
         }
+        
         toast({
           title: "Error",
           description: errorMessage,

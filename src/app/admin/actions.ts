@@ -121,6 +121,7 @@ export async function updateAboutContent(formData: FormData) {
   if (expertiseItems.length > 0) {
     const parsedExpertiseItems = z.array(expertiseItemSchema).safeParse(expertiseItems);
     if (!parsedExpertiseItems.success) {
+        console.error("Expertise item validation error:", parsedExpertiseItems.error.format());
       return { error: { _server: ['Invalid expertise item format.'] } };
     }
 
@@ -130,6 +131,7 @@ export async function updateAboutContent(formData: FormData) {
       .select();
 
     if (expertiseError) {
+       console.error("Supabase expertise upsert error:", expertiseError.message);
       return { error: { _server: [expertiseError.message] } };
     }
   }
