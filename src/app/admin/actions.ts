@@ -52,6 +52,7 @@ const aboutContentSchema = z.object({
   expertise_title: z.string().min(1, 'Expertise title is required'),
   cta_text: z.string().optional(),
   cta_link: z.string().url('Must be a valid URL').optional().or(z.literal('')),
+  cta_icon: z.string().optional(),
 });
 
 const expertiseItemSchema = z.object({
@@ -74,6 +75,7 @@ export async function updateAboutContent(formData: FormData) {
     expertise_title: data.expertise_title,
     cta_text: data.cta_text,
     cta_link: data.cta_link,
+    cta_icon: data.cta_icon,
   });
 
   if (!aboutContentParsed.success) {
