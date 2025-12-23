@@ -11,6 +11,7 @@ import Footer from "@/components/footer";
 import { createClient } from "@/lib/supabase/server";
 import type { Metadata } from 'next'
 import BlogSection from "@/components/sections/blog-section";
+import BooksSection from "@/components/sections/books-section";
 
 export async function generateMetadata(): Promise<Metadata> {
   const supabase = createClient();
@@ -40,6 +41,7 @@ export default function Home() {
         <ResearchProfilesSection />
         <ProjectsSection />
         <AwardsSection />
+        <BooksSection />
         <BlogSection />
         <ResumeSection />
         <ContactSection />

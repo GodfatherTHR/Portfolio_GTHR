@@ -675,3 +675,70 @@ export async function markMessageAsRead(id: number) {
   revalidatePath('/admin/messages')
   return { data: 'Message marked as read.' }
 }
+
+
+const bookSchema = z.object({
+  id: z.string().uuid().optional(),
+  title: z.string().min(1, 'Title is required'),
+  slug: z.string().min(1, 'Slug is required').regex(/^[a-z0-9-]+$/, 'Slug can only contain lowercase letters, numbers, and hyphens'),
+  description: z.string().optional(),
+  author: z.string().min(1, 'Author is required'),
+  isbn: z.string().optional(),
+  publisher: z.string().optional(),
+  page_count: z.coerce.number().optional(),
+  image_url: z.string().url().optional().or(z.literal('')),
+  status: z.enum(['draft', 'published', 'archived']),
+});
+
+export async function upsertBook(formData: FormData) {
+  const supabase = createClient();
+  const rawData = Object.fromEntries(formData);
+
+  // Manually handle empty optional number
+  if (rawData.page_count === '') {
+    delete rawData.page_count;
+  }
+
+  const parsed = bookSchema.safeParse(rawData);
+
+  if (!parsed.success) {
+    console.error("Book validation error:", parsed.error.format());
+    return { error: parsed.error.format() };
+  }
+
+  const { id, ...data } = parsed.data;
+
+  const dataToUpsert: any = { ...data, updated_at: new Date().toISOString() };
+  if (data.status === 'published' && !id) {
+    dataToUpsert.published_at = new Date().toISOString();
+  } else if (data.status === 'published' && id) {
+    const { data: existingBook } = await supabase.from('books').select('published_at').eq('id', id).single();
+    if (!existingBook?.published_at) {
+      dataToUpsert.published_at = new Date().toISOString();
+    }
+  }
+
+  const { error } = await supabase.from('books').upsert(id ? { id, ...dataToUpsert } : { ...dataToUpsert, id: randomUUID() });
+
+  if (error) {
+    console.error('Supabase book upsert error:', error);
+    return { error: { _server: [error.message] } };
+  }
+
+  revalidatePath('/admin');
+  revalidatePath('/#books');
+  return { data: 'Book saved successfully.' };
+}
+
+
+export async function deleteBook(id: string) {
+    const supabase = createClient();
+    const { error } = await supabase.from('books').delete().eq('id', id);
+
+    if (error) {
+        return { error: { _server: [error.message] } };
+    }
+    revalidatePath('/admin');
+    revalidatePath('/#books');
+    return { data: 'Book deleted successfully.' };
+}
