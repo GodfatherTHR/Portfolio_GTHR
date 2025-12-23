@@ -171,7 +171,7 @@ export function BookForm({
 
           <div className="grid gap-2">
             <div className="flex justify-between items-center">
-              <Label htmlFor="description">Description</Label>
+              <Label htmlFor="description">Description (Markdown supported)</Label>
               <Button type="button" variant="outline" size="sm" onClick={handleConvertToHtml} disabled={isConverting}>
                  <Sparkles className="mr-2 h-4 w-4" />
                  {isConverting ? 'Converting...' : 'AI Convert'}
