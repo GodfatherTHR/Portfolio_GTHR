@@ -158,6 +158,11 @@ export function BookForm({
               <Input id="page_count" name="page_count" type="number" defaultValue={book?.page_count} />
             </div>
           </div>
+
+          <div className="grid gap-2">
+            <Label htmlFor="link">Book Link</Label>
+            <Input id="link" name="link" type="url" defaultValue={book?.link} placeholder="https://example.com/book-purchase-page" />
+          </div>
           
           <div className="space-y-4 rounded-md border p-4">
              <h3 className="text-sm font-medium">Book Cover Image</h3>

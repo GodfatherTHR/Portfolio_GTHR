@@ -1,4 +1,5 @@
 
+
 import { createClient } from "@/lib/supabase/server";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -57,8 +58,7 @@ export default async function BooksSection() {
               </CardContent>
               <CardFooter className="p-6 pt-0">
                 <Button variant="secondary" className="w-full" asChild>
-                    {/* In a real app, this would link to a book details page or an external store */}
-                   <Link href={`/book/${book.slug}`} aria-label={`Learn more about ${book.title}`}>
+                   <Link href={book.link || `/book/${book.slug}`} target="_blank" rel="noopener noreferrer" aria-label={`Learn more about ${book.title}`}>
                      Learn More <ArrowRight className="ml-2 h-4 w-4" />
                    </Link>
                 </Button>

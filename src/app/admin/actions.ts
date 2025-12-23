@@ -687,6 +687,7 @@ const bookSchema = z.object({
   publisher: z.string().optional(),
   page_count: z.coerce.number().optional(),
   image_url: z.string().url().optional().or(z.literal('')),
+  link: z.string().url('Invalid URL').optional().or(z.literal('')),
   status: z.enum(['draft', 'published', 'archived']),
 });
 
