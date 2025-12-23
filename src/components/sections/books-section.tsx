@@ -54,13 +54,13 @@ export default async function BooksSection() {
                 <CardContent className="flex-grow p-6">
                   <CardTitle className="text-lg font-bold mb-2 group-hover:underline">{book.title}</CardTitle>
                   <p className="text-sm text-muted-foreground mb-2">by {book.author}</p>
-                  <CardDescription asChild>
+                  <div className="text-sm text-muted-foreground">
                      <div className="text-sm prose prose-sm dark:prose-invert max-w-none">
                         <ReactMarkdown remarkPlugins={[remarkGfm]}>
                             {book.description?.substring(0, 100) + (book.description && book.description.length > 100 ? '...' : '')}
                         </ReactMarkdown>
                      </div>
-                  </CardDescription>
+                  </div>
                 </CardContent>
                 <CardFooter className="p-6 pt-0 mt-auto">
                   <div className="text-primary font-semibold flex items-center group-hover:underline">
