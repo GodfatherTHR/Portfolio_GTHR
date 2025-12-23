@@ -67,7 +67,7 @@ export default async function AdminPage() {
   
   const anyError = results.find(result => result.error);
 
-  if (anyError) {
+  if (anyError && anyError.error) {
      return (
        <div className="container mx-auto py-10">
          <Alert variant="destructive">
