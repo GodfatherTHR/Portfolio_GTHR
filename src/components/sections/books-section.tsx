@@ -7,6 +7,8 @@ import { ArrowRight, BookOpen } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import GlareHover from "../animation/GlareHover";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 
 export default async function BooksSection() {
   const supabase = createClient();
@@ -52,8 +54,12 @@ export default async function BooksSection() {
                 <CardContent className="flex-grow p-6">
                   <CardTitle className="text-lg font-bold mb-2 group-hover:underline">{book.title}</CardTitle>
                   <p className="text-sm text-muted-foreground mb-2">by {book.author}</p>
-                  <CardDescription className="text-sm">
-                    {book.description?.substring(0, 100)}{book.description && book.description.length > 100 ? '...' : ''}
+                  <CardDescription asChild>
+                     <div className="text-sm prose prose-sm dark:prose-invert max-w-none">
+                        <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                            {book.description?.substring(0, 100) + (book.description && book.description.length > 100 ? '...' : '')}
+                        </ReactMarkdown>
+                     </div>
                   </CardDescription>
                 </CardContent>
                 <CardFooter className="p-6 pt-0 mt-auto">
