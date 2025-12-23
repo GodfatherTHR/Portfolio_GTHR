@@ -21,7 +21,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useState, useRef, useEffect } from "react";
-import { UploadCloud, Loader2 } from "lucide-react";
+import { UploadCloud, Loader2, Sparkles } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import Image from "next/image";
 
@@ -41,9 +41,11 @@ export function BookForm({
   const title = book ? "Edit Book" : "Add New Book";
   const [status, setStatus] = useState(book?.status || "draft");
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const descriptionRef = useRef<HTMLTextAreaElement>(null);
   const { toast } = useToast();
   
   const [isUploading, setIsUploading] = useState(false);
+  const [isConverting, setIsConverting] = useState(false);
   const [imagePreview, setImagePreview] = useState(book?.image_url || null);
   
   useEffect(() => {
@@ -60,6 +62,41 @@ export function BookForm({
       .replace(/[^\w\s-]/g, '')
       .replace(/[\s_-]+/g, '-')
       .replace(/^-+|-+$/g, '');
+  };
+
+  const handleConvertToHtml = async () => {
+    const plainText = descriptionRef.current?.value;
+    if (!plainText?.trim()) {
+      toast({ title: "Content is empty", description: "Please enter some content before converting.", variant: "destructive" });
+      return;
+    }
+
+    setIsConverting(true);
+    try {
+      const response = await fetch('/api/convert-to-html', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text: plainText }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
+      }
+      
+      const data = await response.json();
+
+      if (data.success && descriptionRef.current) {
+        descriptionRef.current.value = data.html;
+        toast({ title: "Success", description: "Content converted to HTML." });
+      } else {
+        throw new Error(data.error || 'Conversion failed');
+      }
+    } catch (error: any) {
+       toast({ title: "Conversion Failed", description: error.message, variant: "destructive" });
+    } finally {
+      setIsConverting(false);
+    }
   };
 
   const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -133,8 +170,14 @@ export function BookForm({
           </div>
 
           <div className="grid gap-2">
-            <Label htmlFor="description">Description</Label>
-            <Textarea id="description" name="description" defaultValue={book?.description} rows={4} />
+            <div className="flex justify-between items-center">
+              <Label htmlFor="description">Description</Label>
+              <Button type="button" variant="outline" size="sm" onClick={handleConvertToHtml} disabled={isConverting}>
+                 <Sparkles className="mr-2 h-4 w-4" />
+                 {isConverting ? 'Converting...' : 'AI Convert'}
+               </Button>
+            </div>
+            <Textarea ref={descriptionRef} id="description" name="description" defaultValue={book?.description} rows={4} />
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -215,8 +258,8 @@ export function BookForm({
           </div>
           <DialogFooter className="sticky bottom-0 bg-background py-4">
             <Button variant="outline" onClick={() => onOpenChange(false)} type="button">Cancel</Button>
-            <Button type="submit" disabled={isPending || isUploading}>
-              {isPending ? "Saving..." : isUploading ? "Wait for Upload..." : "Save Book"}
+            <Button type="submit" disabled={isPending || isUploading || isConverting}>
+              {isPending ? "Saving..." : isUploading ? "Wait for Upload..." : isConverting ? "AI is working..." : "Save Book"}
             </Button>
           </DialogFooter>
         </form>
