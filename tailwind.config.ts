@@ -26,6 +26,7 @@ export default {
         body: ['"Public Sans"', 'sans-serif'],
         headline: ['"Public Sans"', 'sans-serif'],
         code: ['monospace'],
+        arial: ['Arial', 'sans-serif'],
       },
       colors: {
         background: 'hsl(var(--background))',
