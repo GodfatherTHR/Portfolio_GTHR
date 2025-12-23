@@ -1,8 +1,12 @@
+
+"use client";
+
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { Menu, User } from "lucide-react";
-import { createClient } from "@/lib/supabase/server";
+import { useEffect, useState } from "react";
+import { createClient } from "@/lib/supabase/client";
 
 type NavLink = {
   href: string;
@@ -10,24 +14,34 @@ type NavLink = {
   is_button: boolean;
 };
 
-export default async function Header() {
-  const supabase = createClient();
-  const { data: navigationItems } = await supabase
-    .from("navigationitems")
-    .select()
-    .order("id");
+export default function Header() {
+  const [navLinks, setNavLinks] = useState<NavLink[]>([]);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  const navLinks: NavLink[] =
-    navigationItems?.map((item) => ({
-      href: item.link,
-      label: item.text,
-      is_button: item.is_button,
-    })) || [];
-  
-  // Manually add blog link if not present
-  if (!navLinks.find(link => link.href === '/blog')) {
-    navLinks.push({ href: '/blog', label: 'Blog', is_button: false });
-  }
+  useEffect(() => {
+    const fetchNavItems = async () => {
+      const supabase = createClient();
+      const { data: navigationItems } = await supabase
+        .from("navigationitems")
+        .select()
+        .order("id");
+
+      let links: NavLink[] =
+        navigationItems?.map((item: any) => ({
+          href: item.link,
+          label: item.text,
+          is_button: item.is_button,
+        })) || [];
+      
+      // Manually add blog link if not present
+      if (!links.find(link => link.href === '/blog')) {
+        links.push({ href: '/blog', label: 'Blog', is_button: false });
+      }
+      setNavLinks(links);
+    };
+
+    fetchNavItems();
+  }, []);
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -57,7 +71,7 @@ export default async function Header() {
         </div>
         <div className="flex flex-1 items-center justify-between space-x-2 md:justify-end">
           <div className="md:hidden">
-            <Sheet>
+            <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
               <SheetTrigger asChild>
                 <Button variant="ghost" size="icon">
                   <Menu className="h-5 w-5" />
@@ -68,7 +82,7 @@ export default async function Header() {
                 <SheetHeader>
                   <SheetTitle className="sr-only">Navigation Menu</SheetTitle>
                 </SheetHeader>
-                <Link href="/" className="mb-4 flex items-center">
+                <Link href="/" className="mb-4 flex items-center" onClick={() => setMobileMenuOpen(false)}>
                    <span className="font-bold">Shariful Haque</span>
                 </Link>
                 <div className="flex flex-col gap-4">
@@ -77,6 +91,7 @@ export default async function Header() {
                       key={link.href}
                       href={link.href}
                       className="transition-colors hover:text-foreground/80 text-foreground/60"
+                      onClick={() => setMobileMenuOpen(false)}
                     >
                       {link.label}
                     </Link>
