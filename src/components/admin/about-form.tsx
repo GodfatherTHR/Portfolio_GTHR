@@ -40,8 +40,11 @@ export function AboutForm({
   const [deletedIds, setDeletedIds] = useState<number[]>([]);
 
   useEffect(() => {
-    setImagePreview(aboutContent?.image_src || null);
-    setExpertiseItems(aboutContent?.aboutexpertise || []);
+    if (isOpen) {
+      setImagePreview(aboutContent?.image_src || null);
+      setExpertiseItems(aboutContent?.aboutexpertise || []);
+      setDeletedIds([]);
+    }
   }, [aboutContent, isOpen]);
 
   const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
