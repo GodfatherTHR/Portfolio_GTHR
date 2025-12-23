@@ -42,7 +42,7 @@ export function ProjectForm({
 
   useEffect(() => {
     if (isOpen) {
-      const currentTagIds = new Set(project?.projecttags?.map((pt: any) => pt.tag_id) || []);
+      const currentTagIds = new Set(project?.projecttags?.map((pt: any) => Number(pt.tag_id)) || []);
       setSelectedTagIds(currentTagIds);
       setImagePreview(project?.image_src || null);
     }
