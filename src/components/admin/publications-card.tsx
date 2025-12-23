@@ -34,9 +34,10 @@ export default function PublicationsCard({ publications, allTags }: { publicatio
     startTransition(async () => {
       const result = await upsertPublication(formData);
       if (result?.error) {
+        const errorMessage = ('_server' in result.error && result.error._server?.[0]) || "Failed to save publication.";
         toast({
           title: "Error",
-          description: result.error._server?.[0] || "Failed to save publication.",
+          description: errorMessage,
           variant: "destructive",
         });
       } else {
@@ -135,5 +136,3 @@ export default function PublicationsCard({ publications, allTags }: { publicatio
     </>
   );
 }
-
-    

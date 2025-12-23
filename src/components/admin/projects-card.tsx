@@ -35,7 +35,7 @@ export default function ProjectsCard({ projects, allTags }: { projects: any[], a
     startTransition(async () => {
       const result = await upsertProject(formData);
       if (result?.error) {
-        const errorMessage = ('_server' in result.error && result.error._server?.[0]) || "Failed to save project. Check console for details.";
+        const errorMessage = (result.error as any)._server?.[0] || "Failed to save project. Check validation.";
         toast({
           title: "Error",
           description: errorMessage,
