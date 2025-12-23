@@ -47,10 +47,10 @@ const nextConfig = {
       },
       {
         protocol: 'https',
-        hostname: 'images.example.com',
+        hostname: 'collection.cloudinary.com',
         port: '',
         pathname: '/**',
-      }
+      },
     ],
   },
 };
