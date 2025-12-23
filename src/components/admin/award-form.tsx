@@ -100,7 +100,7 @@ export function AwardForm({
             <Input id="year" name="year" type="number" defaultValue={award?.year} required />
           </div>
            <div className="grid gap-2">
-            <Label htmlFor="description">Description (Optional)</Label>
+            <Label htmlFor="description">Description (Markdown supported)</Label>
             <Textarea id="description" name="description" defaultValue={award?.description} />
           </div>
 
