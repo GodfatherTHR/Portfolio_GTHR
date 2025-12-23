@@ -84,9 +84,12 @@ export default async function BookPage({ params }: { params: { slug: string } })
             <h1 className="text-3xl md:text-4xl font-extrabold mb-2">{book.title}</h1>
             <p className="text-lg text-muted-foreground mb-6">by {book.author}</p>
 
-            <div className="prose prose-lg dark:prose-invert max-w-none mb-8">
-              <p>{book.description}</p>
-            </div>
+            {book.description && (
+                <div
+                    className="prose prose-lg dark:prose-invert max-w-none mb-8"
+                    dangerouslySetInnerHTML={{ __html: book.description }}
+                />
+            )}
 
             <div className="space-y-4 text-sm border-t pt-6">
                 {book.publisher && (
