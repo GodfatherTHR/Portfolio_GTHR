@@ -34,7 +34,7 @@ export function PublicationForm({
 
   useEffect(() => {
     if (publication?.publicationtags) {
-      const currentTagIds = new Set(publication.publicationtags.map((pt: any) => pt.tag_id));
+      const currentTagIds = new Set<number>(publication.publicationtags.map((pt: any) => Number(pt.tag_id)));
       setSelectedTagIds(currentTagIds);
     } else {
       setSelectedTagIds(new Set());
