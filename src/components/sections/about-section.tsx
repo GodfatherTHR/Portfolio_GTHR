@@ -60,7 +60,7 @@ export default async function AboutSection() {
               {aboutContent.aboutexpertise.map((item: any) => (
                 <li key={item.id} className="flex items-center gap-2">
                   <ArrowRight className="w-4 h-4 text-primary flex-shrink-0" />
-                  <span>{item.expertise_item}</span>
+                  <span className="font-bold">{item.expertise_item}</span>
                 </li>
               ))}
             </ul>
