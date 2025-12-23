@@ -7,6 +7,8 @@ import Link from 'next/link'
 import { ArrowLeft, BookOpen, Calendar, FileText, Info, Library } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 import { format } from 'date-fns'
+import ReactMarkdown from 'react-markdown'
+import remarkGfm from 'remark-gfm'
 
 export async function generateMetadata({ params }: { params: { slug: string } }) {
   const supabase = createClient();
@@ -87,8 +89,11 @@ export default async function BookPage({ params }: { params: { slug: string } })
             {book.description && (
                 <div
                     className="prose prose-lg dark:prose-invert max-w-none mb-8"
-                    dangerouslySetInnerHTML={{ __html: book.description }}
-                />
+                >
+                  <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                    {book.description}
+                  </ReactMarkdown>
+                </div>
             )}
 
             <div className="space-y-4 text-sm border-t pt-6">
