@@ -37,6 +37,11 @@ export default function Header() {
           is_button: item.is_button,
         })) || [];
       
+      const awardsIndex = links.findIndex(link => link.label === 'Awards');
+      if (awardsIndex !== -1) {
+        links.splice(awardsIndex + 1, 0, { href: '/#books', label: 'Books', is_button: false });
+      }
+
       // Manually add blog link if not present
       if (!links.find(link => link.href === '/blog')) {
         links.push({ href: '/blog', label: 'Blog', is_button: false });
@@ -108,9 +113,8 @@ export default function Header() {
                         onClick={(e) => {
                           if (isBlogLink(link)) {
                             handleBlogClick(e);
-                          } else {
-                            setMobileMenuOpen(false);
                           }
+                          setMobileMenuOpen(false);
                         }}
                       >
                         {link.label}
