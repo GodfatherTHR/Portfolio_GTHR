@@ -30,40 +30,39 @@ export default async function BooksSection() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
           {books.map((book) => (
-             <GlareHover
-              key={book.id}
-              className="rounded-lg border bg-card text-card-foreground shadow-sm flex flex-col h-full"
-            >
-              <CardHeader className="p-0">
-                {book.image_url ? (
-                  <Image
-                    src={book.image_url}
-                    alt={book.title}
-                    width={400}
-                    height={600}
-                    className="w-full h-auto object-cover rounded-t-lg aspect-[2/3]"
-                  />
-                ) : (
-                  <div className="aspect-[2/3] w-full bg-secondary flex items-center justify-center rounded-t-lg">
-                    <BookOpen className="w-16 h-16 text-muted-foreground" />
+            <Link key={book.id} href={`/book/${book.slug}`} className="block group">
+              <GlareHover
+                className="rounded-lg border bg-card text-card-foreground shadow-sm flex flex-col h-full"
+              >
+                <CardHeader className="p-0">
+                  {book.image_url ? (
+                    <Image
+                      src={book.image_url}
+                      alt={book.title}
+                      width={400}
+                      height={600}
+                      className="w-full h-auto object-cover rounded-t-lg aspect-[2/3]"
+                    />
+                  ) : (
+                    <div className="aspect-[2/3] w-full bg-secondary flex items-center justify-center rounded-t-lg">
+                      <BookOpen className="w-16 h-16 text-muted-foreground" />
+                    </div>
+                  )}
+                </CardHeader>
+                <CardContent className="flex-grow p-6">
+                  <CardTitle className="text-lg font-bold mb-2 group-hover:underline">{book.title}</CardTitle>
+                  <p className="text-sm text-muted-foreground mb-2">by {book.author}</p>
+                  <CardDescription className="text-sm">
+                    {book.description?.substring(0, 100)}{book.description && book.description.length > 100 ? '...' : ''}
+                  </CardDescription>
+                </CardContent>
+                <CardFooter className="p-6 pt-0 mt-auto">
+                  <div className="text-primary font-semibold flex items-center group-hover:underline">
+                      Learn More <ArrowRight className="ml-2 h-4 w-4" />
                   </div>
-                )}
-              </CardHeader>
-              <CardContent className="flex-grow p-6">
-                <CardTitle className="text-lg font-bold mb-2">{book.title}</CardTitle>
-                <p className="text-sm text-muted-foreground mb-2">by {book.author}</p>
-                <CardDescription className="text-sm">
-                  {book.description?.substring(0, 100)}{book.description && book.description.length > 100 ? '...' : ''}
-                </CardDescription>
-              </CardContent>
-              <CardFooter className="p-6 pt-0">
-                <Button variant="secondary" className="w-full" asChild>
-                   <Link href={`/book/${book.slug}`} aria-label={`Learn more about ${book.title}`}>
-                     Learn More <ArrowRight className="ml-2 h-4 w-4" />
-                   </Link>
-                </Button>
-              </CardFooter>
-            </GlareHover>
+                </CardFooter>
+              </GlareHover>
+            </Link>
           ))}
         </div>
       </div>
