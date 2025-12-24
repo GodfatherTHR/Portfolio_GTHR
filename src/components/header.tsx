@@ -37,6 +37,14 @@ export default function Header() {
           is_button: item.is_button,
         })) || [];
       
+      const aboutIndex = links.findIndex(link => link.label.toLowerCase() === 'about');
+      const resumeIndex = links.findIndex(link => link.label.toLowerCase() === 'resume');
+
+      if (aboutIndex !== -1 && resumeIndex !== -1 && resumeIndex > aboutIndex) {
+        const [resumeLink] = links.splice(resumeIndex, 1);
+        links.splice(aboutIndex + 1, 0, resumeLink);
+      }
+      
       const awardsIndex = links.findIndex(link => link.label === 'Awards');
       if (awardsIndex !== -1) {
         links.splice(awardsIndex + 1, 0, { href: '/#books', label: 'Books', is_button: false });
@@ -44,7 +52,12 @@ export default function Header() {
 
       // Manually add blog link if not present
       if (!links.find(link => link.href === '/blog')) {
-        links.push({ href: '/blog', label: 'Blog', is_button: false });
+        const contactIndex = links.findIndex(link => link.label.toLowerCase() === 'contact');
+        if (contactIndex !== -1) {
+          links.splice(contactIndex, 0, { href: '/blog', label: 'Blog', is_button: false });
+        } else {
+          links.push({ href: '/blog', label: 'Blog', is_button: false });
+        }
       }
       setNavLinks(links);
     };

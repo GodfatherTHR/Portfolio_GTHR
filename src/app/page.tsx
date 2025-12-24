@@ -37,13 +37,13 @@ export default function Home() {
       <main className="flex-grow">
         <HeroSection />
         <AboutSection />
+        <ResumeSection />
         <ResearchSection />
         <ResearchProfilesSection />
         <ProjectsSection />
         <AwardsSection />
         <BooksSection />
         <BlogSection />
-        <ResumeSection />
         <ContactSection />
       </main>
       <Footer />
