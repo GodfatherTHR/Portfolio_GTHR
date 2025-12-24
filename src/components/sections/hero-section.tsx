@@ -41,11 +41,12 @@ export default async function HeroSection() {
             <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight text-white">
               {heroContent?.title || "Shariful Haque"}
             </h1>
+            {heroContent?.span && <p className="mt-2 text-xl md:text-2xl text-accent">{heroContent.span}</p>}
             <p className="mt-4 text-lg md:text-xl text-white">
-              {(subtitles || []).map((s: any) => s.subtitle_text).join(' | ') || "Data Analytics | Blockchain Innovator | Researcher"}
+              {(subtitles || []).map((s: any) => s.subtitle_text).join(' | ') || "Researcher | Data Analyst | Blockchain Innovator | Author | Educator"}
             </p>
             <p className="mt-4 max-w-2xl mx-auto text-lg md:text-xl text-white">
-              {heroContent?.description || "I'm a DBA student and data analytics expert pioneering blockchain and AI solutions for ERP systems and beyond."}
+              {heroContent?.description || "Independent researcher and PMP® certified leader dedicated to advancing AI integration and blockchain patents within the FinTech and Healthcare sectors."}
             </p>
             <div className="mt-8 flex justify-center gap-4">
               {ctas?.map((cta: any) => (
