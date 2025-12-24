@@ -19,11 +19,14 @@ const iconMap: { [key: string]: React.ReactNode } = {
 };
 
 export default function ProjectsSectionClient({ projects }: { projects: any[] }) {
+    const [showAll, setShowAll] = useState(false);
+    const initialCount = 6;
+    const displayedProjects = showAll ? projects : projects.slice(0, initialCount);
 
     return (
         <>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {projects.map((project: any) => {
+              {displayedProjects.map((project: any) => {
                 const imageSrc = (project.image_src && (project.image_src.startsWith('http') || project.image_src.startsWith('/')))
                   ? project.image_src
                   : "https://placehold.co/600x400.png";
@@ -63,6 +66,11 @@ export default function ProjectsSectionClient({ projects }: { projects: any[] })
                 )
               })}
             </div>
+            {projects.length > initialCount && !showAll && (
+                <div className="text-center mt-12">
+                    <Button onClick={() => setShowAll(true)} size="lg">See More</Button>
+                </div>
+            )}
         </>
     );
 }
