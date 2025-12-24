@@ -41,7 +41,7 @@ export default async function HeroSection() {
             <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight text-white">
               {heroContent?.title || "Shariful Haque"}
             </h1>
-            {heroContent?.span && <p className="mt-2 text-lg md:text-xl text-white">{heroContent.span}</p>}
+            {heroContent?.span && <p className="mt-2 text-base md:text-lg text-white">{heroContent.span}</p>}
             <p className="mt-4 text-lg md:text-xl text-white">
               {(subtitles || []).map((s: any) => s.subtitle_text).join(' | ') || "Researcher | Data Analyst | Blockchain Innovator | Author | Educator"}
             </p>
