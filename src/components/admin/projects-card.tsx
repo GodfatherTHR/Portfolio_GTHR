@@ -102,6 +102,7 @@ export default function ProjectsCard({ projects, allTags }: { projects: any[], a
           <Table>
             <TableHeader>
               <TableRow>
+                <TableHead>Serial</TableHead>
                 <TableHead>Title</TableHead>
                 <TableHead>Category</TableHead>
                 <TableHead>Tags</TableHead>
@@ -111,6 +112,7 @@ export default function ProjectsCard({ projects, allTags }: { projects: any[], a
             <TableBody>
               {projects.map((project) => (
                 <TableRow key={project.id}>
+                  <TableCell>{project.serial}</TableCell>
                   <TableCell className="font-medium">{project.title}</TableCell>
                   <TableCell>
                     <Badge variant="secondary">{project.category}</Badge>
@@ -147,3 +149,5 @@ export default function ProjectsCard({ projects, allTags }: { projects: any[], a
     </>
   );
 }
+
+    

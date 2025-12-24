@@ -116,6 +116,10 @@ export function ProjectForm({
             <Label htmlFor="title">Title</Label>
             <Input id="title" name="title" defaultValue={project?.title} required />
           </div>
+           <div className="grid gap-2">
+            <Label htmlFor="serial">Serial (for ordering)</Label>
+            <Input id="serial" name="serial" type="number" defaultValue={project?.serial} />
+          </div>
           <div className="grid gap-2">
             <Label htmlFor="category">Category</Label>
             <Input id="category" name="category" defaultValue={project?.category} required />
@@ -197,3 +201,5 @@ export function ProjectForm({
     </Dialog>
   );
 }
+
+    

@@ -9,7 +9,7 @@ export default async function ProjectsSection() {
   const { data: projects, error } = await supabase
     .from("projects")
     .select("*, projecttags(*, tags(*))")
-    .order("id");
+    .order("serial");
 
   if (error || !projects || projects.length === 0) {
     return (
@@ -39,3 +39,5 @@ export default async function ProjectsSection() {
     </section>
   );
 }
+
+    

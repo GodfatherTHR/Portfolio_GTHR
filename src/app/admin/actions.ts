@@ -1,5 +1,4 @@
 
-
 'use server'
 
 import { createClient } from '@/lib/supabase/server'
@@ -154,6 +153,7 @@ const projectSchema = z.object({
   json_id: z.string().optional(),
   image_src: z.string().url().optional().or(z.literal('')),
   alt_text: z.string().optional(),
+  serial: z.coerce.number().optional(),
 });
 
 export async function upsertProject(formData: FormData) {
@@ -743,3 +743,5 @@ export async function deleteBook(id: string) {
     revalidatePath('/#books');
     return { data: 'Book deleted successfully.' };
 }
+
+    
