@@ -49,11 +49,11 @@ export default async function AboutSection() {
           <div className="space-y-6">
             <h2 className="text-3xl md:text-4xl font-bold">{aboutContent.title}</h2>
             <div 
-              className="prose dark:prose-invert max-w-none text-lg text-muted-foreground"
+              className="space-y-4 text-lg text-muted-foreground"
             >
-              <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                {aboutContent.description}
-              </ReactMarkdown>
+              {aboutContent.description.split('\n').map((paragraph: string, index: number) => (
+                <p key={index}>{paragraph}</p>
+              ))}
             </div>
             <h3 className="text-2xl font-bold">{aboutContent.expertise_title}</h3>
             <ul className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-2 text-muted-foreground">

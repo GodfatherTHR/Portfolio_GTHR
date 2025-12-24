@@ -118,7 +118,7 @@ export function AboutForm({
             <Input id="title" name="title" defaultValue={aboutContent?.title} required />
           </div>
           <div className="grid gap-2">
-            <Label htmlFor="description">Description (Markdown supported)</Label>
+            <Label htmlFor="description">Description (one paragraph per line)</Label>
             <Textarea id="description" name="description" defaultValue={aboutContent?.description} required rows={5} />
           </div>
 
