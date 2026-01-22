@@ -1,6 +1,4 @@
-
-import LoadingSkeleton from "@/components/loading-skeleton";
-
+// This file is intentionally left blank.
 export default function Loading() {
-  return <LoadingSkeleton />;
+  return null;
 }

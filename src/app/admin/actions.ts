@@ -783,7 +783,6 @@ export async function upsertNewsArticle(formData: FormData) {
 
   revalidatePath('/admin');
   revalidatePath('/#news');
-  revalidatePath(`/news/${id}`);
   return { data: 'News article saved successfully.' };
 }
 
