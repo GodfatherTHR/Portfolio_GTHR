@@ -1,4 +1,5 @@
 
+import { createClient as createSupabaseClient } from '@supabase/supabase-js';
 import { createClient } from '@/lib/supabase/server';
 import { notFound, redirect } from 'next/navigation';
 import { Button } from '@/components/ui/button';
@@ -73,7 +74,10 @@ export default async function NewsArticlePage({ params }: { params: { id: string
 }
 
 export async function generateStaticParams() {
-    const supabase = createClient();
+    const supabase = createSupabaseClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+    );
     const { data: articles } = await supabase.from('news_articles').select('id');
     return articles || [];
 }
