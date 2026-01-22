@@ -47,7 +47,8 @@ export default function Header() {
       
       const awardsIndex = links.findIndex(link => link.label === 'Awards');
       if (awardsIndex !== -1) {
-        links.splice(awardsIndex + 1, 0, { href: '/#books', label: 'Books', is_button: false });
+        links.splice(awardsIndex + 1, 0, { href: '/#news', label: 'News', is_button: false });
+        links.splice(awardsIndex + 2, 0, { href: '/#books', label: 'Books', is_button: false });
       }
 
       // Manually add blog link if not present

@@ -1,4 +1,5 @@
 
+
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import { Button } from "@/components/ui/button";
@@ -18,6 +19,7 @@ import AboutCard from "@/components/admin/about-card";
 import AnimatedButton from "@/components/admin/animated-button";
 import Link from "next/link";
 import BooksCard from "@/components/admin/books-card";
+import NewsArticlesCard from "@/components/admin/news-articles-card";
 
 export default async function AdminPage() {
   const supabase = createClient();
@@ -43,6 +45,7 @@ export default async function AdminPage() {
     aboutResult,
     tagsResult,
     booksResult,
+    newsArticlesResult,
   ] = await Promise.all([
     supabase.from("projects").select("*, projecttags(*, tags(*))"),
     supabase.from("professionalexperience").select(),
@@ -56,13 +59,14 @@ export default async function AdminPage() {
     supabase.from("aboutcontent").select("*, aboutexpertise(*)").single(),
     supabase.from("tags").select("*"),
     supabase.from("books").select("*"),
+    supabase.from("news_articles").select("*"),
   ]);
 
   const results = [
     projectsResult, experiencesResult, skillsResult, 
     publicationsResult, awardsResult, contactInfoResult, 
     researchProfilesResult, educationResult, blogPostsResult, aboutResult,
-    tagsResult, booksResult,
+    tagsResult, booksResult, newsArticlesResult
   ];
   
   const anyError = results.find(result => result.error);
@@ -96,6 +100,8 @@ export default async function AdminPage() {
   const aboutContent = aboutResult.data;
   const allTags = tagsResult.data;
   const books = booksResult.data;
+  const newsArticles = newsArticlesResult.data;
+
 
   return (
     <div className="container mx-auto py-10">
@@ -124,6 +130,7 @@ export default async function AdminPage() {
         <ContactInfoCard contactInfo={contactInfo} />
         <ProjectsCard projects={projects || []} allTags={allTags || []} />
         <PublicationsCard publications={publications || []} allTags={allTags || []} />
+        <NewsArticlesCard newsArticles={newsArticles || []} />
         <ResearchProfilesCard researchProfiles={researchProfiles || []} />
         <ExperienceCard experiences={experiences || []} />
         <EducationCard education={education || []} />

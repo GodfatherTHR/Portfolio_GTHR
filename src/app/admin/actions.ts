@@ -744,4 +744,59 @@ export async function deleteBook(id: string) {
     return { data: 'Book deleted successfully.' };
 }
 
+const newsArticleSchema = z.object({
+  id: z.string().uuid().optional(),
+  title: z.string().min(1, 'Title is required'),
+  description: z.string().optional(),
+  publication_name: z.string().min(1, 'Publication name is required'),
+  publication_logo_url: z.string().url().optional().or(z.literal('')),
+  article_url: z.string().url('Article URL is required'),
+  published_date: z.string().min(1, 'Published date is required'),
+  author_name: z.string().optional(),
+  thumbnail_url: z.string().url().optional().or(z.literal('')),
+  category: z.string().optional(),
+  is_featured: z.preprocess((val) => val === 'on' || val === true, z.boolean()).default(false),
+  display_order: z.coerce.number().optional().default(0),
+});
+
+export async function upsertNewsArticle(formData: FormData) {
+  const supabase = createClient();
+  const rawData = Object.fromEntries(formData);
+
+  const parsed = newsArticleSchema.safeParse(rawData);
+
+  if (!parsed.success) {
+    console.error("News Article validation error:", parsed.error.format());
+    return { error: parsed.error.format() };
+  }
+
+  const { id, ...data } = parsed.data;
+
+  const dataToUpsert: any = { ...data };
+  
+  const { error } = await supabase.from('news_articles').upsert(id ? { id, ...dataToUpsert } : { ...dataToUpsert, id: randomUUID() });
+
+  if (error) {
+    console.error('Supabase news article upsert error:', error);
+    return { error: { _server: [error.message] } };
+  }
+
+  revalidatePath('/admin');
+  revalidatePath('/#news');
+  revalidatePath(`/news/${id}`);
+  return { data: 'News article saved successfully.' };
+}
+
+
+export async function deleteNewsArticle(id: string) {
+    const supabase = createClient();
+    const { error } = await supabase.from('news_articles').delete().eq('id', id);
+
+    if (error) {
+        return { error: { _server: [error.message] } };
+    }
+    revalidatePath('/admin');
+    revalidatePath('/#news');
+    return { data: 'News article deleted successfully.' };
+}
     
