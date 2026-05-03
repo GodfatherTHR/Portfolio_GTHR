@@ -242,6 +242,37 @@ const publicationSchema = z.object({
   json_id: z.string().optional(),
 });
 
+const researchContentSchema = z.object({
+  id: z.coerce.number(),
+  title: z.string().min(1, 'Title is required'),
+  description: z.string().min(1, 'Description is required'),
+});
+
+export async function updateResearchContent(formData: FormData) {
+  const supabase = createClient();
+  const rawData = Object.fromEntries(formData);
+
+  const parsed = researchContentSchema.safeParse(rawData);
+
+  if (!parsed.success) {
+    return { error: parsed.error.format() };
+  }
+
+  const { error } = await supabase
+    .from('researchcontent')
+    .update(parsed.data)
+    .eq('id', parsed.data.id);
+
+  if (error) {
+    return { error: { _server: [error.message] } };
+  }
+
+  revalidatePath('/admin');
+  revalidatePath('/#research');
+  revalidatePath('/');
+  return { data: 'Research section updated successfully.' };
+}
+
 export async function upsertPublication(formData: FormData) {
   const supabase = createClient();
   const rawData = Object.fromEntries(formData);
@@ -708,6 +739,9 @@ export async function upsertBook(formData: FormData) {
   }
 
   const { id, ...data } = parsed.data;
+  const previousBook = id
+    ? await supabase.from('books').select('slug').eq('id', id).single()
+    : null;
 
   const dataToUpsert: any = { ...data, updated_at: new Date().toISOString() };
   if (data.status === 'published' && !id) {
@@ -728,12 +762,19 @@ export async function upsertBook(formData: FormData) {
 
   revalidatePath('/admin');
   revalidatePath('/#books');
+  revalidatePath('/book');
+  revalidatePath(`/book/${data.slug}`);
+  const previousSlug = previousBook?.data?.slug;
+  if (previousSlug && previousSlug !== data.slug) {
+    revalidatePath(`/book/${previousSlug}`);
+  }
   return { data: 'Book saved successfully.' };
 }
 
 
 export async function deleteBook(id: string) {
     const supabase = createClient();
+    const { data: existingBook } = await supabase.from('books').select('slug').eq('id', id).single();
     const { error } = await supabase.from('books').delete().eq('id', id);
 
     if (error) {
@@ -741,6 +782,10 @@ export async function deleteBook(id: string) {
     }
     revalidatePath('/admin');
     revalidatePath('/#books');
+    revalidatePath('/book');
+    if (existingBook?.slug) {
+      revalidatePath(`/book/${existingBook.slug}`);
+    }
     return { data: 'Book deleted successfully.' };
 }
 

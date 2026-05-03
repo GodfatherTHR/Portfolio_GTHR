@@ -65,7 +65,7 @@ export default async function ResumeSection() {
                     <p className="text-lg text-white mt-2 max-w-2xl mx-auto">{resume.intro}</p>
                      {resume.cv_download_link && (
                         <Button asChild className="mt-4">
-                            <Link href="https://mmdqxosbtlgfvfyizfbh.supabase.co/storage/v1/object/public/sh-storage/SH%20Resume.pdf" target="_blank">
+                            <Link href={resume.cv_download_link} target="_blank">
                                 <Download className="mr-2 h-4 w-4"/>
                                 {resume.cv_download_text}
                             </Link>

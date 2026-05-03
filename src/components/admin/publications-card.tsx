@@ -91,8 +91,8 @@ export default function PublicationsCard({ publications, allTags }: { publicatio
       />
       <Card>
         <CardHeader>
-          <CardTitle>Publications</CardTitle>
-          <CardDescription>Manage your published research.</CardDescription>
+          <CardTitle>Research Publications</CardTitle>
+          <CardDescription>Manage the publications shown in your Research section.</CardDescription>
         </CardHeader>
         <CardContent>
           <Table>
