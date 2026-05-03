@@ -128,14 +128,31 @@ export async function updateAboutContent(formData: FormData) {
       return { error: { _server: ['Invalid expertise item format.'] } };
     }
 
-    const { data: upsertedData, error: expertiseError } = await supabase
-      .from('aboutexpertise')
-      .upsert(parsedExpertiseItems.data)
-      .select();
+    const existingExpertiseItems = parsedExpertiseItems.data.filter((item) => item.id);
+    const newExpertiseItems = parsedExpertiseItems.data
+      .filter((item) => !item.id)
+      .map(({ id, ...item }) => item);
 
-    if (expertiseError) {
-       console.error("Supabase expertise upsert error:", expertiseError.message);
-      return { error: { _server: [expertiseError.message] } };
+    if (existingExpertiseItems.length > 0) {
+      const { error: updateError } = await supabase
+        .from('aboutexpertise')
+        .upsert(existingExpertiseItems);
+
+      if (updateError) {
+        console.error("Supabase expertise update error:", updateError.message);
+        return { error: { _server: [updateError.message] } };
+      }
+    }
+
+    if (newExpertiseItems.length > 0) {
+      const { error: insertError } = await supabase
+        .from('aboutexpertise')
+        .insert(newExpertiseItems);
+
+      if (insertError) {
+        console.error("Supabase expertise insert error:", insertError.message);
+        return { error: { _server: [insertError.message] } };
+      }
     }
   }
 
