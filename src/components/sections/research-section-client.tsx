@@ -64,7 +64,7 @@ export default function ResearchSectionClient({ publications }: { publications: 
       </div>
       {publications.length > initialCount && !showAll && (
         <div className="text-center mt-12">
-          <Button onClick={() => setShowAll(true)} size="lg">Show More</Button>
+          <Button onClick={() => setShowAll(true)} size="lg">See More</Button>
         </div>
       )}
     </>
