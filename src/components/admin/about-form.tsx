@@ -190,7 +190,7 @@ export function AboutForm({
               </div>
                <div className="grid gap-2">
                 <Label htmlFor="cta_link">CTA Button Link</Label>
-                <Input id="cta_link" name="cta_link" type="url" defaultValue={aboutContent?.cta_link} />
+                <Input id="cta_link" name="cta_link" defaultValue={aboutContent?.cta_link} placeholder="/#contact or https://example.com" />
               </div>
               <div className="grid gap-2">
                 <Label htmlFor="cta_icon">CTA Icon (e.g., arrow-right)</Label>
