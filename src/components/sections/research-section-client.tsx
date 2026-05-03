@@ -62,9 +62,11 @@ export default function ResearchSectionClient({ publications }: { publications: 
           </GlareHover>
         ))}
       </div>
-      {publications.length > initialCount && !showAll && (
+      {publications.length > initialCount && (
         <div className="text-center mt-12">
-          <Button onClick={() => setShowAll(true)} size="lg">See More</Button>
+          <Button onClick={() => setShowAll((current) => !current)} size="lg">
+            {showAll ? "See Less" : "See More"}
+          </Button>
         </div>
       )}
     </>
