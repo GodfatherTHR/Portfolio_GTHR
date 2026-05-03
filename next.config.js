@@ -23,6 +23,12 @@ const nextConfig = {
       },
       {
         protocol: 'https',
+        hostname: '**.supabase.co',
+        port: '',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
         hostname: 'i.freeimage.host',
         port: '',
         pathname: '/**',

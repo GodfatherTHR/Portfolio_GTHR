@@ -10,6 +10,14 @@ import GlareHover from "../animation/GlareHover";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 
+function getBookExcerpt(description?: string | null) {
+  if (!description) {
+    return "";
+  }
+
+  return `${description.substring(0, 100)}${description.length > 100 ? "..." : ""}`;
+}
+
 export default async function BooksSection() {
   const supabase = createClient();
   const { data: books, error } = await supabase
@@ -57,7 +65,7 @@ export default async function BooksSection() {
                   <div className="text-sm text-muted-foreground">
                      <div className="text-sm prose prose-sm dark:prose-invert max-w-none">
                         <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                            {book.description?.substring(0, 100) + (book.description && book.description.length > 100 ? '...' : '')}
+                            {getBookExcerpt(book.description)}
                         </ReactMarkdown>
                      </div>
                   </div>
