@@ -29,6 +29,20 @@ export async function generateMetadata(): Promise<Metadata> {
   return {
     title,
     description,
+    alternates: {
+      canonical: 'https://www.sharifulhaque.org',
+    },
+    openGraph: {
+      title,
+      description,
+      url: 'https://www.sharifulhaque.org',
+      type: 'website',
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title,
+      description,
+    },
   }
 }
 

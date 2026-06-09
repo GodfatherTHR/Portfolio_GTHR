@@ -110,11 +110,26 @@ export async function generateMetadata({ params }: { params: { slug: string } })
     }
   }
 
+  const url = `https://www.sharifulhaque.org/book/${params.slug}`;
+
   return {
     title: book.title,
     description: book.description,
+    alternates: {
+      canonical: url,
+    },
     openGraph: {
-        images: book.image_url ? [book.image_url] : [],
+      title: book.title,
+      description: book.description,
+      url,
+      type: 'book',
+      images: book.image_url ? [{ url: book.image_url }] : [],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: book.title,
+      description: book.description,
+      images: book.image_url ? [book.image_url] : [],
     },
   }
 }

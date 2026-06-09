@@ -10,6 +10,21 @@ import remarkGfm from "remark-gfm";
 export const metadata = {
   title: "Books | Shariful Haque",
   description: "Books authored or recommended by Shariful Haque.",
+  keywords: ["Shariful Haque books", "data analytics books", "blockchain books", "AI books", "ERP books"],
+  alternates: {
+    canonical: "https://www.sharifulhaque.org/book",
+  },
+  openGraph: {
+    title: "Books | Shariful Haque",
+    description: "Books authored or recommended by Shariful Haque.",
+    url: "https://www.sharifulhaque.org/book",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Books | Shariful Haque",
+    description: "Books authored or recommended by Shariful Haque.",
+  },
 };
 
 function getBookExcerpt(description?: string | null) {

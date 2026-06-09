@@ -1,5 +1,6 @@
 
 
+import type { Metadata } from "next";
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import { Button } from "@/components/ui/button";
@@ -21,6 +22,11 @@ import Link from "next/link";
 import BooksCard from "@/components/admin/books-card";
 import NewsArticlesCard from "@/components/admin/news-articles-card";
 import ResearchContentCard from "@/components/admin/research-content-card";
+
+export const metadata: Metadata = {
+  title: "Admin Panel | Shariful Haque",
+  robots: { index: false, follow: false },
+};
 
 export default async function AdminPage() {
   const supabase = createClient();
