@@ -1,4 +1,6 @@
 
+
+import type { Metadata } from "next";
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import { Button } from "@/components/ui/button";
@@ -17,6 +19,14 @@ import BlogPostsCard from "@/components/admin/blog-posts-card";
 import AboutCard from "@/components/admin/about-card";
 import AnimatedButton from "@/components/admin/animated-button";
 import Link from "next/link";
+import BooksCard from "@/components/admin/books-card";
+import NewsArticlesCard from "@/components/admin/news-articles-card";
+import ResearchContentCard from "@/components/admin/research-content-card";
+
+export const metadata: Metadata = {
+  title: "Admin Panel | Shariful Haque",
+  robots: { index: false, follow: false },
+};
 
 export default async function AdminPage() {
   const supabase = createClient();
@@ -41,6 +51,9 @@ export default async function AdminPage() {
     blogPostsResult,
     aboutResult,
     tagsResult,
+    booksResult,
+    newsArticlesResult,
+    researchContentResult,
   ] = await Promise.all([
     supabase.from("projects").select("*, projecttags(*, tags(*))"),
     supabase.from("professionalexperience").select(),
@@ -53,18 +66,21 @@ export default async function AdminPage() {
     supabase.from("blog_posts").select(),
     supabase.from("aboutcontent").select("*, aboutexpertise(*)").single(),
     supabase.from("tags").select("*"),
+    supabase.from("books").select("*"),
+    supabase.from("news_articles").select("*"),
+    supabase.from("researchcontent").select("*").maybeSingle(),
   ]);
 
   const results = [
     projectsResult, experiencesResult, skillsResult, 
     publicationsResult, awardsResult, contactInfoResult, 
     researchProfilesResult, educationResult, blogPostsResult, aboutResult,
-    tagsResult,
+    tagsResult, booksResult, newsArticlesResult, researchContentResult
   ];
   
   const anyError = results.find(result => result.error);
 
-  if (anyError) {
+  if (anyError && anyError.error) {
      return (
        <div className="container mx-auto py-10">
          <Alert variant="destructive">
@@ -92,6 +108,10 @@ export default async function AdminPage() {
   const blogPosts = blogPostsResult.data;
   const aboutContent = aboutResult.data;
   const allTags = tagsResult.data;
+  const books = booksResult.data;
+  const newsArticles = newsArticlesResult.data;
+  const researchContent = researchContentResult.data;
+
 
   return (
     <div className="container mx-auto py-10">
@@ -118,12 +138,15 @@ export default async function AdminPage() {
       <div className="grid gap-10">
         <AboutCard aboutContent={aboutContent} />
         <ContactInfoCard contactInfo={contactInfo} />
+        <ResearchContentCard researchContent={researchContent} />
         <ProjectsCard projects={projects || []} allTags={allTags || []} />
         <PublicationsCard publications={publications || []} allTags={allTags || []} />
+        <NewsArticlesCard newsArticles={newsArticles || []} />
         <ResearchProfilesCard researchProfiles={researchProfiles || []} />
         <ExperienceCard experiences={experiences || []} />
         <EducationCard education={education || []} />
         <AwardsCard awards={awards || []} />
+        <BooksCard books={books || []} />
         <BlogPostsCard blogPosts={blogPosts || []} />
         <SkillsCard skills={skills || []} />
       </div>

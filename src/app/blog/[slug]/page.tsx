@@ -12,7 +12,7 @@ export async function generateMetadata({ params }: { params: { slug: string } })
   const supabase = createClient();
   const { data: post } = await supabase
     .from('blog_posts')
-    .select('title, excerpt, image_url')
+    .select('title, excerpt, image_url, author, published_at')
     .eq('slug', params.slug)
     .single();
 
@@ -22,11 +22,28 @@ export async function generateMetadata({ params }: { params: { slug: string } })
     }
   }
 
+  const url = `https://www.sharifulhaque.org/blog/${params.slug}`;
+
   return {
     title: post.title,
     description: post.excerpt,
+    alternates: {
+      canonical: url,
+    },
     openGraph: {
-        images: post.image_url ? [post.image_url] : [],
+      title: post.title,
+      description: post.excerpt,
+      url,
+      type: 'article',
+      images: post.image_url ? [{ url: post.image_url }] : [],
+      publishedTime: post.published_at,
+      authors: post.author ? [post.author] : [],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: post.title,
+      description: post.excerpt,
+      images: post.image_url ? [post.image_url] : [],
     },
   }
 }

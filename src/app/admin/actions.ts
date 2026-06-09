@@ -1,5 +1,4 @@
 
-
 'use server'
 
 import { createClient } from '@/lib/supabase/server'
@@ -49,7 +48,11 @@ const aboutContentSchema = z.object({
   image_alt: z.string().optional(),
   expertise_title: z.string().min(1, 'Expertise title is required'),
   cta_text: z.string().optional(),
-  cta_link: z.string().url('Must be a valid URL').optional().or(z.literal('')),
+  cta_link: z.string().refine((value) => {
+    if (!value) return true;
+    if (value.startsWith('/') || value.startsWith('#')) return true;
+    return z.string().url().safeParse(value).success;
+  }, 'Must be a valid URL or internal path').optional(),
   cta_icon: z.string().optional(),
 });
 
@@ -125,14 +128,31 @@ export async function updateAboutContent(formData: FormData) {
       return { error: { _server: ['Invalid expertise item format.'] } };
     }
 
-    const { data: upsertedData, error: expertiseError } = await supabase
-      .from('aboutexpertise')
-      .upsert(parsedExpertiseItems.data)
-      .select();
+    const existingExpertiseItems = parsedExpertiseItems.data.filter((item) => item.id);
+    const newExpertiseItems = parsedExpertiseItems.data
+      .filter((item) => !item.id)
+      .map(({ id, ...item }) => item);
 
-    if (expertiseError) {
-       console.error("Supabase expertise upsert error:", expertiseError.message);
-      return { error: { _server: [expertiseError.message] } };
+    if (existingExpertiseItems.length > 0) {
+      const { error: updateError } = await supabase
+        .from('aboutexpertise')
+        .upsert(existingExpertiseItems);
+
+      if (updateError) {
+        console.error("Supabase expertise update error:", updateError.message);
+        return { error: { _server: [updateError.message] } };
+      }
+    }
+
+    if (newExpertiseItems.length > 0) {
+      const { error: insertError } = await supabase
+        .from('aboutexpertise')
+        .insert(newExpertiseItems);
+
+      if (insertError) {
+        console.error("Supabase expertise insert error:", insertError.message);
+        return { error: { _server: [insertError.message] } };
+      }
     }
   }
 
@@ -154,6 +174,7 @@ const projectSchema = z.object({
   json_id: z.string().optional(),
   image_src: z.string().url().optional().or(z.literal('')),
   alt_text: z.string().optional(),
+  serial: z.coerce.number().optional(),
 });
 
 export async function upsertProject(formData: FormData) {
@@ -241,6 +262,37 @@ const publicationSchema = z.object({
   description: z.string().optional(),
   json_id: z.string().optional(),
 });
+
+const researchContentSchema = z.object({
+  id: z.coerce.number(),
+  title: z.string().min(1, 'Title is required'),
+  description: z.string().min(1, 'Description is required'),
+});
+
+export async function updateResearchContent(formData: FormData) {
+  const supabase = createClient();
+  const rawData = Object.fromEntries(formData);
+
+  const parsed = researchContentSchema.safeParse(rawData);
+
+  if (!parsed.success) {
+    return { error: parsed.error.format() };
+  }
+
+  const { error } = await supabase
+    .from('researchcontent')
+    .update(parsed.data)
+    .eq('id', parsed.data.id);
+
+  if (error) {
+    return { error: { _server: [error.message] } };
+  }
+
+  revalidatePath('/admin');
+  revalidatePath('/#research');
+  revalidatePath('/');
+  return { data: 'Research section updated successfully.' };
+}
 
 export async function upsertPublication(formData: FormData) {
   const supabase = createClient();
@@ -675,3 +727,141 @@ export async function markMessageAsRead(id: number) {
   revalidatePath('/admin/messages')
   return { data: 'Message marked as read.' }
 }
+
+
+const bookSchema = z.object({
+  id: z.string().uuid().optional(),
+  title: z.string().min(1, 'Title is required'),
+  slug: z.string().min(1, 'Slug is required').regex(/^[a-z0-9-]+$/, 'Slug can only contain lowercase letters, numbers, and hyphens'),
+  description: z.string().optional(),
+  author: z.string().min(1, 'Author is required'),
+  isbn: z.string().optional(),
+  publisher: z.string().optional(),
+  page_count: z.coerce.number().optional(),
+  image_url: z.string().url().optional().or(z.literal('')),
+  link: z.string().url('Invalid URL').optional().or(z.literal('')),
+  status: z.enum(['draft', 'published', 'archived']),
+});
+
+export async function upsertBook(formData: FormData) {
+  const supabase = createClient();
+  const rawData = Object.fromEntries(formData);
+
+  // Manually handle empty optional number
+  if (rawData.page_count === '') {
+    delete rawData.page_count;
+  }
+
+  const parsed = bookSchema.safeParse(rawData);
+
+  if (!parsed.success) {
+    console.error("Book validation error:", parsed.error.format());
+    return { error: parsed.error.format() };
+  }
+
+  const { id, ...data } = parsed.data;
+  const previousBook = id
+    ? await supabase.from('books').select('slug').eq('id', id).single()
+    : null;
+
+  const dataToUpsert: any = { ...data, updated_at: new Date().toISOString() };
+  if (data.status === 'published' && !id) {
+    dataToUpsert.published_at = new Date().toISOString();
+  } else if (data.status === 'published' && id) {
+    const { data: existingBook } = await supabase.from('books').select('published_at').eq('id', id).single();
+    if (!existingBook?.published_at) {
+      dataToUpsert.published_at = new Date().toISOString();
+    }
+  }
+
+  const { error } = await supabase.from('books').upsert(id ? { id, ...dataToUpsert } : { ...dataToUpsert, id: randomUUID() });
+
+  if (error) {
+    console.error('Supabase book upsert error:', error);
+    return { error: { _server: [error.message] } };
+  }
+
+  revalidatePath('/admin');
+  revalidatePath('/#books');
+  revalidatePath('/book');
+  revalidatePath(`/book/${data.slug}`);
+  const previousSlug = previousBook?.data?.slug;
+  if (previousSlug && previousSlug !== data.slug) {
+    revalidatePath(`/book/${previousSlug}`);
+  }
+  return { data: 'Book saved successfully.' };
+}
+
+
+export async function deleteBook(id: string) {
+    const supabase = createClient();
+    const { data: existingBook } = await supabase.from('books').select('slug').eq('id', id).single();
+    const { error } = await supabase.from('books').delete().eq('id', id);
+
+    if (error) {
+        return { error: { _server: [error.message] } };
+    }
+    revalidatePath('/admin');
+    revalidatePath('/#books');
+    revalidatePath('/book');
+    if (existingBook?.slug) {
+      revalidatePath(`/book/${existingBook.slug}`);
+    }
+    return { data: 'Book deleted successfully.' };
+}
+
+const newsArticleSchema = z.object({
+  id: z.string().uuid().optional(),
+  title: z.string().min(1, 'Title is required'),
+  description: z.string().optional(),
+  publication_name: z.string().min(1, 'Publication name is required'),
+  publication_logo_url: z.string().url().optional().or(z.literal('')),
+  article_url: z.string().url('Article URL is required'),
+  published_date: z.string().min(1, 'Published date is required'),
+  author_name: z.string().optional(),
+  thumbnail_url: z.string().url().optional().or(z.literal('')),
+  category: z.string().optional(),
+  is_featured: z.preprocess((val) => val === 'on' || val === true, z.boolean()).default(false),
+  display_order: z.coerce.number().optional().default(0),
+});
+
+export async function upsertNewsArticle(formData: FormData) {
+  const supabase = createClient();
+  const rawData = Object.fromEntries(formData);
+
+  const parsed = newsArticleSchema.safeParse(rawData);
+
+  if (!parsed.success) {
+    console.error("News Article validation error:", parsed.error.format());
+    return { error: parsed.error.format() };
+  }
+
+  const { id, ...data } = parsed.data;
+
+  const dataToUpsert: any = { ...data };
+  
+  const { error } = await supabase.from('news_articles').upsert(id ? { id, ...dataToUpsert } : { ...dataToUpsert, id: randomUUID() });
+
+  if (error) {
+    console.error('Supabase news article upsert error:', error);
+    return { error: { _server: [error.message] } };
+  }
+
+  revalidatePath('/admin');
+  revalidatePath('/#news');
+  return { data: 'News article saved successfully.' };
+}
+
+
+export async function deleteNewsArticle(id: string) {
+    const supabase = createClient();
+    const { error } = await supabase.from('news_articles').delete().eq('id', id);
+
+    if (error) {
+        return { error: { _server: [error.message] } };
+    }
+    revalidatePath('/admin');
+    revalidatePath('/#news');
+    return { data: 'News article deleted successfully.' };
+}
+    

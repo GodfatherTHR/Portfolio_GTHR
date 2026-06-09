@@ -6,6 +6,10 @@ import Squares from "../animation/Squares";
 
 export default async function ResearchSection() {
   const supabase = createClient();
+  const { data: researchContent } = await supabase
+    .from("researchcontent")
+    .select("*")
+    .maybeSingle();
   const { data: publications, error } = await supabase
     .from("publications")
     .select("*, publicationtags(*, tags(*))")
@@ -24,8 +28,12 @@ export default async function ResearchSection() {
         />
       <div className="container relative z-10">
         <div className="text-center mb-12">
-          <h2 className="text-3xl md:text-4xl font-bold text-white">Research & Publications</h2>
-          <p className="text-lg text-white mt-2">My contributions to the academic community.</p>
+          <h2 className="text-3xl md:text-4xl font-bold text-white">
+            {researchContent?.title || "Research & Publications"}
+          </h2>
+          <p className="text-lg text-white mt-2">
+            {researchContent?.description || "My contributions to the academic community."}
+          </p>
         </div>
         
         {!hasContent ? (

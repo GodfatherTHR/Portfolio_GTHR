@@ -9,6 +9,21 @@ import { ArrowLeft } from 'lucide-react'
 export const metadata = {
   title: 'Blog | Shariful Haque',
   description: 'Read the latest articles and insights from Shariful Haque.',
+  keywords: ['Shariful Haque blog', 'data analytics articles', 'blockchain insights', 'AI research', 'ERP solutions'],
+  alternates: {
+    canonical: 'https://www.sharifulhaque.org/blog',
+  },
+  openGraph: {
+    title: 'Blog | Shariful Haque',
+    description: 'Read the latest articles and insights from Shariful Haque.',
+    url: 'https://www.sharifulhaque.org/blog',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Blog | Shariful Haque',
+    description: 'Read the latest articles and insights from Shariful Haque.',
+  },
 }
 
 export default async function BlogIndexPage() {

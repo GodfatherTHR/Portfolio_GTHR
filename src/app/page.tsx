@@ -1,3 +1,4 @@
+
 import Header from "@/components/header";
 import HeroSection from "@/components/sections/hero-section";
 import AboutSection from "@/components/sections/about-section";
@@ -11,6 +12,8 @@ import Footer from "@/components/footer";
 import { createClient } from "@/lib/supabase/server";
 import type { Metadata } from 'next'
 import BlogSection from "@/components/sections/blog-section";
+import BooksSection from "@/components/sections/books-section";
+import NewsSection from "@/components/sections/news-section";
 
 export async function generateMetadata(): Promise<Metadata> {
   const supabase = createClient();
@@ -26,6 +29,20 @@ export async function generateMetadata(): Promise<Metadata> {
   return {
     title,
     description,
+    alternates: {
+      canonical: 'https://www.sharifulhaque.org',
+    },
+    openGraph: {
+      title,
+      description,
+      url: 'https://www.sharifulhaque.org',
+      type: 'website',
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title,
+      description,
+    },
   }
 }
 
@@ -36,12 +53,14 @@ export default function Home() {
       <main className="flex-grow">
         <HeroSection />
         <AboutSection />
+        <ResumeSection />
         <ResearchSection />
         <ResearchProfilesSection />
         <ProjectsSection />
         <AwardsSection />
+        <NewsSection />
+        <BooksSection />
         <BlogSection />
-        <ResumeSection />
         <ContactSection />
       </main>
       <Footer />

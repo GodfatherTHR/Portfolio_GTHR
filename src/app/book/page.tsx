@@ -1,0 +1,106 @@
+import { createClient } from "@/lib/supabase/server";
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { ArrowLeft, ArrowRight, BookOpen } from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
+
+export const metadata = {
+  title: "Books | Shariful Haque",
+  description: "Books authored or recommended by Shariful Haque.",
+  keywords: ["Shariful Haque books", "data analytics books", "blockchain books", "AI books", "ERP books"],
+  alternates: {
+    canonical: "https://www.sharifulhaque.org/book",
+  },
+  openGraph: {
+    title: "Books | Shariful Haque",
+    description: "Books authored or recommended by Shariful Haque.",
+    url: "https://www.sharifulhaque.org/book",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Books | Shariful Haque",
+    description: "Books authored or recommended by Shariful Haque.",
+  },
+};
+
+function getBookExcerpt(description?: string | null) {
+  if (!description) {
+    return "";
+  }
+
+  return `${description.substring(0, 140)}${description.length > 140 ? "..." : ""}`;
+}
+
+export default async function BooksIndexPage() {
+  const supabase = createClient();
+  const { data: books } = await supabase
+    .from("books")
+    .select("*")
+    .eq("status", "published")
+    .order("published_at", { ascending: false });
+
+  return (
+    <div className="container mx-auto py-12 md:py-20">
+      <div className="mb-8">
+        <Button asChild variant="outline">
+          <Link href="/">
+            <ArrowLeft className="mr-2 h-4 w-4" />
+            Back to Homepage
+          </Link>
+        </Button>
+      </div>
+
+      <header className="text-center mb-12">
+        <h1 className="text-4xl md:text-5xl font-extrabold">Books</h1>
+        <p className="text-lg text-muted-foreground mt-2">A collection of authored works and recommended reading.</p>
+      </header>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+        {books?.map((book) => (
+          <Link key={book.id} href={`/book/${book.slug}`} className="block group">
+            <Card className="flex flex-col overflow-hidden h-full group-hover:shadow-xl transition-shadow duration-300">
+              <CardHeader className="p-0">
+                {book.image_url ? (
+                  <Image
+                    src={book.image_url}
+                    alt={book.title}
+                    width={400}
+                    height={600}
+                    className="w-full h-auto object-cover aspect-[2/3]"
+                  />
+                ) : (
+                  <div className="aspect-[2/3] w-full bg-secondary flex items-center justify-center">
+                    <BookOpen className="w-16 h-16 text-muted-foreground" />
+                  </div>
+                )}
+              </CardHeader>
+              <CardContent className="flex-grow p-6">
+                <CardTitle className="text-lg font-bold mb-2 group-hover:underline">{book.title}</CardTitle>
+                <p className="text-sm text-muted-foreground mb-2">by {book.author}</p>
+                {book.description && (
+                  <div className="text-sm prose prose-sm dark:prose-invert max-w-none text-muted-foreground">
+                    <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                      {getBookExcerpt(book.description)}
+                    </ReactMarkdown>
+                  </div>
+                )}
+              </CardContent>
+              <CardFooter>
+                <div className="text-primary font-semibold flex items-center group-hover:underline">
+                  Learn More <ArrowRight className="ml-2 h-4 w-4" />
+                </div>
+              </CardFooter>
+            </Card>
+          </Link>
+        ))}
+        {(!books || books.length === 0) && (
+          <p className="col-span-full text-center text-muted-foreground">No published books found.</p>
+        )}
+      </div>
+    </div>
+  );
+}

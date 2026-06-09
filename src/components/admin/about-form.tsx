@@ -40,8 +40,11 @@ export function AboutForm({
   const [deletedIds, setDeletedIds] = useState<number[]>([]);
 
   useEffect(() => {
-    setImagePreview(aboutContent?.image_src || null);
-    setExpertiseItems(aboutContent?.aboutexpertise || []);
+    if (isOpen) {
+      setImagePreview(aboutContent?.image_src || null);
+      setExpertiseItems(aboutContent?.aboutexpertise || []);
+      setDeletedIds([]);
+    }
   }, [aboutContent, isOpen]);
 
   const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -115,7 +118,7 @@ export function AboutForm({
             <Input id="title" name="title" defaultValue={aboutContent?.title} required />
           </div>
           <div className="grid gap-2">
-            <Label htmlFor="description">Description</Label>
+            <Label htmlFor="description">Description (one paragraph per line)</Label>
             <Textarea id="description" name="description" defaultValue={aboutContent?.description} required rows={5} />
           </div>
 
@@ -187,7 +190,7 @@ export function AboutForm({
               </div>
                <div className="grid gap-2">
                 <Label htmlFor="cta_link">CTA Button Link</Label>
-                <Input id="cta_link" name="cta_link" type="url" defaultValue={aboutContent?.cta_link} />
+                <Input id="cta_link" name="cta_link" defaultValue={aboutContent?.cta_link} placeholder="/#contact or https://example.com" />
               </div>
               <div className="grid gap-2">
                 <Label htmlFor="cta_icon">CTA Icon (e.g., arrow-right)</Label>

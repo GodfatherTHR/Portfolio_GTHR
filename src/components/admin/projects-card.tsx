@@ -35,11 +35,13 @@ export default function ProjectsCard({ projects, allTags }: { projects: any[], a
     startTransition(async () => {
       const result = await upsertProject(formData);
       if (result?.error) {
+        const errorMessage = (result.error as any)._server?.[0] || "Failed to save project. Check validation.";
         toast({
           title: "Error",
-          description: result.error._server?.[0] || "Failed to save project.",
+          description: errorMessage,
           variant: "destructive",
         });
+        console.error(result.error);
       } else {
         toast({
           title: "Success",
@@ -100,6 +102,7 @@ export default function ProjectsCard({ projects, allTags }: { projects: any[], a
           <Table>
             <TableHeader>
               <TableRow>
+                <TableHead>Serial</TableHead>
                 <TableHead>Title</TableHead>
                 <TableHead>Category</TableHead>
                 <TableHead>Tags</TableHead>
@@ -109,6 +112,7 @@ export default function ProjectsCard({ projects, allTags }: { projects: any[], a
             <TableBody>
               {projects.map((project) => (
                 <TableRow key={project.id}>
+                  <TableCell>{project.serial}</TableCell>
                   <TableCell className="font-medium">{project.title}</TableCell>
                   <TableCell>
                     <Badge variant="secondary">{project.category}</Badge>
@@ -145,3 +149,5 @@ export default function ProjectsCard({ projects, allTags }: { projects: any[], a
     </>
   );
 }
+
+    

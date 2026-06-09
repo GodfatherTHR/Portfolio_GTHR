@@ -1,14 +1,6 @@
-
-import type {NextConfig} from 'next';
-
-const nextConfig: NextConfig = {
+/** @type {import('next').NextConfig} */
+const nextConfig = {
   /* config options here */
-  typescript: {
-    ignoreBuildErrors: true,
-  },
-  eslint: {
-    ignoreDuringBuilds: true,
-  },
   images: {
     remotePatterns: [
       {
@@ -26,6 +18,12 @@ const nextConfig: NextConfig = {
       {
         protocol: 'https',
         hostname: 'mmdqxosbtlgfvfyizfbh.supabase.co',
+        port: '',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: '**.supabase.co',
         port: '',
         pathname: '/**',
       },
@@ -52,9 +50,9 @@ const nextConfig: NextConfig = {
         hostname: 'collection.cloudinary.com',
         port: '',
         pathname: '/**',
-      }
+      },
     ],
   },
 };
 
-export default nextConfig;
+module.exports = nextConfig;

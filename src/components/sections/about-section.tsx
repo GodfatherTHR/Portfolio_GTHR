@@ -5,6 +5,8 @@ import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Terminal } from "lucide-react";
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 
 export default async function AboutSection() {
   const supabase = createClient();
@@ -46,13 +48,19 @@ export default async function AboutSection() {
           </div>
           <div className="space-y-6">
             <h2 className="text-3xl md:text-4xl font-bold">{aboutContent.title}</h2>
-            <p className="text-lg text-muted-foreground">{aboutContent.description}</p>
+            <div 
+              className="space-y-4 text-lg text-muted-foreground"
+            >
+              {aboutContent.description.split('\n').map((paragraph: string, index: number) => (
+                <p key={index}>{paragraph}</p>
+              ))}
+            </div>
             <h3 className="text-2xl font-bold">{aboutContent.expertise_title}</h3>
             <ul className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-2 text-muted-foreground">
               {aboutContent.aboutexpertise.map((item: any) => (
                 <li key={item.id} className="flex items-center gap-2">
                   <ArrowRight className="w-4 h-4 text-primary flex-shrink-0" />
-                  <span>{item.expertise_item}</span>
+                  <span className="font-bold">{item.expertise_item}</span>
                 </li>
               ))}
             </ul>

@@ -3,12 +3,7 @@ import multer from 'multer';
 import cloudinary from '@/lib/cloudinary';
 import { Readable } from 'stream';
 
-// Disable Next.js body parsing to allow multer to handle it
-export const config = {
-  api: {
-    bodyParser: false,
-  },
-};
+export const dynamic = 'force-dynamic'
 
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });

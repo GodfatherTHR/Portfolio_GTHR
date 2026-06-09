@@ -37,6 +37,9 @@ export default function ResearchSectionClient({ publications }: { publications: 
               </div>
             </CardHeader>
             <CardContent className="flex-grow space-y-4">
+              <p className="text-sm leading-6 text-muted-foreground line-clamp-3">
+                {pub.description || "Description unavailable."}
+              </p>
               <div className="flex flex-wrap gap-2">
                 {pub.publicationtags.map((pt: any) => (
                   <Badge key={pt.tag_id} variant="secondary">{pt.tags.name}</Badge>
@@ -59,9 +62,11 @@ export default function ResearchSectionClient({ publications }: { publications: 
           </GlareHover>
         ))}
       </div>
-      {publications.length > initialCount && !showAll && (
+      {publications.length > initialCount && (
         <div className="text-center mt-12">
-          <Button onClick={() => setShowAll(true)} size="lg">Show More</Button>
+          <Button onClick={() => setShowAll((current) => !current)} size="lg">
+            {showAll ? "See Less" : "See More"}
+          </Button>
         </div>
       )}
     </>

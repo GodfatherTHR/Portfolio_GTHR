@@ -25,9 +25,12 @@ export default function AboutCard({ aboutContent }: { aboutContent: any }) {
     startTransition(async () => {
       const result = await updateAboutContent(formData);
       if (result?.error) {
+        const errorMessage = "_server" in result.error
+          ? result.error._server?.[0]
+          : "Please check the highlighted fields and try again.";
         toast({
           title: "Error",
-          description: "Failed to update About section.",
+          description: errorMessage || "Failed to update About section.",
           variant: "destructive",
         });
         console.error(result.error);
