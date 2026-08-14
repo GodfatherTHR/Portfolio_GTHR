@@ -40,7 +40,6 @@ export default function ProjectsSectionClient({ projects }: { projects: any[] })
                         width={600}
                         height={400}
                         className="w-full h-48 object-cover"
-                        data-ai-hint="software project"
                       />
                       <div className="absolute top-4 right-4 bg-background/80 p-2 rounded-full backdrop-blur-sm">
                         {iconMap[project.icon] || iconMap.default}

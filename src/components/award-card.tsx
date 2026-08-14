@@ -7,8 +7,7 @@ import Link from "next/link";
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Award as AwardIcon, ExternalLink } from "lucide-react";
-import ReactMarkdown from "react-markdown";
-import remarkGfm from "remark-gfm";
+import RichText from "@/components/rich-text";
 
 export default function AwardCard({ award }: { award: any }) {
   const [isExpanded, setIsExpanded] = useState(false);
@@ -42,11 +41,13 @@ export default function AwardCard({ award }: { award: any }) {
         {description && (
           <>
             <div className="prose prose-sm dark:prose-invert max-w-none text-muted-foreground">
-              <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                {isLongDescription && !isExpanded
-                  ? `${description.substring(0, 150)}...`
-                  : description}
-              </ReactMarkdown>
+              <RichText
+                content={
+                  isLongDescription && !isExpanded
+                    ? `${description.substring(0, 150)}...`
+                    : description
+                }
+              />
             </div>
             {isLongDescription && (
               <Button

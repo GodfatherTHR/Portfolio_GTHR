@@ -20,6 +20,9 @@ export default async function HeroSection() {
         loop 
         muted 
         playsInline 
+        preload="metadata"
+        poster="/hero-poster.jpg"
+        aria-hidden="true"
         className="absolute inset-0 w-full h-full object-cover z-10 opacity-50"
       >
         <source src="https://res.cloudinary.com/dudwzh2xy/video/upload/v1717088931/0727_veybao.mp4" type="video/mp4" />

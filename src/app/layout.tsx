@@ -1,68 +1,70 @@
-import type {Metadata} from 'next';
+import type { Metadata } from 'next';
 import './globals.css';
 import { Toaster } from "@/components/ui/toaster"
+import { Public_Sans } from 'next/font/google';
+import { siteConfig } from '@/lib/site';
+import { jsonLdGraph, personSchema, webSiteSchema, organizationSchema } from '@/lib/schema';
 
-const siteUrl = 'https://www.sharifulhaque.org';
+const publicSans = Public_Sans({
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-public-sans',
+  weight: ['100', '200', '300', '400', '500', '600', '700', '800', '900'],
+});
 
-export async function generateMetadata(): Promise<Metadata> {
-  return {
-    metadataBase: new URL(siteUrl),
-    title: {
-      template: '%s | Shariful Haque',
-      default: 'Shariful Haque | Portfolio',
-    },
-    description: 'Personal portfolio of Shariful Haque, a passionate developer, DBA student, and data analytics expert pioneering blockchain and AI solutions for ERP systems.',
-    keywords: ['Shariful Haque', 'portfolio', 'DBA', 'data analytics', 'blockchain', 'AI', 'ERP', 'researcher', 'developer', 'Bangladesh'],
-    robots: {
-      index: true,
-      follow: true,
-    },
-    verification: {
-      google: '5UsrGLgWGhkR1HVyuJxxkcFXubmeePr6ozOWgTytdAM',
-    },
-    openGraph: {
-      type: 'website',
-      locale: 'en_US',
-      siteName: 'Shariful Haque',
-      url: siteUrl,
-      title: 'Shariful Haque | Portfolio',
-      description: 'Personal portfolio of Shariful Haque, a passionate developer, DBA student, and data analytics expert pioneering blockchain and AI solutions for ERP systems.',
-    },
-    twitter: {
-      card: 'summary_large_image',
-      title: 'Shariful Haque | Portfolio',
-      description: 'Personal portfolio of Shariful Haque, a passionate developer, DBA student, and data analytics expert pioneering blockchain and AI solutions for ERP systems.',
-    },
-    alternates: {
-      canonical: siteUrl,
-    },
-  }
-}
+export const metadata: Metadata = {
+  metadataBase: new URL(siteConfig.url),
+  title: {
+    // Pages provide a unique title; the site name is appended once.
+    template: `%s | ${siteConfig.name}`,
+    default: `${siteConfig.name} — Researcher, Data Analyst & Technology Strategist`,
+  },
+  description: siteConfig.description,
+  keywords: ['Shariful Haque', 'Shariful Haque researcher', 'Shariful Haque publications', 'data analytics', 'AI research', 'blockchain', 'ERP systems', 'Bangladesh'],
+  robots: {
+    index: true,
+    follow: true,
+  },
+  verification: {
+    google: '5UsrGLgWGhkR1HVyuJxxkcFXubmeePr6ozOWgTytdAM',
+  },
+  alternates: {
+    canonical: siteConfig.url,
+  },
+  openGraph: {
+    type: 'website',
+    locale: siteConfig.locale,
+    siteName: siteConfig.name,
+    url: siteConfig.url,
+    title: `${siteConfig.name} — Researcher, Data Analyst & Technology Strategist`,
+    description: siteConfig.description,
+    images: [
+      {
+        url: siteConfig.ogImage,
+        width: 1200,
+        height: 630,
+        alt: `${siteConfig.name} — Official Website`,
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: `${siteConfig.name} — Researcher, Data Analyst & Technology Strategist`,
+    description: siteConfig.description,
+    images: [siteConfig.ogImage],
+  },
+};
 
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const jsonLd = {
-    '@context': 'https://schema.org',
-    '@type': 'Person',
-    name: 'Shariful Haque',
-    url: siteUrl,
-    jobTitle: 'DBA Student & Data Analytics Expert',
-    description: 'Passionate developer and data analytics expert pioneering blockchain and AI solutions for ERP systems.',
-    sameAs: [
-      'https://www.linkedin.com/in/sharifulhaque',
-      'https://github.com/sharifulhaque',
-    ],
-  };
+  const jsonLds = [personSchema(), webSiteSchema(), organizationSchema()];
 
   return (
-    <html lang="en" className="!scroll-smooth" suppressHydrationWarning={true}>
+    <html lang="en" className={`!scroll-smooth ${publicSans.variable}`} suppressHydrationWarning={true}>
       <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet" />
         <script async src="https://www.googletagmanager.com/gtag/js?id=G-MEL49L0EQJ"></script>
         <script
           dangerouslySetInnerHTML={{
@@ -76,7 +78,7 @@ export default function RootLayout({
         />
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+          dangerouslySetInnerHTML={{ __html: jsonLdGraph(jsonLds) }}
         />
       </head>
       <body className="font-body antialiased" suppressHydrationWarning={true}>

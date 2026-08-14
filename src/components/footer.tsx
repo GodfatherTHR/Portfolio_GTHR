@@ -28,7 +28,7 @@ export default async function Footer() {
     <footer className="bg-secondary text-primary-foreground py-6">
       <div className="container flex flex-col md:flex-row items-center justify-between text-center md:text-left">
         <div className="text-sm text-primary-foreground/80 mb-4 md:mb-0">
-          &copy; {new Date().getFullYear()} {owner?.name || 'Your Name'}. All Rights Reserved.
+          &copy; {new Date().getFullYear()} {owner?.name || 'Shariful Haque'}. All Rights Reserved.
         </div>
         <div className="flex items-center space-x-4">
           {allLinks.map(profile => (

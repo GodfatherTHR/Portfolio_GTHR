@@ -14,36 +14,26 @@ import type { Metadata } from 'next'
 import BlogSection from "@/components/sections/blog-section";
 import BooksSection from "@/components/sections/books-section";
 import NewsSection from "@/components/sections/news-section";
+import { buildPageMetadata } from "@/lib/seo";
 
 export async function generateMetadata(): Promise<Metadata> {
   const supabase = createClient();
   const { data: heroContent } = await supabase.from("herocontent").select("title, description").single();
   const { data: subtitles } = await supabase.from("herosubtitles").select("subtitle_text");
 
-  const title = heroContent?.title || 'Shariful Haque';
-  const subtitleText = (subtitles || []).map((s: any) => s.subtitle_text).join(' | ');
-  const mainDescription = heroContent?.description || "I'm a DBA student and data analytics expert pioneering blockchain and AI solutions for ERP systems and beyond.";
-  
-  const description = `${subtitleText}. ${mainDescription}`;
+  const subtitleText = (subtitles || []).map((s: any) => s.subtitle_text).join(', ');
+  const mainDescription =
+    heroContent?.description ||
+    "I'm a researcher and data analyst specializing in AI, business analytics, blockchain, and ERP systems.";
 
-  return {
-    title,
-    description,
-    alternates: {
-      canonical: 'https://www.sharifulhaque.org',
-    },
-    openGraph: {
-      title,
-      description,
-      url: 'https://www.sharifulhaque.org',
-      type: 'website',
-    },
-    twitter: {
-      card: 'summary_large_image',
-      title,
-      description,
-    },
-  }
+  const description = `${mainDescription} ${subtitleText ? `Roles: ${subtitleText}.` : ''} Explore publications, books, and research.`;
+
+  return buildPageMetadata({
+    title: "Shariful Haque — Researcher, Data Analyst & Technology Strategist",
+    description: description.slice(0, 160),
+    path: "/",
+    type: 'website',
+  });
 }
 
 export default function Home() {

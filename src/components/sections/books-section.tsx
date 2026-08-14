@@ -7,8 +7,7 @@ import { ArrowRight, BookOpen } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import GlareHover from "../animation/GlareHover";
-import ReactMarkdown from "react-markdown";
-import remarkGfm from "remark-gfm";
+import RichText from "../rich-text";
 
 function getBookExcerpt(description?: string | null) {
   if (!description) {
@@ -64,9 +63,7 @@ export default async function BooksSection() {
                   <p className="text-sm text-muted-foreground mb-2">by {book.author}</p>
                   <div className="text-sm text-muted-foreground">
                      <div className="text-sm prose prose-sm dark:prose-invert max-w-none">
-                        <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                            {getBookExcerpt(book.description)}
-                        </ReactMarkdown>
+                        <RichText content={getBookExcerpt(book.description)} />
                      </div>
                   </div>
                 </CardContent>

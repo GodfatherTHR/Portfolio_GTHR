@@ -5,10 +5,14 @@ import { Button } from '@/components/ui/button'
 import Link from 'next/link'
 import { ArrowLeft, BookOpen, Calendar, FileText, Info, Library, Terminal } from 'lucide-react'
 import { format } from 'date-fns'
-import ReactMarkdown from 'react-markdown'
-import remarkGfm from 'remark-gfm'
 import { extractFirstUrl, normalizeBookEmbedUrl } from '@/lib/book-embed'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
+import RichText from '@/components/rich-text'
+import { buildPageMetadata } from '@/lib/seo'
+import { jsonLdGraph, bookSchema, breadcrumbSchema } from '@/lib/schema'
+import { absoluteUrl } from '@/lib/site'
+import { demoteHeadings } from '@/lib/html'
+import type { Metadata } from 'next'
 
 export const dynamic = 'force-dynamic'
 
@@ -95,7 +99,7 @@ function buildDescriptionBlocks(description?: string | null): DescriptionBlock[]
   return blocks;
 }
 
-export async function generateMetadata({ params }: { params: { slug: string } }) {
+export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
   const supabase = createClient();
   const { data: book } = await supabase
     .from('books')
@@ -110,28 +114,13 @@ export async function generateMetadata({ params }: { params: { slug: string } })
     }
   }
 
-  const url = `https://www.sharifulhaque.org/book/${params.slug}`;
-
-  return {
+  return buildPageMetadata({
     title: book.title,
-    description: book.description,
-    alternates: {
-      canonical: url,
-    },
-    openGraph: {
-      title: book.title,
-      description: book.description,
-      url,
-      type: 'book',
-      images: book.image_url ? [{ url: book.image_url }] : [],
-    },
-    twitter: {
-      card: 'summary_large_image',
-      title: book.title,
-      description: book.description,
-      images: book.image_url ? [book.image_url] : [],
-    },
-  }
+    description: book.description || `Book by ${'Shariful Haque'}: ${book.title}.`,
+    path: `/book/${params.slug}`,
+    image: book.image_url,
+    type: 'book',
+  });
 }
 
 export default async function BookPage({ params }: { params: { slug: string } }) {
@@ -170,9 +159,39 @@ export default async function BookPage({ params }: { params: { slug: string } })
   const descriptionBlocks = buildDescriptionBlocks(book.description);
   const renderDescriptionAsHtml = hasIframeMarkup(book.description);
 
+  const bookUrl = absoluteUrl(`/book/${params.slug}`);
+  const jsonLds = [
+    bookSchema({
+      name: book.title,
+      description: book.description || undefined,
+      url: bookUrl,
+      isbn: book.isbn || undefined,
+      publisher: book.publisher || undefined,
+      publishedAt: book.published_at || undefined,
+      image: book.image_url,
+      author: book.author || undefined,
+    }),
+    breadcrumbSchema([
+      { name: 'Home', url: absoluteUrl('/') },
+      { name: 'Books', url: absoluteUrl('/book') },
+      { name: book.title, url: bookUrl },
+    ]),
+  ];
+
   return (
     <div className="bg-background text-foreground">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: jsonLdGraph(jsonLds) }}
+      />
       <div className="container mx-auto max-w-5xl py-12 md:py-20">
+        <div className="mb-8 flex items-center gap-3 text-sm text-muted-foreground">
+          <Link href="/" className="hover:text-primary transition-colors">Home</Link>
+          <span>/</span>
+          <Link href="/book" className="hover:text-primary transition-colors">Books</Link>
+          <span>/</span>
+          <span className="text-foreground truncate max-w-[240px]">{book.title}</span>
+        </div>
         <div className="mb-8">
           <Button asChild variant="outline">
             <Link href="/#books">
@@ -187,7 +206,7 @@ export default async function BookPage({ params }: { params: { slug: string } })
             {book.image_url ? (
               <Image
                 src={book.image_url}
-                alt={book.title}
+                alt={`${book.title} — cover`}
                 width={400}
                 height={600}
                 className="rounded-lg shadow-lg object-cover w-full aspect-[2/3]"
@@ -208,12 +227,17 @@ export default async function BookPage({ params }: { params: { slug: string } })
 
           <div className="md:col-span-2">
             <h1 className="text-3xl md:text-4xl font-extrabold mb-2">{book.title}</h1>
-            <p className="text-lg text-muted-foreground mb-6">by {book.author}</p>
+            <p className="text-lg text-muted-foreground mb-6">
+              by{' '}
+              <Link href="/about-shariful-haque" className="text-primary hover:underline">
+                {book.author}
+              </Link>
+            </p>
 
             {renderDescriptionAsHtml && book.description ? (
               <div
                 className="mb-8 [&_iframe]:w-full [&_iframe]:min-h-[520px] [&_iframe]:rounded-2xl [&_iframe]:border-0"
-                dangerouslySetInnerHTML={{ __html: decodeHtmlEntities(book.description) }}
+                dangerouslySetInnerHTML={{ __html: demoteHeadings(decodeHtmlEntities(book.description)) }}
               />
             ) : descriptionBlocks.length > 0 && (
               <div className="mb-8 space-y-6">
@@ -234,9 +258,7 @@ export default async function BookPage({ params }: { params: { slug: string } })
                     </div>
                   ) : (
                     <div key={`markdown-${index}`} className="prose prose-lg dark:prose-invert max-w-none">
-                      <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                        {block.content}
-                      </ReactMarkdown>
+                      <RichText content={block.content} />
                     </div>
                   )
                 )}

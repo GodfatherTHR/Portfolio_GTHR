@@ -1,4 +1,7 @@
 User-agent: *
 Allow: /
+Disallow: /admin
+Disallow: /login
+Disallow: /news/
 
 Sitemap: https://www.sharifulhaque.org/sitemap.xml

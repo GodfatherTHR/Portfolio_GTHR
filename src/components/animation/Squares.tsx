@@ -37,6 +37,11 @@ const Squares: React.FC<SquaresProps> = ({
     if (!canvas) return;
     const ctx = canvas.getContext("2d");
 
+    // Respect users who prefer reduced motion — draw a static frame only.
+    const prefersReducedMotion =
+      typeof window !== "undefined" &&
+      window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches;
+
     const resizeCanvas = () => {
       if (!canvas) return;
       canvas.width = canvas.offsetWidth;
@@ -90,7 +95,12 @@ const Squares: React.FC<SquaresProps> = ({
       ctx.fillRect(0, 0, canvas.width, canvas.height);
     };
 
+    let isVisible = true;
     const updateAnimation = () => {
+      if (!isVisible) {
+        // Pause when scrolled out of view to reduce main-thread work.
+        return;
+      }
       const effectiveSpeed = Math.max(speed, 0.1);
       switch (direction) {
         case "right":
@@ -152,15 +162,33 @@ const Squares: React.FC<SquaresProps> = ({
       hoveredSquareRef.current = null;
     };
 
+    // Only run the animation loop while the canvas is near the viewport.
+    let observer: IntersectionObserver | null = null;
+    if (typeof IntersectionObserver !== "undefined") {
+      observer = new IntersectionObserver(
+        (entries) => {
+          isVisible = entries[0]?.isIntersecting ?? true;
+        },
+        { rootMargin: "200px" }
+      );
+      observer.observe(canvas);
+    }
+
     canvas.addEventListener("mousemove", handleMouseMove);
     canvas.addEventListener("mouseleave", handleMouseLeave);
-    requestRef.current = requestAnimationFrame(updateAnimation);
+
+    if (prefersReducedMotion) {
+      drawGrid();
+    } else {
+      requestRef.current = requestAnimationFrame(updateAnimation);
+    }
 
     return () => {
       window.removeEventListener("resize", resizeCanvas);
       if (requestRef.current) cancelAnimationFrame(requestRef.current);
       canvas?.removeEventListener("mousemove", handleMouseMove);
       canvas?.removeEventListener("mouseleave", handleMouseLeave);
+      observer?.disconnect();
     };
   }, [direction, speed, borderColor, hoverFillColor, squareSize]);
 

@@ -5,8 +5,6 @@ import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Terminal } from "lucide-react";
-import ReactMarkdown from 'react-markdown';
-import remarkGfm from 'remark-gfm';
 
 export default async function AboutSection() {
   const supabase = createClient();
@@ -39,11 +37,10 @@ export default async function AboutSection() {
           <div>
             <Image
               src={imageSrc}
-              alt={aboutContent.image_alt || "About image"}
+              alt={aboutContent.image_alt || "Portrait of Shariful Haque"}
               width={600}
               height={700}
               className="rounded-lg shadow-lg object-cover"
-              data-ai-hint="portrait professional"
             />
           </div>
           <div className="space-y-6">
@@ -65,12 +62,19 @@ export default async function AboutSection() {
               ))}
             </ul>
             {aboutContent.cta_link && (
-                <Button asChild className="mt-8" size="lg">
-                    <Link href={aboutContent.cta_link}>
-                        {aboutContent.cta_text}
-                        {aboutContent.cta_icon === 'arrow-right' && <ArrowRight className="ml-2" />}
-                    </Link>
-                </Button>
+                <div className="mt-8 flex flex-wrap gap-4">
+                  <Button asChild size="lg">
+                      <Link href={aboutContent.cta_link}>
+                          {aboutContent.cta_text}
+                          {aboutContent.cta_icon === 'arrow-right' && <ArrowRight className="ml-2" />}
+                      </Link>
+                  </Button>
+                  <Button asChild variant="secondary" size="lg">
+                      <Link href="/about-shariful-haque">
+                          Full Biography
+                      </Link>
+                  </Button>
+                </div>
             )}
           </div>
         </div>

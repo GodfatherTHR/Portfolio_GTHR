@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -9,10 +8,7 @@ import { Star } from "lucide-react";
 import GlareHover from "../animation/GlareHover";
 
 export default function ResearchSectionClient({ publications }: { publications: any[] }) {
-  const [showAll, setShowAll] = useState(false);
-  const initialCount = 4;
-
-  const displayedPublications = showAll ? publications : publications.slice(0, initialCount);
+  const displayedPublications = publications.slice(0, 4);
 
   return (
     <>
@@ -62,13 +58,13 @@ export default function ResearchSectionClient({ publications }: { publications: 
           </GlareHover>
         ))}
       </div>
-      {publications.length > initialCount && (
-        <div className="text-center mt-12">
-          <Button onClick={() => setShowAll((current) => !current)} size="lg">
-            {showAll ? "See Less" : "See More"}
-          </Button>
-        </div>
-      )}
+      <div className="flex justify-center mt-12">
+        <Button asChild variant="secondary" size="lg">
+          <Link href="/research">
+            View All Research & Publications
+          </Link>
+        </Button>
+      </div>
     </>
   );
 }
