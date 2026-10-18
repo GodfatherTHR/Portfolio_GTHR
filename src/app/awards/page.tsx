@@ -6,6 +6,7 @@ import AwardCard from '@/components/award-card';
 import { buildPageMetadata } from '@/lib/seo';
 import { jsonLdGraph, personSchema, breadcrumbSchema } from '@/lib/schema';
 import { absoluteUrl } from '@/lib/site';
+import { sortAwardsWithFeaturedFirst } from '@/lib/awards';
 
 export const metadata = buildPageMetadata({
   title: 'Awards & Recognitions',
@@ -21,6 +22,8 @@ export default async function AwardsPage() {
     .from('awards')
     .select('*')
     .order('year', { ascending: false });
+
+  const sortedAwards = awards ? sortAwardsWithFeaturedFirst(awards) : [];
 
   const jsonLds = [
     personSchema(),
@@ -56,11 +59,11 @@ export default async function AwardsPage() {
           <p className="text-destructive mb-8">Unable to load awards at this time.</p>
         )}
 
-        {!error && (!awards || awards.length === 0) ? (
+        {!error && sortedAwards.length === 0 ? (
           <p className="text-muted-foreground text-center">No awards are listed yet.</p>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {awards?.map((award: any) => (
+            {sortedAwards.map((award: any) => (
               <AwardCard key={award.id} award={award} />
             ))}
           </div>

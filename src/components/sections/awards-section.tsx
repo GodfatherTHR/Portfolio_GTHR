@@ -4,6 +4,7 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import AwardCard from "@/components/award-card";
+import { sortAwardsWithFeaturedFirst } from "@/lib/awards";
 
 export default async function AwardsSection() {
   const supabase = createClient();
@@ -28,6 +29,8 @@ export default async function AwardsSection() {
     )
   }
 
+  const sortedAwards = sortAwardsWithFeaturedFirst(awards);
+
   return (
     <section id="awards" className="py-16 md:py-24">
       <div className="container">
@@ -36,11 +39,11 @@ export default async function AwardsSection() {
           <p className="text-lg text-muted-foreground mt-2">Honored for my contributions and achievements.</p>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {awards.slice(0, 6).map((award: any) => (
+          {sortedAwards.slice(0, 6).map((award: any) => (
             <AwardCard key={award.id} award={award} />
           ))}
         </div>
-        {awards.length > 6 && (
+        {sortedAwards.length > 6 && (
           <div className="text-center mt-12">
             <Button asChild size="lg">
               <Link href="/awards">See More</Link>
