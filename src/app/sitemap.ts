@@ -18,6 +18,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${siteUrl}/about-shariful-haque`, lastModified: new Date(), changeFrequency: 'monthly', priority: 0.9 },
     { url: `${siteUrl}/research`, lastModified: new Date(), changeFrequency: 'weekly', priority: 0.9 },
     { url: `${siteUrl}/media`, lastModified: new Date(), changeFrequency: 'weekly', priority: 0.6 },
+    { url: `${siteUrl}/news`, lastModified: new Date(), changeFrequency: 'weekly', priority: 0.6 },
+    { url: `${siteUrl}/projects`, lastModified: new Date(), changeFrequency: 'monthly', priority: 0.7 },
+    { url: `${siteUrl}/awards`, lastModified: new Date(), changeFrequency: 'monthly', priority: 0.7 },
     { url: `${siteUrl}/blog`, lastModified: new Date(), changeFrequency: 'weekly', priority: 0.8 },
     { url: `${siteUrl}/book`, lastModified: new Date(), changeFrequency: 'weekly', priority: 0.8 },
   ]

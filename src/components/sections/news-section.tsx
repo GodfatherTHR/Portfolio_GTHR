@@ -28,7 +28,7 @@ export default async function NewsSection() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {articles.map((article) => (
+          {articles.slice(0, 6).map((article) => (
             <Card key={article.id} className="flex flex-col overflow-hidden group">
                {article.thumbnail_url && (
                  <div className="relative h-52 w-full overflow-hidden">
@@ -63,6 +63,13 @@ export default async function NewsSection() {
             </Card>
           ))}
         </div>
+        {articles.length > 6 && (
+          <div className="text-center mt-12">
+            <Button asChild size="lg">
+              <Link href="/news">See More</Link>
+            </Button>
+          </div>
+        )}
       </div>
     </section>
   );

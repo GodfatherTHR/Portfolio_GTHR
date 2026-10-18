@@ -1,6 +1,8 @@
 import { createClient } from "@/lib/supabase/server";
 import { Terminal } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
 import AwardCard from "@/components/award-card";
 
 export default async function AwardsSection() {
@@ -34,10 +36,17 @@ export default async function AwardsSection() {
           <p className="text-lg text-muted-foreground mt-2">Honored for my contributions and achievements.</p>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {awards.map((award: any) => (
+          {awards.slice(0, 6).map((award: any) => (
             <AwardCard key={award.id} award={award} />
           ))}
         </div>
+        {awards.length > 6 && (
+          <div className="text-center mt-12">
+            <Button asChild size="lg">
+              <Link href="/awards">See More</Link>
+            </Button>
+          </div>
+        )}
       </div>
     </section>
   );

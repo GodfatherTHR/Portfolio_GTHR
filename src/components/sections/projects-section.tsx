@@ -1,8 +1,21 @@
 import { createClient } from "@/lib/supabase/server";
 import { Terminal } from "lucide-react";
+import { FileText, Lightbulb, BarChart2, Tv, Code } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import ProjectsSectionClient from "./projects-section-client";
+import { Card, CardContent, CardFooter, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import Image from "next/image";
+import Link from "next/link";
 
+const iconMap: { [key: string]: React.ReactNode } = {
+  "patent-icon": <FileText className="h-8 w-8 text-primary" />,
+  "innovation-icon": <Lightbulb className="h-8 w-8 text-primary" />,
+  "data-analytics-icon": <BarChart2 className="h-8 w-8 text-primary" />,
+  "content-icon": <Tv className="h-8 w-8 text-primary" />,
+  "software-icon": <Code className="h-8 w-8 text-primary" />,
+  "default": <Code className="h-8 w-8 text-primary" />
+};
 
 export default async function ProjectsSection() {
   const supabase = createClient();
@@ -27,6 +40,9 @@ export default async function ProjectsSection() {
     )
   }
 
+  const initialCount = 6;
+  const displayedProjects = projects.slice(0, initialCount);
+
   return (
     <section id="projects" className="py-16 md:py-24">
       <div className="container">
@@ -34,10 +50,53 @@ export default async function ProjectsSection() {
           <h2 className="text-3xl md:text-4xl font-bold">Projects & Patents</h2>
           <p className="text-lg text-muted-foreground mt-2">A selection of my work. See what I've been building.</p>
         </div>
-        <ProjectsSectionClient projects={projects} />
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {displayedProjects.map((project: any) => {
+            const imageSrc = (project.image_src && (project.image_src.startsWith('http') || project.image_src.startsWith('/')))
+              ? project.image_src
+              : "https://placehold.co/600x400.png";
+            return (
+              <Card key={project.id} className="flex flex-col overflow-hidden shadow-lg hover:shadow-2xl transition-shadow duration-300">
+                <CardHeader className="p-0 relative">
+                  <Image
+                    src={imageSrc}
+                    alt={project.alt_text || project.title}
+                    width={600}
+                    height={400}
+                    className="w-full h-48 object-cover"
+                  />
+                  <div className="absolute top-4 right-4 bg-background/80 p-2 rounded-full backdrop-blur-sm">
+                    {iconMap[project.icon] || iconMap.default}
+                  </div>
+                </CardHeader>
+                <CardContent className="flex-grow p-6">
+                  <CardTitle className="text-xl font-bold mb-2">{project.title}</CardTitle>
+                  <CardDescription>{project.description}</CardDescription>
+                  <div className="mt-4 flex flex-wrap gap-2">
+                    {project.projecttags?.map((pt: any) => <Badge key={pt.tag_id} variant="outline">{pt.tags.name}</Badge>)}
+                  </div>
+                </CardContent>
+                {project.button_link && (
+                  <CardFooter className="p-6 bg-muted/50">
+                    <Button variant="default" asChild className="w-full">
+                      <Link href={project.button_link} target="_blank" rel="noopener noreferrer">
+                        {project.button_text}
+                      </Link>
+                    </Button>
+                  </CardFooter>
+                )}
+              </Card>
+            )
+          })}
+        </div>
+        {projects.length > initialCount && (
+          <div className="text-center mt-12">
+            <Button asChild size="lg">
+              <Link href="/projects">See More</Link>
+            </Button>
+          </div>
+        )}
       </div>
     </section>
   );
 }
-
-    
