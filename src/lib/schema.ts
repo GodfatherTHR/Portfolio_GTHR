@@ -1,4 +1,4 @@
-import { siteConfig, siteUrl, absoluteUrl, absoluteImage } from './site';
+import { siteConfig, siteUrl, absoluteUrl, absoluteImage, metademicConfig } from './site';
 
 /** Script-safe JSON-LD serialization for embedding in <script type="application/ld+json">. */
 export function jsonLd(data: unknown): string {
@@ -30,6 +30,11 @@ export function personSchema() {
     description: siteConfig.description,
     sameAs: siteConfig.sameAs,
     image: absoluteImage(),
+    founderOf: {
+      '@type': 'Organization',
+      name: metademicConfig.name,
+      url: metademicConfig.url,
+    },
   };
 }
 
@@ -59,6 +64,54 @@ export function organizationSchema() {
     founder: {
       '@id': siteConfig.personId,
     },
+  };
+}
+
+/** Research organization schema for Metademic Lab, founded by Shariful Haque. */
+export function metademicOrganizationSchema() {
+  return {
+    '@type': 'Organization',
+    '@id': `${metademicConfig.url}/#organization`,
+    name: metademicConfig.name,
+    alternateName: 'Metademic',
+    url: metademicConfig.url,
+    description: metademicConfig.description,
+    founder: {
+      '@type': 'Person',
+      '@id': siteConfig.personId,
+      name: siteConfig.name,
+      url: siteUrl,
+    },
+    sameAs: [metademicConfig.url],
+    knowsAbout: [
+      'Artificial intelligence',
+      'Distributed computing',
+      'Intelligent control',
+      'Autonomous systems',
+      'Trustworthy systems',
+      'Reproducible research',
+    ],
+  };
+}
+
+/** WebPage schema for the Metademic Lab page on the personal site. */
+export function metademicWebPageSchema() {
+  return {
+    '@type': 'WebPage',
+    '@id': `${absoluteUrl('/metademic')}#webpage`,
+    url: absoluteUrl('/metademic'),
+    name: 'Metademic Lab — AI Research Founded by Shariful Haque',
+    description: metademicConfig.description,
+    about: {
+      '@id': `${metademicConfig.url}/#organization`,
+    },
+    mainEntity: {
+      '@id': siteConfig.personId,
+    },
+    isPartOf: {
+      '@id': `${siteUrl}/#website`,
+    },
+    inLanguage: 'en',
   };
 }
 

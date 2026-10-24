@@ -23,6 +23,15 @@ export const siteConfig = {
 
 export const siteUrl = siteConfig.url;
 
+/** Metademic Lab — the research laboratory founded by Shariful Haque. */
+export const metademicConfig = {
+  name: 'Metademic Lab',
+  url: 'https://www.metademic.org',
+  tagline: 'Research, made reproducible.',
+  description:
+    'Metademic is an independent research laboratory exploring artificial intelligence, intelligent systems, and computing — investigating ideas, building experimental technology, and sharing reproducible knowledge.',
+} as const;
+
 /** Build an absolute canonical URL from a site-relative path. */
 export function absoluteUrl(path = ''): string {
   return `${siteUrl}${path.startsWith('/') ? path : `/${path}`}`;

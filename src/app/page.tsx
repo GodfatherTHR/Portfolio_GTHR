@@ -14,6 +14,7 @@ import type { Metadata } from 'next'
 import BlogSection from "@/components/sections/blog-section";
 import BooksSection from "@/components/sections/books-section";
 import NewsSection from "@/components/sections/news-section";
+import MetademicSection from "@/components/sections/metademic-section";
 import { buildPageMetadata } from "@/lib/seo";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -49,6 +50,7 @@ export default function Home() {
         <ProjectsSection />
         <AwardsSection />
         <NewsSection />
+        <MetademicSection />
         <BooksSection />
         <BlogSection />
         <ContactSection />
