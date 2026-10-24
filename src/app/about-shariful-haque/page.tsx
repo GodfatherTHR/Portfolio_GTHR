@@ -4,21 +4,29 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Briefcase, GraduationCap, ArrowLeft, ArrowRight, ExternalLink, BookOpen, Award, FileText } from 'lucide-react';
+import { Briefcase, GraduationCap, ArrowLeft, ArrowRight, ExternalLink, BookOpen, Award, FileText, FlaskConical } from 'lucide-react';
 import { format } from 'date-fns';
 import { siteConfig } from '@/lib/site';
 import { buildPageMetadata } from '@/lib/seo';
-import { jsonLdGraph, profilePageSchema, personSchema, breadcrumbSchema } from '@/lib/schema';
-import { absoluteUrl, absoluteImage } from '@/lib/site';
+import { jsonLdGraph, profilePageSchema, personSchema, breadcrumbSchema, metademicOrganizationSchema } from '@/lib/schema';
+import { absoluteUrl, absoluteImage, metademicConfig } from '@/lib/site';
 
 export const metadata = buildPageMetadata({
   title: 'About Shariful Haque',
   description:
-    'Learn about Shariful Haque — researcher, data analyst, and technology strategist specializing in AI, business analytics, blockchain, and ERP systems. Biography, experience, education, research, and publications.',
+    'Learn about Shariful Haque — researcher, data analyst, and founder of Metademic Lab, specializing in AI, business analytics, blockchain, and ERP systems. Biography, experience, education, research, and publications.',
   path: '/about-shariful-haque',
   type: 'profile',
-  keywords: ['Shariful Haque about', 'Shariful Haque biography', 'Shariful Haque researcher', 'Shariful Haque career', 'Shariful Haque publications'],
+  keywords: ['Shariful Haque about', 'Shariful Haque biography', 'Shariful Haque researcher', 'Shariful Haque career', 'Shariful Haque publications', 'Shariful Haque Metademic Lab', 'Metademic founder'],
 });
+
+const metademicResearchAreas = [
+  'Artificial intelligence',
+  'Distributed computing',
+  'Intelligent control',
+  'Autonomous systems',
+  'Trustworthy systems',
+];
 
 export default async function AboutPage() {
   const supabase = createClient();
@@ -51,6 +59,7 @@ export default async function AboutPage() {
   const jsonLds = [
     personSchema(),
     profilePageSchema(),
+    metademicOrganizationSchema(),
     breadcrumbSchema([
       { name: 'Home', url: absoluteUrl('/') },
       { name: 'About Shariful Haque', url: absoluteUrl('/about-shariful-haque') },
@@ -109,6 +118,50 @@ export default async function AboutPage() {
             </div>
           </section>
         )}
+
+        <section className="mb-16">
+          <div className="rounded-2xl border border-teal-600/20 bg-card p-6 md:p-8">
+            <div className="flex flex-wrap items-start justify-between gap-4">
+              <div>
+                <Badge variant="outline" className="mb-3 gap-1.5 border-teal-600/30 px-3 py-1 text-[11px] uppercase tracking-wider text-teal-700">
+                  <FlaskConical className="h-3.5 w-3.5" />
+                  Founder
+                </Badge>
+                <h2 className="text-2xl font-bold md:text-3xl">{metademicConfig.name}</h2>
+                <p className="mt-1 text-muted-foreground">{metademicConfig.tagline}</p>
+              </div>
+              <Button asChild>
+                <Link href="/metademic">
+                  Explore the Lab <ArrowRight className="ml-2 h-4 w-4" />
+                </Link>
+              </Button>
+            </div>
+
+            <p className="mt-5 max-w-3xl text-muted-foreground">
+              {siteConfig.name} is the founder of Metademic, an independent research laboratory
+              exploring artificial intelligence, intelligent systems, and computing. The lab
+              investigates research questions, develops experimental technology, and builds tools
+              that put research into practice — with reproducible methods at the centre of its work.
+            </p>
+
+            <div className="mt-5 flex flex-wrap gap-2">
+              {metademicResearchAreas.map((area) => (
+                <Badge key={area} variant="secondary">{area}</Badge>
+              ))}
+            </div>
+
+            <div className="mt-6 flex flex-wrap gap-3">
+              <Button asChild variant="outline">
+                <Link href={metademicConfig.url} target="_blank" rel="noopener noreferrer">
+                  metademic.org <ExternalLink className="ml-2 h-4 w-4" />
+                </Link>
+              </Button>
+              <Button asChild variant="outline">
+                <Link href="/projects">Research & projects</Link>
+              </Button>
+            </div>
+          </div>
+        </section>
 
         {(resume?.professionalexperience?.length > 0) && (
           <section className="mb-16">
@@ -249,6 +302,12 @@ export default async function AboutPage() {
         <section className="mb-8">
           <h2 className="text-2xl font-bold mb-6">More About {siteConfig.name}</h2>
           <div className="grid sm:grid-cols-2 gap-4">
+            <Link href="/metademic" className="group border rounded-lg p-5 bg-card hover:border-teal-600 transition-colors">
+              <div className="flex items-center gap-2 font-bold mb-2">
+                <FlaskConical className="h-5 w-5 text-teal-600" /> Metademic Lab
+              </div>
+              <p className="text-sm text-muted-foreground">The research laboratory he founded — AI, intelligent systems, and computing.</p>
+            </Link>
             <Link href="/research" className="group border rounded-lg p-5 bg-card hover:border-primary transition-colors">
               <div className="flex items-center gap-2 font-bold mb-2">
                 <FileText className="h-5 w-5 text-primary" /> Research & Publications
