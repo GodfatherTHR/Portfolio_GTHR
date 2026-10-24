@@ -141,12 +141,19 @@ export default async function AboutPage() {
               {siteConfig.name} is the founder of Metademic, an independent research laboratory
               exploring artificial intelligence, intelligent systems, and computing. The lab
               investigates research questions, develops experimental technology, and builds tools
-              that put research into practice — with reproducible methods at the centre of its work.
+              that put research into practice, keeping reproducible methods at the centre of its
+              work.
             </p>
 
             <div className="mt-5 flex flex-wrap gap-2">
               {metademicResearchAreas.map((area) => (
-                <Badge key={area} variant="secondary">{area}</Badge>
+                <Badge
+                  key={area}
+                  variant="outline"
+                  className="border-teal-600/30 bg-teal-600/5 text-teal-700 dark:border-teal-400/30 dark:bg-teal-400/10 dark:text-teal-300"
+                >
+                  {area}
+                </Badge>
               ))}
             </div>
 
